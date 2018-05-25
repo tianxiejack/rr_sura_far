@@ -930,6 +930,10 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 	GLenum format= GL_BGRA;
 #endif
 
+#if MVDECT
+ mv_detect.ReadConfig();
+#endif
+
 	if(!shaderManager.InitializeStockShaders()){
 		cout<<"failed to intialize shaders"<<endl;
 		exit(1);
@@ -6579,7 +6583,7 @@ if(g_windowHeight==768)
 }
 else
 {
-	RenderRightForeSightView(env,0,g_windowHeight*645.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
+	RenderRightForeSightView(env,0,g_windowHeight*643.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 }
 	//RenderRightPanoView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
@@ -7936,7 +7940,7 @@ GLEnv & env=env1;
 		//case 'o':
 		case 'O':
 #if MVDECT
-			mv_detect.CloseMD(MAIN);
+			mv_detect.OpenMD(MAIN);
 #endif
 		//	mode = OitVehicle::USER_OIT;
 			break;
@@ -8079,9 +8083,6 @@ GLEnv & env=env1;
 			break;
 		//case 'c':
 		case 'C':
-#if MVDECT
-			mv_detect.OpenMD(MAIN);
-#endif
 	//		if(isCalibTimeOn){
 		//		RememberTime();
 	//		}
@@ -8198,6 +8199,9 @@ GLEnv & env=env1;
 			DISPLAYMODE_SWITCH_TO(PANO_VIEW_MODE);
 			break;
 		case 'o'://high definition pano view
+#if MVDECT
+			mv_detect.CloseMD(MAIN);
+#endif
 			break;
 		case 'p'://high definition pano add pano view
 			break;

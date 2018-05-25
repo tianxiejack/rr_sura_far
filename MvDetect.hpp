@@ -31,7 +31,11 @@ public:
 	void OpenMD(int mainorsub){MDopen[mainorsub]=true;};
 	void CloseMD(int mainorsub){MDopen[mainorsub]=false;};
 	bool CanUseMD(int mainorsub);
-	bool MDisStart(){enableMD[MAIN]==true && enableMD[SUB]==true;};
+	bool MDisStart(){
+			if(enableMD[MAIN]==true &&MDopen[MAIN]==true)///*&& enableMD[SUB]==true*/)
+				return true;
+		else if(enableMD[MAIN]==true&&MDopen[SUB]==true)
+				return true;};
 	int getTargetNum(int cam_idx){ targetnum[cam_idx]=outRect[cam_idx].size();
 		return targetnum[cam_idx];}
 	int Choosetargetidx(int cam_idx,int tidx){

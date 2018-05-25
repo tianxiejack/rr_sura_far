@@ -21,8 +21,8 @@ MvDetect::MvDetect()
 
 for(int i=0;i<2;i++)
 {
-		enableMD[i]=true;
-		MDopen[i]=true;
+		enableMD[i]=false;
+		MDopen[i]=false;
 }
 		for(int i=0;i<CAM_COUNT;i++)
 		{
@@ -227,7 +227,7 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 						int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
 						int endx=startx+w;
 						int endy=starty+h;
-						cv::rectangle(m4,cvPoint(startx,starty),cvPoint(endx,endy),cvScalar(0,0,0),3);
+						cv::rectangle(m4,cvPoint(startx,starty),cvPoint(endx,endy),cvScalar(0,0,0),1);
 					}
 				}
 			}

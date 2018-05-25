@@ -68,7 +68,7 @@ void Render::RenderSceneDS()
 		}
 		else
 		{
-			RenderRightForeSightView(env,0,g_subwindowHeight*645.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
+			RenderRightForeSightView(env,0,g_subwindowHeight*643.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
 			RenderLeftForeSightView(env,0,g_subwindowHeight*864.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
 			glScissor(0,0,1152,648);
 									//glScissor(g_subwindowWidth*448.0/1920.0,g_subwindowHeight*156.0/1080.0,g_subwindowWidth*1024,g_subwindowHeight*537);
@@ -597,6 +597,17 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 						p_ForeSightFacade[SUB]->MoveDown(-PanoHeight/(5.7-2.7),SUB);
 			//		else if(SecondDisplayMode==SECOND_TELESCOPE_LEFT_MODE)
 									break;
+				case 'O':
+#if MVDECT
+			mv_detect.OpenMD(SUB);
+#endif
+					break;
+				case 'o':
+#if MVDECT
+			mv_detect.CloseMD(SUB);
+#endif
+					break;
+
 			default:
 		break;
 		}

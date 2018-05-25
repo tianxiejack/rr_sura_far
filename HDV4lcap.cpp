@@ -586,23 +586,9 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					{
 						if(now_pic_format==MVDECT_CN)//移动检测
 						{
-					//		if(mv_detect.CanUseMD())
 						{
-			//				static timeval lasttime;
-				//			timeval nowtime;
-			//				static int count=0;
-			//				gettimeofday(&nowtime,0);
-				//			if(count==10)
-			//				{
-				//				count=0;
-			//					printf("%f ms\n",(nowtime.tv_sec-lasttime.tv_sec)*1000.0+(nowtime.tv_usec-lasttime.tv_usec)/1000.0);
-				//				lasttime=nowtime;
-			//				}
-			//				count++;
-
-						//	YUYV2UYVx(target_data[nowGrayidx],(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 							#if MVDECT
-					//		if(mvDectCount<1)
+							if(mv_detect.MDisStart())
 							{
 								mv_detect.m_mvDetect(nowGrayidx,(unsigned char *)buffers[buf.index].start, SDI_WIDTH, SDI_HEIGHT);
 							}
@@ -626,7 +612,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 								YUYV2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 								//todo //４副　６副
 #if MVDECT
-							//	if(mv_detect.MDisStart())
+								if(mv_detect.MDisStart())
 								{
 									mv_detect.SetoutRect(mv_count);
 									if(nowpicW==1280)

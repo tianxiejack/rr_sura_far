@@ -405,7 +405,7 @@ bool FBOManager::Init()
 //	glInfo glInfo;
 //	glInfo.getInfo();
 //	glInfo.printSelf();
-    initscreenQuad(SCREEN_W,SCREEN_H);
+ //   initscreenQuad(SCREEN_W,SCREEN_H);
 //	if(glInfo.isExtensionSupported("GL_ARB_framebuffer_object"))
 	{
 		fboSupported = fboUsed = true;
