@@ -1,0 +1,20 @@
+#if USE_CAP_SPI
+#ifndef CYCLOPS_MESSAGE_H
+#define CYCLOPS_MESSAGE_H
+
+#define SERIALNUM 1
+
+typedef enum {
+	MSG_TYPE_INVALID,
+	MSG_TYPE_YUAN_JIASHI = 0x01,
+	MSG_TYPE_YUAN_CHEZHANG,
+	MSG_TYPE_JIN_JIASHI,
+	MSG_TYPE_JIN_CHEZHANG,
+	MSG_COUNT
+} MSG_TYPE;
+
+void InitIPCModule();
+void WriteMessage(MSG_TYPE n, char buf);
+
+#endif /* CYCLOPS_MESSAGE_H_ */
+#endif

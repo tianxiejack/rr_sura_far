@@ -1,0 +1,35 @@
+%YAML:1.0
+Parameters:
+   EarthModulePath: './data/bowl_bm2.stl'
+   EarthPixelPath:  './pixelCoord_05.ini'
+   OutPutDir:       './data/output_13x9_left/'
+   OutPutDisplay:   0
+   EarthModuleXLen: 26000
+   EarthModuleYLen: 26000   
+   EarthModuleZLen: 0  
+   
+   #chess params
+   PicturePath:     './data/05.bmp'
+   chess_grid_size: 200           #mm
+   chess_w:         13            #chess width at grid
+   chess_h:         9             #chess height at grid
+   chess_x:         -3800         #chess grid width offset
+   chess_y:         3550          #chess grid height offset
+   chess_z:         0
+   
+   #camera params
+   cam_pos:         2             #top 0, bottom 1, left 2, right 3 
+   cam_type:        1             #fisheye 0, normal 1
+   cam_fx:          357.879322130593
+   cam_fy:          389.298417051371
+   cam_ox:          362.285646369750
+   cam_oy:          308.463325323152
+   cam_skew:        0
+   cam_k1:          -0.052132510637
+   cam_k2:          -0.161734755197
+   cam_k3:          -0.002748978156
+   cam_k4:          0.428468243254
+   cam_k5:          -0.293375629458
+   cam_k6:          -0.036950964811
+   cam_p1:          0.000031137895
+   cam_p2:          0.000046919493
