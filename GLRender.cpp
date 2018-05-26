@@ -2014,88 +2014,16 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 				for(int k=0;k<3;k++)
 				{
 
-			int dir=(direction)%CAM_COUNT;  //point1图０左边，point2图１右边
-			if(direction==0)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+0%CAM_COUNT*640.0;
-				Point1[k].y = Point1[k].y/1080.0*540.0;
+			//point1图０左边，point2图１右边
 
-				Point2[k].x = Point2[k].x/1920.0*640.0+1%CAM_COUNT*640.0;
-				Point2[k].y = Point2[k].y/1080.0*540.0;
-			}
-			else if(direction==1)
-				{
-					Point1[k].x = Point1[k].x/1920.0*640.0+1%CAM_COUNT*640.0;
-					Point1[k].y = Point1[k].y/1080.0*540.0;
 
-					Point2[k].x = Point2[k].x/1920.0*640.0+2%CAM_COUNT*640.0;
-					Point2[k].y = Point2[k].y/1080.0*540.0;
-				}
-			else if(direction==2)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+2%CAM_COUNT*640.0;
-				Point1[k].y = Point1[k].y/1080.0*540.0;
+			Point1[k].x = Point1[k].x/1920.0*640.0;
+			Point1[k].y = Point1[k].y/1080.0*540.0+(direction%CAM_COUNT)*540.0;
 
-				Point2[k].x = Point2[k].x/1920.0*640.0+0%CAM_COUNT*640.0;
-				Point2[k].y = Point2[k].y/1080.0*540.0+540;
-			}
-			else if(direction==3)
-		{
-			Point1[k].x = Point1[k].x/1920.0*640.0+0*640.0;
-			Point1[k].y = Point1[k].y/1080.0*1*540.0+540.0;
+			Point2[k].x = Point2[k].x/1920.0*640.0;
+			Point2[k].y = Point2[k].y/1080.0*540.0+((direction+1)%CAM_COUNT)*540.0;
 
-			Point2[k].x = Point2[k].x/1920.0*640.0+1*640.0;
-			Point2[k].y = Point2[k].y/1080.0*1*540.0+540.0;
-		}
-			else if(direction==4)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+1*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0+540.0;
 
-				Point2[k].x = Point2[k].x/1920.0*640.0+2*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0+540.0;
-			}
-			else if(direction==5)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+2*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0+540.0;
-
-				Point2[k].x = Point2[k].x/1920.0*640.0+3*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0;
-			}
-
-			else if(direction==6)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+3*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0;
-
-				Point2[k].x = Point2[k].x/1920.0*640.0+4*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0;
-			}
-			else if(direction==7)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+4*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0;
-
-				Point2[k].x = Point2[k].x/1920.0*640.0+3*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0+540.0;
-			}
-			else if(direction==8)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+3*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0+540.0;
-
-				Point2[k].x = Point2[k].x/1920.0*640.0+4*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0+540.0;
-			}
-			else if(direction==9)
-			{
-				Point1[k].x = Point1[k].x/1920.0*640.0+4*640.0;
-				Point1[k].y = Point1[k].y/1080.0*1*540.0+540.0;
-
-				Point2[k].x = Point2[k].x/1920.0*640.0+(0)*640.0;
-				Point2[k].y = Point2[k].y/1080.0*1*540.0;
-			}
 					Point1[k].x=Point1[k].x+move_hor[(direction)%CAM_COUNT];
 					Point1[k].y=(Point1[k].y-base_y_scale)*(channel_left_scale[direction])+base_y_scale+PanoFloatData[direction];
 					Point1[k]=RotatePoint( Point1[k],rotate_center[direction],rotate_angle[direction],max_panel_length,CAM_COUNT);
@@ -2116,28 +2044,10 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 			{
 				for(int k=0;k<3;k++)
 				{
-					if(direction>=0&&direction<=2)
-					{
-						Point[k].x = Point[k].x/1920.0*640.0+direction%CAM_COUNT*640.0;
-						Point[k].y = Point[k].y/1080.0*540.0;
-					}
 
-								else if(direction>=3&&direction<=5)
-							{
-								Point[k].x = Point[k].x/1920.0*640.0+(direction-3)*640.0;
-								Point[k].y = Point[k].y/1080.0*1*540.+540.0;
-							}
+					Point[k].x = Point[k].x/1920.0*640.0;
+					Point[k].y= Point[k].y/1080.0*540.0+(direction%CAM_COUNT)*540.0;
 
-								else if(direction>=6&&direction<=7)
-								{
-									Point[k].x = Point[k].x/1920.0*640.0+(direction-3)*640.0;
-									Point[k].y = Point[k].y/1080.0*1*540.0;
-								}
-								else if(direction>=8&&direction<=9)
-								{
-									Point[k].x = Point[k].x/1920.0*640.0+(direction-5)*640.0;
-									Point[k].y = Point[k].y/1080.0*1*540.0+540.0;
-								}
 					Point[k].x=Point[k].x+move_hor[direction];
 					Point[k].y=(Point[k].y-base_y_scale)*(channel_right_scale[direction]+(channel_left_scale[direction]-channel_right_scale[direction])*scale_count/thechannel_max_count)+base_y_scale+PanoFloatData[direction];
 					Point[k]=RotatePoint( Point[k],rotate_center[direction],rotate_angle[direction],max_panel_length,CAM_COUNT);

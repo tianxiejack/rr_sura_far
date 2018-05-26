@@ -53,7 +53,7 @@
 using namespace std;
 
 class RenderMain;
-static const int ALPHA_MASK_HEIGHT= DEFAULT_IMAGE_HEIGHT;
+static const int ALPHA_MASK_HEIGHT= 540;//DEFAULT_IMAGE_HEIGHT;
 static const int ALPHA_MASK_WIDTH = (DEFAULT_IMAGE_WIDTH/16);
 /* A general OpenGL initialization function. */
 /* Called once from main() */

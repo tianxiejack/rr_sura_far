@@ -3,8 +3,8 @@
 #include<string.h>
 #include<stdio.h>
 using namespace cv;
-Mat m4(1080,1280,CV_8UC4);
-Mat m6(1080,1920,CV_8UC4);
+Mat m4(2160,640,CV_8UC4);
+Mat m6(3240,640,CV_8UC4);
 #if  MVDECT
 MvDetect::MvDetect()
 {
@@ -84,15 +84,18 @@ void MvDetect::saveConfig()
 
 void myRect(unsigned char *dst,unsigned char *src,int x,int y,int w,int h)
 {
+#if 0
 	unsigned char temp[540*640*4];
 	Mat SRC(1080,1920,CV_8UC4,src);
 	Mat (540,640,CV_8UC4,dst);
 	Rect rect(x,y,w,h);
 	Mat DST=SRC(rect);
 	memcpy(dst,DST.data,540*640*4);
+#endif
 }
 void MvDetect::selectFrame(unsigned char *dst,unsigned char *src,int targetId,int camIdx)
 {
+#if 0
 	int startx=0;
 	int starty=0;
 	int w=640;
@@ -142,7 +145,7 @@ void MvDetect::selectFrame(unsigned char *dst,unsigned char *src,int targetId,in
 		myRect(dst,src,startx,starty,640,540);
 	}
 
-
+#endif
 }
 void MvDetect::ReadConfig()
 {
@@ -200,8 +203,8 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 			{
 				for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 				{
-					int startx=tempRecv[i][rectIdx].x/3+(640*(i%3));
-					int starty=tempRecv[i][rectIdx].y/2+(540*(i/3));
+					int startx=tempRecv[i][rectIdx].x/3;
+					int starty=tempRecv[i][rectIdx].y/2+540*i;
 					int w=tempRecv[i][rectIdx].width/3;
 					int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
 					int endx=startx+w;
@@ -221,8 +224,8 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 				{
 					for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 					{
-						int startx=tempRecv[i][rectIdx].x/2+(640*((i-6)%2));
-						int starty=tempRecv[i][rectIdx].y/2+(540*((i-6)/2));
+						int startx=tempRecv[i][rectIdx].x/2;
+						int starty=tempRecv[i][rectIdx].y/2+540*i;
 						int w=tempRecv[i][rectIdx].width/2;
 						int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
 						int endx=startx+w;
