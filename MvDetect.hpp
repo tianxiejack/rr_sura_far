@@ -35,7 +35,9 @@ public:
 			if(enableMD[MAIN]==true &&MDopen[MAIN]==true)///*&& enableMD[SUB]==true*/)
 				return true;
 		else if(enableMD[MAIN]==true&&MDopen[SUB]==true)
-				return true;};
+				return true;
+		else
+	return false;};
 	int getTargetNum(int cam_idx){ targetnum[cam_idx]=outRect[cam_idx].size();
 		return targetnum[cam_idx];}
 	int Choosetargetidx(int cam_idx,int tidx){

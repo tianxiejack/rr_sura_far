@@ -71,13 +71,13 @@ HDv4l_cam::HDv4l_cam(int devId,int width,int height):io(IO_METHOD_USERPTR),imgwi
 imgheight(height),buffers(NULL),memType(MEMORY_NORMAL),cur_CHANnum(0),
 force_format(1),m_devFd(-1),n_buffers(0),bRun(false),Id(devId),BaseVCap()
 {
-		imgformat 	= V4L2_PIX_FMT_YUYV;
+		imgformat 	= V4L2_PIX_FMT_GREY;//当成YUYV来采集，实际此时芯片为UYVY
 		sprintf(dev_name, "/dev/video%d",devId);
 			imgstride 	= imgwidth*2;
 			bufSize 	= imgwidth * imgheight * 2;
 			imgtype     = CV_8UC2;
 			memType = MEMORY_NORMAL;
-			bufferCount = 6;
+			bufferCount = 8;
 			if(Once_buffer)
 			{
 				init_buffer();
@@ -130,6 +130,36 @@ void save_SDIyuyv_pic(void *pic,int w,int h)
 	fp=fopen("./Van_save_YUV.yuv","w");
 	fwrite(pic,w*h*2,1,fp);
 	fclose(fp);
+}
+
+void HDv4l_cam::UYVquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
+{
+	for(int j =0;j<ImgHeight;j++)
+	{
+		for(int i=0;i<ImgWidth*2/4;i++)
+		{
+			*(dst+j*ImgWidth*4+i*8+1)=*(src+j*ImgWidth*2+i*4+1);
+			*(dst+j*ImgWidth*4+i*8+0)=*(src+j*ImgWidth*2+i*4+0);
+			*(dst+j*ImgWidth*4+i*8+2)=*(src+j*ImgWidth*2+i*4+2);
+			*(dst+j*ImgWidth*4+i*8+3)=0;
+
+			*(dst+j*ImgWidth*4+i*8+5)=*(src+j*ImgWidth*2+i*4+3);
+			*(dst+j*ImgWidth*4+i*8+4)=*(src+j*ImgWidth*2+i*4+0);
+			*(dst+j*ImgWidth*4+i*8+6)=*(src+j*ImgWidth*2+i*4+2);
+			*(dst+j*ImgWidth*4+i*8+7)=0;
+		}
+	}
+}
+void HDv4l_cam::UYVY2UYVx(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
+{
+	if (ImgWidth==FPGA_SCREEN_WIDTH) //4副先进行切割
+		{
+			UYVquar(dst,src,FPGA_SINGLE_PIC_W,FPGA_SINGLE_PIC_H*4);
+		}
+	else
+	{
+		UYVquar(dst,src,ImgWidth,ImgHeight);
+	}
 }
 
 void HDv4l_cam::YUVquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
@@ -402,9 +432,9 @@ int HDv4l_cam::init_device(void)
 		fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 		if (force_format) {
 			fprintf(stderr, "Set HDyuyv\r\n");
-			fmt.fmt.pix.width       = imgwidth; //replace
+			fmt.fmt.pix.width       = imgwidth*2; //replace  因为假设成GREY 来采集UYVY,所以GREY的宽度要乘以2
 			fmt.fmt.pix.height      = imgheight; //replace
-			fmt.fmt.pix.pixelformat = imgformat;// V4L2_PIX_FMT_YUYV   (HD);
+			fmt.fmt.pix.pixelformat = imgformat;
 			fmt.fmt.pix.field       = V4L2_FIELD_ANY;
 			//fmt.fmt.pix.code=0;
 			//printf("******width =%d height=%d\n",fmt.fmt.pix.width,fmt.fmt.pix.height);
@@ -610,11 +640,11 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						{
 							if(now_pic_format==MAIN_CN)
 							{
-								YUYV2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								UYVY2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 							}
 							else
 							{
-								YUYV2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								UYVY2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 								//todo //４副　６副
 #if MVDECT
 								if(mv_detect.MDisStart())
@@ -644,7 +674,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					{
 						if(now_pic_format==SUB_CN)//如果等于驾驶员十选一，则要进行rgb转换
 						{
-							YUYV2UYVx(*transformed_src_sub,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+							UYVY2UYVx(*transformed_src_sub,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 						}
 						else if(now_pic_format==MVDECT_CN)//移动检测
 						{

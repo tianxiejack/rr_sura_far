@@ -140,6 +140,9 @@ public:
 	bool bRun;
 //	char *get_split_buffer_ch(){return split_buffer_ch;};
 private:
+	void UYVY2UYVx(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight);
+	void UYVquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight);
+
 	void YUYV2UYVx(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight);
 	void YUVquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight);
 	void YUYV2RGB(unsigned char * src,unsigned char * dst,int w,int h);
