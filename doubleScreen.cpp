@@ -12,7 +12,7 @@ Common comSecondSC;
 extern float forward_data;
 extern GLEnv env2,env1;
 extern ForeSightPos foresightPos[MS_COUNT];
-
+extern char chosenCam[2];
 void InitBowlDS()
 {
 
@@ -572,6 +572,14 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 				SecondDisplayMode = nextMode;
 			}
 				break;
+			case	'n':
+			{
+#if USE_CAP_SPI
+				chosenCam[SUB]=(chosenCam[SUB]+1)%CAM_COUNT;
+				ChangeMainChosenCamidx(chosenCam[SUB]);
+#endif
+			}
+			break;
 			case '1':
 					if(SecondDisplayMode==	SECOND_ALL_VIEW_MODE
 							||SecondDisplayMode==SECOND_559_ALL_VIEW_MODE)

@@ -15,10 +15,11 @@ void *SelfCheck_thread(void *arg)
 	while(1)
 	{
 		selfcheck.initState();
-		selfcheck.Check12CAM();
-		selfcheck.CheckExtra2CAM();
-		selfcheck.Check2HD();
-		selfcheck.CaptureCheckAll();
+		selfcheck.CheckBrokenCam();
+		//selfcheck.Check12CAM();
+		//selfcheck.CheckExtra2CAM();
+	//	selfcheck.Check2HD();
+	//	selfcheck.CaptureCheckAll();
 		selfcheck.SendBrokenCAM();
 	 sleep(10);
 	}

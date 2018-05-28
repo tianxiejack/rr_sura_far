@@ -65,7 +65,7 @@
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
 
-
+char chosenCam[2]={0,0};
 
 #if MVDECT
  extern MvDetect mv_detect;
@@ -75,7 +75,7 @@ int m_cam_pos=-1;
 extern GLEnv env1;
 extern GLEnv env2;
 bool enable_hance=false;
-
+bool saveSinglePic[CAM_COUNT]={false};
 bool isTracking=false;
 
 PanoCamOnForeSight  panocamonforesight[2];
@@ -7963,6 +7963,10 @@ GLEnv & env=env1;
 			break;
 		case	'n':
 		{
+#if USE_CAP_SPI
+			chosenCam[MAIN]=(chosenCam[MAIN]+1)%CAM_COUNT;
+			ChangeMainChosenCamidx(chosenCam[MAIN]);
+#endif
 	//		FBO_MODE nextMode=FBO_MODE(((int)fboMode+1)%FBO_MODE_COUNT);
 	//		fboMode = nextMode;
 		}
@@ -8058,7 +8062,6 @@ GLEnv & env=env1;
 		case 'E':
 			DISPLAYMODE_SWITCH_TO(CENTER_VIEW_MODE);
 			break;
-		//case 'r':
 		case 'R':
 			stopcenterviewrotate=!stopcenterviewrotate;
 			break;
@@ -8096,7 +8099,13 @@ GLEnv & env=env1;
 					}
 				}
 					break;
-		case 'r'://PTZ view
+		case 'r':
+			if(EnablePanoFloat==true&&TRIM_MODE==displayMode)
+			{
+					shaderManager.ResetTrimColor();
+					testPanoNumber=(CAM_COUNT-testPanoNumber-1)%CAM_COUNT;
+					shaderManager.SetTrimColor(testPanoNumber);
+			}
 			break;
 		case 't'://PANO add PTZ view
 			break;
@@ -8729,6 +8738,12 @@ GLEnv & env=env1;
 			break;
 			case '~':
 			{
+				if(CHOSEN_VIEW_MODE==displayMode)
+				{
+				#if USE_CAP_SPI
+					saveSinglePic[chosenCam[MAIN]]=true;
+				#endif
+				}
 				if(displayMode==	ALL_VIEW_FRONT_BACK_ONE_DOUBLE_MODE)
 				{
 					SendBackXY(p_ForeSightFacade[MAIN]->GetMil());

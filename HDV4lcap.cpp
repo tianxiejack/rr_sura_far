@@ -40,6 +40,7 @@ extern Alg_Obj * queue_main_sub;
 using namespace std;
 static bool Once_buffer=true;
 int m_bufId[QUE_CHID_COUNT]={0};
+extern bool saveSinglePic[CAM_COUNT];
 extern void DeinterlaceYUV_Neon(unsigned char *lpYUVFrame, int ImgWidth, int ImgHeight, int ImgStride);
 //Mat SDI_frame,VGA_frame;
 //unsigned char * sdi_data_main[6];
@@ -529,6 +530,14 @@ void save_rgb(char *filename,void *pic,int w,int h)
 	imwrite(filename,Pic);
 }
 
+void save_single_pic(char *filename,void *pic,int w,int h)
+{
+	unsigned char dst[SDI_WIDTH*SDI_HEIGHT*3];
+	Mat Src(h,w,CV_8UC2,pic);
+	Mat Dst(h,w,CV_8UC3,dst);
+	cvtColor(Src,Dst,CV_YUV2BGR_UYVY);
+	imwrite(filename,Dst);
+}
 void save_yuyv2rgb(char *filename,void *pic,int w,int h)
 {
 	char bmp[1920*1080*4];
@@ -575,6 +584,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					 printf("now_pic_format=0,0 dev is not used!\n");
 					 assert(false);
 				 }
+				 char filename[20];
 				 static int mvDectCount=0;
 				 static int mv_count=0;
 					int chid[2]={-1,-1};
@@ -640,6 +650,15 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						{
 							if(now_pic_format==MAIN_CN)
 							{
+								for(int i=0;i<CAM_COUNT;i++)
+								{
+									if(saveSinglePic[i]==true)
+									{
+										saveSinglePic[i]=false;
+										sprintf(filename,"%2d.bmp",i);
+										save_single_pic(filename,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+									}
+								}
 								UYVY2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 							}
 							else

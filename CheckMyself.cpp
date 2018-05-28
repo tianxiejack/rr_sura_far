@@ -12,6 +12,39 @@ extern unsigned int last_gpio_sdi;
 extern bool isinSDI;
 SelfCheck selfcheck;
 
+void   SelfCheck::CheckBrokenCam()
+{
+	BrokenCam[0]=get_gpioNum_Value(GPIO_FAR_0_NUM);
+	BrokenCam[1]=get_gpioNum_Value(GPIO_FAR_1_NUM);
+	BrokenCam[2]=get_gpioNum_Value(GPIO_FAR_2_NUM);
+	BrokenCam[3]=get_gpioNum_Value(GPIO_FAR_3_NUM);
+	BrokenCam[4]=get_gpioNum_Value(GPIO_FAR_4_NUM);
+	BrokenCam[5]=get_gpioNum_Value(GPIO_FAR_5_NUM);
+	BrokenCam[6]=get_gpioNum_Value(GPIO_FAR_6_NUM);
+	BrokenCam[7]=get_gpioNum_Value(GPIO_FAR_7_NUM);
+	BrokenCam[8]=get_gpioNum_Value(GPIO_FAR_8_NUM);
+	BrokenCam[9]=get_gpioNum_Value(GPIO_FAR_9_NUM);
+	BrokenCam[10]=get_gpioNum_Value(GPIO_NEAR_0_NUM);
+	BrokenCam[11]=get_gpioNum_Value(GPIO_NEAR_1_NUM);
+	BrokenCam[12]=get_gpioNum_Value(GPIO_NEAR_2_NUM);
+	BrokenCam[13]=get_gpioNum_Value(GPIO_NEAR_3_NUM);
+}
+
+self_check_state  SelfCheck::IsIDLE()
+{
+	for(int i=0;i<CAM_COUNT+4;i++)
+	{
+		if(BrokenCam[i]==-1)
+		{
+			return SELFCHECK_IDLE;
+		}
+		else if(BrokenCam[i]==0)
+		{
+			return SELFCHECK_FAIL;
+		}
+	}
+	return SELFCHECK_PASS;
+}
 void  SelfCheck::CaptureCheckAll()
 {
 	for(int i=0;i<CAM_COUNT+2+2;i++)

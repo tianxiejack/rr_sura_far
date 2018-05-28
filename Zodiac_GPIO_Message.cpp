@@ -9,14 +9,93 @@
 #include <stdbool.h>  /* ture false 有效*/
 #include <string.h>
 #include <pthread.h>
+#include <fcntl.h>
 #include "Zodiac_GPIO_Message.h"
 
 #define Z2G_FTOK_PATH "/home/ubuntu"
+
+#define GPIO_PIN_MAX		512
+static int gDirection[GPIO_PIN_MAX] = {-1 };
 
 int  z2g_ret_value;
 int  z2g_ipc_port = 145;
 key_t z2g_ipc_key;
 int  z2g_ipc_qid;
+int gpio_init()
+{
+	gpio_open( GPIO_FAR_0_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_1_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_2_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_3_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_4_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_5_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_6_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_7_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_8_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_FAR_9_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_NEAR_0_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_NEAR_1_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_NEAR_2_NUM, DX_GPIO_DIRECTION_IN );
+	gpio_open( GPIO_NEAR_3_NUM, DX_GPIO_DIRECTION_IN );
+return 0;
+}
+int gpio_open(unsigned int nPin, DX_GPIO_DIRECTION direction)
+{
+	int fd,nRet;
+	char strSysfs[128];
+	// Export control of the selected GPIO to userspace
+	fd = open("/sys/class/gpio/export", O_WRONLY);
+	if (fd < 0)
+	{
+		perror("gpio/export");
+		return -1;
+	}
+	if(nPin >= GPIO_PIN_MAX)
+	{
+		printf("gpio nPin out of range\r\n");
+		return -1;
+	}
+	nRet = snprintf(strSysfs, sizeof(strSysfs), "%d", nPin);
+	write(fd, strSysfs, nRet);
+	close(fd);
+	// Set the GPIO direction
+	nRet = snprintf(strSysfs, sizeof(strSysfs), "/sys/class/gpio/gpio%d/direction", nPin);
+	fd = open(strSysfs, O_WRONLY);
+	if (fd < 0)
+	{
+		perror("gpio/direction");
+		return -1;
+	}
+	if(DX_GPIO_DIRECTION_IN == direction)
+		nRet = snprintf(strSysfs, sizeof(strSysfs), "in");
+	else
+		nRet = snprintf(strSysfs, sizeof(strSysfs), "out");
+	write(fd, strSysfs, nRet);
+	close(fd);
+	gDirection[nPin] = (int)direction;
+	return 0;
+}
+
+int get_gpioNum_Value(unsigned int gpio_num)
+{
+	int fd, nRet;
+	char strSysfs[128];
+	 snprintf(strSysfs, sizeof(strSysfs), "/sys/class/gpio/gpio%d/value", gpio_num);
+	if(DX_GPIO_DIRECTION_IN == gDirection[gpio_num]){
+		fd = open(strSysfs, O_RDONLY);
+		if (fd < 0)
+		{
+			perror("gpio/value");
+			return -1;
+		}
+		read(fd, strSysfs, 128);
+		close(fd);
+		strSysfs[1] = '\0';
+		nRet = atoi(strSysfs);
+		return nRet;
+	}
+	return -1;
+}
 
 void set_gpioNum_Value(int gpio_num,int gpio_value)
 {
