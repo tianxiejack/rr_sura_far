@@ -87,6 +87,12 @@ private:
 	void pano_CamMoveX(int mainorsub=MAIN);
 	void pano_CamMoveUp(int mainorsub=MAIN);
 	void pano_CamMoveDown(int mainorsub=MAIN);
+	void pano_OnetimeCamMoveUp(int mainorsub=MAIN);
+	void pano_OnetimeCamMoveDown(int mainorsub=MAIN);
+	void pano_TwotimesCamMoveUp(int mainorsub=MAIN);
+	void pano_TwotimesCamMoveDown(int mainorsub=MAIN);
+	float pano_one_lastposX;
+	float pano_one_lastposY;
 	float pano_two_lastposX;
 	float pano_two_lastposY;
 	float pano_length;

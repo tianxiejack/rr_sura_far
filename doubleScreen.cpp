@@ -596,13 +596,13 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 				case '3':
 					if(SecondDisplayMode==	SECOND_ALL_VIEW_MODE
 							||SecondDisplayMode==SECOND_559_ALL_VIEW_MODE)
-						p_ForeSightFacade[SUB]->MoveUp(PanoHeight/(5.7-2.7),SUB);
+						p_ForeSightFacade[SUB]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT),SUB);
 				//	else if(SecondDisplayMode==SECOND_TELESCOPE_BACK_MODE)
 									break;
 				case '4':
 					if(SecondDisplayMode==	SECOND_ALL_VIEW_MODE
 							||SecondDisplayMode==SECOND_559_ALL_VIEW_MODE)
-						p_ForeSightFacade[SUB]->MoveDown(-PanoHeight/(5.7-2.7),SUB);
+						p_ForeSightFacade[SUB]->MoveDown(-PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT),SUB);
 			//		else if(SecondDisplayMode==SECOND_TELESCOPE_LEFT_MODE)
 									break;
 				case 'O':

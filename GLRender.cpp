@@ -2872,10 +2872,8 @@ void Render::InitForesightGroupTrack(GLEnv &m_env)
 	  {
 	 	  p_ForeSightFacade[i] =new ForeSightFacade(
 	 			  new ForeSight_decorator(*(m_env.GetmodelViewMatrix()),*(m_env.GetprojectionMatrix()),&shaderManager, auto_ptr<BaseForeSight>(
-	 					  new ForeSight_decorator(*(m_env.GetmodelViewMatrix()),*(m_env.GetprojectionMatrix()),&shaderManager,auto_ptr<BaseForeSight>(
-	 							  new ForeSight_decorator(*(m_env.GetmodelViewMatrix()),*(m_env.GetprojectionMatrix()),&shaderManager,auto_ptr<BaseForeSight>(
-	 									  new PseudoForeSight_core()),pcindex,pano_cross,pano_length*100.0,pano_height/(5.7-2.4+deltaY_core))),pirindex,pano_inner_rect,pano_length*102.0,pano_height/(11.5-deltaY1))),
-	 					  	  	  	  porindex,pano_outer_rect,pano_length*100.0,pano_height/(0+deltaY))
+	 										  new PseudoForeSight_core()),
+	 					  	  	  	  porindex,pano_outer_rect,pano_length*100.0,pano_height/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT))
 	 	  	  	  	  	  	  	  	  	  ,foresightPos[i],&panocamonforesight[i]);
 		  assert(p_ForeSightFacade[i]);
 
@@ -6486,12 +6484,12 @@ if(setpriorityOnce)
 #endif
 		tIdle.threadIdle(MAIN_CN);
 		env.Getp_FboPboFacade()->Render2Front(MAIN,g_windowWidth,g_windowHeight);
-if(g_windowHeight==768)
+//if(g_windowHeight==768)
 {
-		RenderRightForeSightView(env,0,g_windowHeight*538.0/768.0,g_windowWidth, g_windowHeight*116.0/768.0,MAIN);
-		RenderLeftForeSightView(env,0,g_windowHeight*655.0/768.0,g_windowWidth, g_windowHeight*115.0/768.0,MAIN);
+	//	RenderRightForeSightView(env,0,g_windowHeight*538.0/768.0,g_windowWidth, g_windowHeight*116.0/768.0,MAIN);
+		//RenderLeftForeSightView(env,0,g_windowHeight*655.0/768.0,g_windowWidth, g_windowHeight*115.0/768.0,MAIN);
 }
-else
+//else
 {
 	RenderRightForeSightView(env,0,g_windowHeight*643.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
@@ -8642,7 +8640,7 @@ GLEnv & env=env1;
 							}
 				else if (displayMode==ALL_VIEW_MODE)
 				{
-					p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(5.7-2.7));
+					p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
 				}
 
 							else if(displayMode==TELESCOPE_FRONT_MODE
@@ -8694,14 +8692,14 @@ GLEnv & env=env1;
 				}
 				else if (displayMode==ALL_VIEW_MODE)
 				{
-					p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(5.7-2.7));
+					p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
 				}
 				else if(displayMode==TELESCOPE_FRONT_MODE
 										||displayMode==TELESCOPE_RIGHT_MODE
 										||displayMode==TELESCOPE_BACK_MODE
 										||displayMode==TELESCOPE_LEFT_MODE)
 				{
-								p_ForeSightFacade2[MAIN]->MoveDown(-PanoHeight/5.7);
+								p_ForeSightFacade2[MAIN]->MoveDown(-PanoHeight/OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT);
 				}
 				else if(displayMode==	VGA_WHITE_VIEW_MODE
 										||displayMode==VGA_HOT_BIG_VIEW_MODE
