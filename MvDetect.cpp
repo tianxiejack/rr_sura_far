@@ -3,8 +3,8 @@
 #include<string.h>
 #include<stdio.h>
 using namespace cv;
-Mat m4(2160,640,CV_8UC4);
-Mat m6(3240,640,CV_8UC4);
+Mat m4(2160,640,CV_8UC3);
+Mat m6(3240,640,CV_8UC3);
 #if  MVDECT
 MvDetect::MvDetect()
 {
@@ -45,17 +45,17 @@ void MvDetect::init(int w,int h)
 {
 		createDetect((unsigned char)CAM_COUNT,w,h);
 }
-void MvDetect::yuyv2gray(unsigned char* src,unsigned char* dst,int width,int height)
+void MvDetect::uyvy2gray(unsigned char* src,unsigned char* dst,int width,int height)
 {
 	for(int i=0;i<width*height;i++)
 		{
-	    *(dst++) =*(src) ;
-	    src+=2;
+	    *(dst++) =*(++src) ;
+	    src+=1;
 		}
 }
 void MvDetect::m_mvDetect(int idx,unsigned char* inframe,int w,int h)
 {
-	yuyv2gray(inframe,grayFrame[idx]);
+	uyvy2gray(inframe,grayFrame[idx]);
 
 	{
 		mvDetect((unsigned char) (idx+1), grayFrame[idx], w, h,tempoutRect[idx].rects);

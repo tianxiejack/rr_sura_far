@@ -18,7 +18,7 @@ static int fd1;
 static int fd2;
 
 static uint8_t mode;
-static uint8_t bits = 32;
+static uint8_t bits = 8;
 static uint32_t speed = 20000000;
 static uint16_t delay = 0;
 
@@ -223,13 +223,13 @@ int transfer_init(uint8_t comNum, uint8_t interuptThreshold, int Baudrate) {
 			0x0,   //设置串口波特率高两位
 			};
 	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
-	struct spi_ioc_transfer tr;
-	tr.tx_buf =(unsigned long) tx;
+	struct spi_ioc_transfer tr ;
+	tr.tx_buf=(unsigned long) tx;
 	tr.rx_buf=(unsigned long) rx;
-	tr.len = ARRAY_SIZE(tx);
-	tr.delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr .bits_per_word = bits;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
 	ret = ioctl(fdTmp, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
@@ -278,13 +278,13 @@ int transfer_ban(int fd, int comAddr) {
 	uint8_t tx[] = { (comAddr + 1) >> 3, (((comAddr + 1) & 0x7) << 5) | (1 << 4)
 			| (0x00 >> 4), (0x00 & 0xf) << 4, 0x0, };
 	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
-	struct spi_ioc_transfer tr;
-	tr.tx_buf = (unsigned long) tx;
-	tr .rx_buf =(unsigned long) rx;
-	tr .len=ARRAY_SIZE(tx);
-	tr.delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr.bits_per_word = bits;
+	struct spi_ioc_transfer tr ;
+	tr.tx_buf=(unsigned long) tx;
+	tr.rx_buf=(unsigned long) rx;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
@@ -298,13 +298,12 @@ int transfer_open(int fd, int comAddr) {
 			| (0x01 >> 4), (0x01 & 0xf) << 4, 0x0, };
 	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
 	struct spi_ioc_transfer tr ;
-	tr .tx_buf = (unsigned long) tx;
-	tr.rx_buf =(unsigned long) rx;
-	tr.len = ARRAY_SIZE(tx);
-	tr .delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr.bits_per_word = bits;
-
+	tr.tx_buf=(unsigned long) tx;
+	tr.rx_buf=(unsigned long) rx;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
@@ -319,12 +318,12 @@ int transfer_readDataCount(int fd, int comAddr) {
 					<< 4, 0x0, };
 	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
 	struct spi_ioc_transfer tr ;
-	tr .tx_buf = (unsigned long) tx;
-	tr.rx_buf =(unsigned long) rx;
-	tr.len = ARRAY_SIZE(tx);
-	tr .delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr.bits_per_word = bits;
+	tr.tx_buf=(unsigned long) tx;
+	tr.rx_buf=(unsigned long) rx;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
 	ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
@@ -374,12 +373,12 @@ int transfer_readOneData(int comNum) {
 			| (0x00 >> 4), (0x00 & 0xf) << 4, 0x0, };
 	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
 	struct spi_ioc_transfer tr ;
-	tr .tx_buf = (unsigned long) tx;
-	tr.rx_buf =(unsigned long) rx;
-	tr.len = ARRAY_SIZE(tx);
-	tr .delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr.bits_per_word = bits;
+	tr.tx_buf=(unsigned long) tx;
+	tr.rx_buf=(unsigned long) rx;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
 	ret = ioctl(fdTmp, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
@@ -859,7 +858,7 @@ void interuptHandleDataSpi1(int interuptNum,
 
 	}
 }
-
+/*
 int writeOneData(int comNum, uint8_t data) {
 	int comNumtemp, fdTmp, ret;
 	switch (comNum) {
@@ -898,34 +897,36 @@ int writeOneData(int comNum, uint8_t data) {
 	default:
 		return 1;
 	}
-	uint8_t tx[] = { comNumtemp >> 3, ((comNumtemp & 0x7) << 5) | (1 << 4)
-			| (data >> 4), (data & 0xf) << 4, 0x0, };
-	uint8_t rx[ARRAY_SIZE(tx)] = { 0, };
-	struct spi_ioc_transfer tr ;
-	tr .tx_buf = (unsigned long) tx;
-	tr.rx_buf =(unsigned long) rx;
-	tr.len = ARRAY_SIZE(tx);
-	tr .delay_usecs = delay;
-	tr.speed_hz = speed;
-	tr.bits_per_word = bits;
+	uint8_t tx[] = {0xaa,0x55,0x01 ,0x01, 0x5a ,0xa5 };
+	uint8_t r../spiH.c:899:2:x[ARRAY_SIZE(tx)] = { 0, };
+	struct spi_ioc_transfer tr = { .tx_buf = (unsigned long) tx, .rx_buf =
+			(unsigned long) rx, .len = ARRAY_SIZE(tx), .delay_usecs = delay,
+			.speed_hz = speed, .bits_per_word = bits, };
+
 	ret = ioctl(fdTmp, SPI_IOC_MESSAGE(1), &tr);
 	if (ret < 1)
 		pabort("can't send spi message");
 	return 0;
 }
-
+*/
 int sendDataToSpi(int comNum, uint8_t* buff, int length) {
 	int i;
 	int ret = 0;
 	if (length == 0)
 		return 3;
-	for (i = 0; i < length; i++) {
-		ret = writeOneData(comNum, buff[i]);
-		if (ret == 1) {
-			printf("comNum is error");
-			return 1;
-		}
-	}
+	uint8_t tx[length];
+	memcpy(tx ,buff,length);
+	uint8_t rx[length];
+	struct spi_ioc_transfer tr ;
+	tr.tx_buf=(unsigned long) tx;
+	tr.rx_buf=(unsigned long) rx;
+	tr.len=ARRAY_SIZE(tx);
+	tr.delay_usecs=delay;
+	tr.speed_hz=speed;
+	tr.bits_per_word=bits;
+	ret = ioctl(fd1, SPI_IOC_MESSAGE(1), &tr);
+	if (ret < 1)
+		pabort("can't send spi message");
 	return 0;
 }
 

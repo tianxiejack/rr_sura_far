@@ -1,6 +1,6 @@
 #include"GLEnv.h"
 #include"StlGlDefines.h"
-#if USE_CPU
+#if 1
 GLenum iniformat=GL_BGR;
 GLenum internalFormat=GL_RGB8;
 static int iniCC=3;

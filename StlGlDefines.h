@@ -383,6 +383,10 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define WRONG_TGA				"wrong.tga"
 #define IDLE_TGA						"idle.tga"
 
+#define DEBUG_TGA "debug.tga"
+#define TURRET_TGA			"paota.tga"
+#define PANORAMIC_MIRROR_TGA "zhoushijing.tga"
+
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
 		TWOX_REALTIME_T,
@@ -418,6 +422,11 @@ enum CCT_COUNT {
 		FINE_T,
 		WRONG_T,
 		IDLE_T,
+
+		TURRET_T,
+		PANORAMIC_MIRROR_T,
+
+		DEBUG_T,
 		CCT_COUNT
 		};
 

@@ -494,7 +494,7 @@ private:
 	void RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
 	void RenderCheckMyselfView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
 	void TargectTelView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,int camidx,int targetIdx,int enlarge=0,int mainOrsub=MAIN);
-
+	void RenderMilView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
 
 
 

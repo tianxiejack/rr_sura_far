@@ -13,7 +13,7 @@ void initGstCap()
 	gstCapture_data.ip_port = 17000;
 	gstCapture_data.filp_method = FLIP_METHOD_VERTICAL_FLIP;
 	gstCapture_data.capture_src = APPSRC;
-	gstCapture_data.format = "BGRA";
+	gstCapture_data.format = "BGR";
 	gstCapture_data.ip_addr =TARGET_IP;
 
 	record_handle = gstCaptureInit(gstCapture_data);

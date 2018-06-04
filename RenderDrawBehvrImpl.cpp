@@ -22,9 +22,18 @@ void Render::FBOdraw()
 		RenderRightPanoView(env,0,1080.0*648/1080.0,1920, 1080.0*216.0/1080.0,MAIN,0,0,0,0,true);
 		RenderLeftPanoView(env,0,1080.0*864.0/1080.0,1920, 1080.0*216.0/1080.0,MAIN,false);
 		if(displayMode!=TRIM_MODE)
-		RenderOnetimeView(env,0,0,1920*1152/1920, 1080.0*648/1080,MAIN);
+		{
+			RenderOnetimeView(env,0,0,1920*1152/1920, 1080.0*648/1080,MAIN);
+			p_ChineseCBillBoard->ChooseTga=TURRET_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*1700/1920.0, g_windowHeight*500.0/1080.0, g_windowWidth*0.6,g_windowHeight*0.6);
+			p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*1700/1920.0, g_windowHeight*300.0/1080.0, g_windowWidth*0.6,g_windowHeight*0.6);
+		}
+		p_ChineseCBillBoard->ChooseTga=ANGLE_T;
+		RenderChineseCharacterBillBoardAt(env,g_windowWidth*1250/1920.0, g_windowHeight*630.0/1080.0, g_windowWidth*0.85,g_windowHeight*0.85);
 
-#if 0
+		RenderMilView(env,g_windowWidth*1700/1920.0, g_windowHeight*500.0/1080.0, g_windowWidth,g_windowHeight);
+	#if 0
 		 if(g_windowHeight==768)
 		{
 			RenderRightPanoView(env,0,g_windowHeight*538.0/768.0,g_windowWidth, g_windowHeight*116.0/768.0,MAIN,0,0,0,0,true);

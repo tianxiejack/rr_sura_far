@@ -36,7 +36,7 @@ extern Alg_Obj * queue_main_sub;
 
 #define INPUT_IMAGE_WIDTH 1920
 #define INPUT_IMAGE_HEIGHT 1080
-
+bool IsMvDetect=false;
 using namespace std;
 static bool Once_buffer=true;
 int m_bufId[QUE_CHID_COUNT]={0};
@@ -132,6 +132,47 @@ void save_SDIyuyv_pic(void *pic,int w,int h)
 	fwrite(pic,w*h*2,1,fp);
 	fclose(fp);
 }
+
+void HDv4l_cam::UYVnoXquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
+{
+	for(int j =0;j<ImgHeight;j++)
+	{
+		for(int i=0;i<ImgWidth*2/4;i++)
+		{
+			*(dst+j*ImgWidth*3+i*6+0)=*(src+j*ImgWidth*2+i*4+0);
+			*(dst+j*ImgWidth*3+i*6+1)=*(src+j*ImgWidth*2+i*4+1);
+			*(dst+j*ImgWidth*3+i*6+2)=*(src+j*ImgWidth*2+i*4+2);
+
+			*(dst+j*ImgWidth*3+i*6+3)=*(src+j*ImgWidth*2+i*4+0);
+			*(dst+j*ImgWidth*3+i*6+4)=*(src+j*ImgWidth*2+i*4+3);
+			*(dst+j*ImgWidth*3+i*6+5)=*(src+j*ImgWidth*2+i*4+2);
+
+		}
+	}
+}
+
+void HDv4l_cam::UYVY2UYV(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
+{
+	if (ImgWidth==FPGA_SCREEN_WIDTH) //4副先进行切割
+		{
+//#pragma omp parallel for
+		for(int i=0;i<4;i++)
+		{
+			UYVnoXquar(dst+i*FPGA_SINGLE_PIC_W*FPGA_SINGLE_PIC_H*3,src+i*FPGA_SINGLE_PIC_W*FPGA_SINGLE_PIC_H*2,FPGA_SINGLE_PIC_W,FPGA_SINGLE_PIC_H);
+		}
+		}
+	else
+	{
+		ImgHeight/=4;
+//#pragma omp parallel for
+		for(int i=0;i<4;i++)
+		{
+		UYVnoXquar(dst+i*ImgWidth*ImgHeight*3,src+i*ImgWidth*ImgHeight*2,ImgWidth,ImgHeight);
+		}
+	}
+}
+
+
 
 void HDv4l_cam::UYVquar(unsigned char *dst,unsigned char *src, int ImgWidth, int ImgHeight)
 {
@@ -612,10 +653,10 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						break;
 					case MVDECT_CN:
 					//	chid[MAIN]=ChangeIdx2chid(MAIN);
-						//nowGrayidx=GetNowPicIdx((unsigned char *)buffers[buf.index].start);
+						nowGrayidx=GetNowPicIdx((unsigned char *)buffers[buf.index].start);
 			//todo  change
 						chid[MAIN]=MAIN_1;
-						nowGrayidx=mv_count;
+						//nowGrayidx=mv_count;
 						transformed_src_main=&MVDECT_data_main[nowGrayidx];
 						break;
 					case FPGA_SIX_CN:
@@ -633,16 +674,11 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						{
 						{
 							#if MVDECT
-							if(mv_detect.MDisStart())
+							//if(mv_detect.MDisStart())
+							if(IsMvDetect)
 							{
 								mv_detect.m_mvDetect(nowGrayidx,(unsigned char *)buffers[buf.index].start, SDI_WIDTH, SDI_HEIGHT);
 							}
-							mv_count++;
-							if(mv_count==CAM_COUNT)
-								mv_count=0;
-					//		mvDectCount++;
-					//		if(mvDectCount==3)
-					//			mvDectCount=0;
 							#endif
 						}
 						}
@@ -659,14 +695,15 @@ int HDv4l_cam::read_frame(int now_pic_format)
 										save_single_pic(filename,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 									}
 								}
-								UYVY2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 							}
 							else
 							{
-								UYVY2UYVx(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 								//todo //４副　６副
 #if MVDECT
-								if(mv_detect.MDisStart())
+							//	if(mv_detect.MDisStart())
+								if(IsMvDetect)
 								{
 									mv_detect.SetoutRect(mv_count);
 									if(nowpicW==1280)
@@ -693,7 +730,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					{
 						if(now_pic_format==SUB_CN)//如果等于驾驶员十选一，则要进行rgb转换
 						{
-							UYVY2UYVx(*transformed_src_sub,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+							UYVY2UYV(*transformed_src_sub,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 						}
 						else if(now_pic_format==MVDECT_CN)//移动检测
 						{

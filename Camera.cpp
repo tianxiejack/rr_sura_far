@@ -462,9 +462,25 @@ bool BMPVcap::Open()
 	else{
 		Mat ycrcb;
 		Mat im=cvarrToMat(pic);
-#if USE_CPU
-		cvtColor( im,yuv_alpha,CV_RGB2BGR); //RGB->RGB
-		memcpy(yuv_alpha.data,im.data,im.rows*im.cols*3);
+#if 1
+	/*	cvtColor( im,yuv_alpha,CV_RGB2BGR); //RGB->RGB
+		memcpy(yuv_alpha.data,im.data,im.rows*im.cols*3);*/
+		cvtColor( im, ycrcb, CV_RGB2YCrCb );
+			cvtColor( im,yuv_alpha,CV_RGB2BGR); //RGB->RGB
+			memcpy(yuv_alpha.data,im.data,im.rows*im.cols*3);
+			Vec3b pix;
+			Vec3b pix_alpha;
+			for (int r = 0; r < ycrcb.rows; r++)
+			{
+				for (int c = 0; c < ycrcb.cols; c++)
+				{
+					pix = ycrcb.at<Vec3b>(r,c);
+					pix_alpha.val[0]=pix.val[1];
+					pix_alpha.val[1]=pix.val[0];
+					pix_alpha.val[2]=pix.val[2];
+					yuv_alpha.at<Vec3b>(r,c) = pix_alpha;
+				}
+			}
 #else
 				cvtColor( im, ycrcb, CV_RGB2YCrCb );
 				cvtColor( im,yuv_alpha,CV_RGB2RGBA);

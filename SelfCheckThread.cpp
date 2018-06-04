@@ -7,20 +7,23 @@
 #include"CaptureGroup.h"
 #include"SelfCheckThread.h"
 #include"CheckMyself.h"
+#include "Zodiac_GPIO_Message.h"
 extern SelfCheck selfcheck;
 
 void *SelfCheck_thread(void *arg)
 {
-	sleep(5);
+	 gpio_init();
+	//sleep(5);
+	selfcheck.initState();
 	while(1)
 	{
-		selfcheck.initState();
+
 		selfcheck.CheckBrokenCam();
 		//selfcheck.Check12CAM();
 		//selfcheck.CheckExtra2CAM();
 	//	selfcheck.Check2HD();
 	//	selfcheck.CaptureCheckAll();
-		selfcheck.SendBrokenCAM();
+	//	selfcheck.SendBrokenCAM();
 	 sleep(10);
 	}
 	return 0;

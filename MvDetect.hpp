@@ -19,7 +19,7 @@ class MvDetect
 public:
 	MvDetect();
 	~MvDetect();
-	void yuyv2gray(unsigned char* src,unsigned char* dst,int width=MAX_SCREEN_WIDTH,int height=MAX_SCREEN_HEIGHT);
+	void uyvy2gray(unsigned char* src,unsigned char* dst,int width=MAX_SCREEN_WIDTH,int height=MAX_SCREEN_HEIGHT);
 	void init(int w=MAX_SCREEN_WIDTH,int h=MAX_SCREEN_HEIGHT);
 	void m_mvDetect(int idx,unsigned char* inframe,int w=MAX_SCREEN_WIDTH,int h=MAX_SCREEN_HEIGHT);
 	void DrawRectOnpic(unsigned char *src,int capidx);

@@ -65,7 +65,7 @@
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
 
-char chosenCam[2]={0,0};
+char chosenCam[2]={2,2};
 
 #if MVDECT
  extern MvDetect mv_detect;
@@ -77,6 +77,10 @@ extern GLEnv env2;
 bool enable_hance=false;
 bool saveSinglePic[CAM_COUNT]={false};
 bool isTracking=false;
+
+extern bool 	IsMvDetect;
+bool IsgstCap=false;
+
 
 PanoCamOnForeSight  panocamonforesight[2];
 TelCamOnForeSight	     telcamonforesight[2];
@@ -673,7 +677,7 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		p_FixedBBD_5M(NULL),p_FixedBBD_8M(NULL),p_FixedBBD_1M(NULL),
 		m_presetCameraRotateCounter(0),m_ExtVideoId(EXT_CAM_0),
 		fboMode(FBO_ALL_VIEW_MODE),
-		displayMode(ALL_VIEW_MODE),
+		displayMode(CHECK_MYSELF),
 		SecondDisplayMode(SECOND_ALL_VIEW_MODE),
 		p_DynamicTrack(NULL),m_DynamicWheelAngle(0.0f),
 		stopcenterviewrotate(FALSE),rotateangle_per_second(10),set_scan_region_angle(SCAN_REGION_ANGLE),
@@ -922,7 +926,7 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 {
 	GLEnv & env=env1;
 	GLubyte *pBytes;
-#if USE_CPU
+#if 1
 	GLint nWidth=DEFAULT_IMAGE_WIDTH, nHeight=DEFAULT_IMAGE_HEIGHT, nComponents=GL_RGB8;
 	GLenum format= GL_BGR;
 #else
@@ -980,6 +984,10 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 		env.GettransformPipeline()->SetMatrixStacks(*(env.GetmodelViewMatrix()), *(env.GetprojectionMatrix()));
 		InitLineofRuler(env);
 
+#if USE_CAP_SPI
+		ChangeMainChosenCamidx(chosenCam[SUB]);
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+#endif
 #if 1
 		GenerateCenterView();
 		GenerateCompassView();
@@ -4404,6 +4412,55 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 		m_env.GetmodelViewMatrix()->PopMatrix();
 }
 
+void Render::RenderMilView(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 4000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);
+	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+	{
+		char text[8];
+		char text2[8];
+		char text3[100][10];
+		strcpy(text," FANG:");
+		strcpy(text2," YANG:");
+		int j=0;
+		for(int i=0;i<CAM_COUNT;i++)
+		{
+		if(selfcheck.GetBrokenCam()[i]==0)
+		{
+			sprintf(text3[j],"Q_%d",i);
+			  j++;
+		}
+		}
+		if(displayMode!=TRIM_MODE)
+		{
+		Rect2i rect1(g_windowWidth*2450.0/1920.0,g_windowHeight*420.0/1920.0, g_windowWidth/5, g_windowHeight/5);
+		DrawAngleCordsView(m_env,&rect1,text,0.65);
+		Rect2i rect2(g_windowWidth*2450.0/1920.0,g_windowHeight*780.0/1920.0, g_windowWidth/5, g_windowHeight/5);
+		DrawAngleCordsView(m_env,&rect2,text2,0.65);
+		}
+		for(int k=0;k<j;k++)
+		{
+			if(k<5)
+			{
+				Rect2i rect1(g_windowWidth*(2450.0+k*100)/1920.0,g_windowHeight*(1200.0)/1920.0, g_windowWidth/5, g_windowHeight/5);
+				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
+			}
+			else
+			{
+				Rect2i rect1(g_windowWidth*(2450.0+(k-5)*100)/1920.0,g_windowHeight*(1100.0)/1920.0, g_windowWidth/5, g_windowHeight/5);
+				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
+			}
+		}
+	}
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
+
 void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 {
 	Rect *rect1;
@@ -4511,19 +4568,24 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 			float pos2[20]={1.615,1.54,1.47,1.408,1.35,1.298,1.25,1.2055,1.16,1.12,1.08};
 			float pos3[5]={1.7,1.615,1.53,1.46,1.39};
 
-			if(fboMode==FBO_ALL_VIEW_559_MODE
-					||SecondDisplayMode==SECOND_559_ALL_VIEW_MODE)
+	//		if(fboMode==FBO_ALL_VIEW_MODE
+	//				||SecondDisplayMode==SECOND_559_ALL_VIEW_MODE)
+			if(0)
 			{
-				if(g_windowWidth==1024)
+				if(1)
 				{
-					Rect2i rect1(g_windowWidth*730/1024,g_windowHeight*320/768, g_windowWidth/20, g_windowHeight*1/20);
+			/*		Rect2i rect1(g_windowWidth*730/1024,g_windowHeight*320/768, g_windowWidth/20, g_windowHeight*1/20);
 					DrawAngleCordsView(m_env,&rect1,text,0.8);
 					Rect2i rect2(g_windowWidth*730/1024,g_windowHeight*280.0/768.0, g_windowWidth/20, g_windowHeight*1/20);
 					DrawAngleCordsView(m_env,&rect2,text2,0.8);
 					Rect2i rect3(g_windowWidth*900/1024,g_windowHeight*320.0/768.0, g_windowWidth/20, g_windowHeight*1/20);
 					DrawAngleCordsView(m_env,&rect3,text3,0.8);
 					Rect2i rect4(g_windowWidth*900/1024,g_windowHeight*280.0/768.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect4,text3,0.8);
+					DrawAngleCordsView(m_env,&rect4,text3,0.8);*/
+					Rect2i rect1(g_windowWidth*2600.0/1920.0,g_windowHeight/4, g_windowWidth/20, g_windowHeight*1/20);
+					DrawAngleCordsView(m_env,&rect1,text,0.65);
+					Rect2i rect2(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
+					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 				}
 				else
 				{
@@ -6494,12 +6556,20 @@ if(setpriorityOnce)
 	RenderRightForeSightView(env,0,g_windowHeight*643.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 }
+/*	p_ChineseCBillBoard->ChooseTga=TURRET_T;
+	RenderChineseCharacterBillBoardAt(env,g_windowWidth*160.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
+	p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
+	RenderChineseCharacterBillBoardAt(env,g_windowWidth*600.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
+*/
 	//RenderRightPanoView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 	//	RenderLeftPanoView(env,0,g_windowHeight*648.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 			break;
 	}
 	case TRIM_MODE:
 		env.Getp_FboPboFacade()->Render2Front(MAIN,g_windowWidth,g_windowHeight);
+		p_ChineseCBillBoard->ChooseTga=DEBUG_T;
+		RenderChineseCharacterBillBoardAt(env,g_windowWidth-g_windowWidth/0.9, g_windowHeight*1/8, g_windowHeight, g_windowHeight);
+
 		break;
 	case CHOSEN_VIEW_MODE:
 		tIdle.threadRun(MAIN_CN);
@@ -6607,7 +6677,7 @@ if(setpriorityOnce)
 		static bool Once=true;
 		if(Once)
 		{
-		//	start_SelfCheck_thread();
+			start_SelfCheck_thread();
 			Once=false;
 		}
 		//Show_first_mode(readFirstMode());
@@ -6894,9 +6964,39 @@ if(setpriorityOnce)
 			Show_first_mode(readFirstMode());
 		}
 #else
-		p_ChineseCBillBoard->ChooseTga=IDLE_T;
+		selfcheck.CalculateTime(1);
+		if(selfcheck.IsIDLE()==SELFCHECK_IDLE)
+		{
+			if(selfcheck.IsOnesec())
+			{
+				p_ChineseCBillBoard->ChooseTga=IDLE_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
+			}
+		}
+		else 	if(selfcheck.IsIDLE()==SELFCHECK_PASS)
+		{
+			p_ChineseCBillBoard->ChooseTga=FINE_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
+			static int a=0;
+			if(a++==50)
+			{
+			displayMode=ALL_VIEW_MODE;
+			a=0;
+			}
+		}
+		else if(selfcheck.IsIDLE()==SELFCHECK_FAIL)
+		{
+				p_ChineseCBillBoard->ChooseTga=WRONG_T;
 		RenderChineseCharacterBillBoardAt(env,g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
-#endif
+		static int b=0;
+				if(b++==50)
+				{
+					displayMode=ALL_VIEW_MODE;
+				b=0;
+				}
+
+		}
+		#endif
 	}
 
 	else if(displayMode==	ALL_VIEW_FRONT_BACK_ONE_DOUBLE_MODE)
@@ -7848,7 +7948,11 @@ GLEnv & env=env1;
 		//case 'o':
 		case 'O':
 #if MVDECT
-			mv_detect.OpenMD(MAIN);
+			if(IsMvDetect==false)
+				IsMvDetect=true;
+			else if(IsMvDetect==true)
+				IsMvDetect=false;
+			//mv_detect.OpenMD(MAIN);
 #endif
 		//	mode = OitVehicle::USER_OIT;
 			break;
@@ -8117,7 +8221,7 @@ GLEnv & env=env1;
 			break;
 		case 'o'://high definition pano view
 #if MVDECT
-			mv_detect.CloseMD(MAIN);
+	//		mv_detect.CloseMD(MAIN);
 #endif
 			break;
 		case 'p'://high definition pano add pano view
@@ -8260,6 +8364,14 @@ GLEnv & env=env1;
 		case 'G'://PTZ--CCD
 			break;
 		case 'g'://PTZ--FIR
+			if(IsgstCap==false)
+			{
+				IsgstCap=true;
+			}
+			else
+			{
+				IsgstCap=false;
+			}
 			break;
 		case 'z'://steady on
 			break;
@@ -9852,6 +9964,9 @@ void Render::CompassBillBoard::DoTextureBinding()
 Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr)
 :BaseBillBoard((modelViewMat),(projectionMat),(mgr))
 {
+	strcpy( ChineseC_TextureFileName[TURRET_T], TURRET_TGA);
+	strcpy( ChineseC_TextureFileName[PANORAMIC_MIRROR_T], PANORAMIC_MIRROR_TGA);
+	strcpy( ChineseC_TextureFileName[DEBUG_T], DEBUG_TGA);
 	strcpy( ChineseC_TextureFileName[ONEX_REALTIME_T], ONEX_REALTIME_TGA);
 		strcpy( ChineseC_TextureFileName[TWOX_REALTIME_T], TWOX_REALTIME_TGA);
 		strcpy( ChineseC_TextureFileName[FOURX_REALTIME_T], FOURX_REALTIME_TGA);
@@ -9887,6 +10002,8 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[FINE_T], FINE_TGA);
 		strcpy( ChineseC_TextureFileName[WRONG_T], WRONG_TGA);
 		strcpy( ChineseC_TextureFileName[IDLE_T], IDLE_TGA);
+
+
 }
 
 void Render::ChineseCharacterBillBoard::InitTextures()

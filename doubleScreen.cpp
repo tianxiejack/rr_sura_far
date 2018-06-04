@@ -65,6 +65,7 @@ void Render::RenderSceneDS()
 				glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 				glDisable(GL_SCISSOR_TEST);
 				RenderOnetimeView(env,0,0,g_subwindowWidth*944.0/1024.0, g_subwindowHeight*537.0/768.0,SUB);
+
 		}
 		else
 		{

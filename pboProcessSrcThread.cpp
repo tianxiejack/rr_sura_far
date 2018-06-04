@@ -16,10 +16,12 @@
 using namespace cv;
 extern Render render;
 extern GLEnv env1,env2;
+
+extern bool IsgstCap;
 #if GSTREAM_CAP
 extern RecordHandle * record_handle;
 #endif
-#if USE_CPU
+#if 1
 static int iniCC=3;
 #else
 static int iniCC=4;
@@ -30,7 +32,7 @@ void *pbo_process_thread(void *arg)
 	GLEnv &env=env1;
 	static bool once4=true;
 	setCurrentThreadHighPriority(THREAD_L_GST);
-#if USE_CPU
+#if 1
     Mat testData(CURRENT_SCREEN_HEIGHT, CURRENT_SCREEN_WIDTH, CV_8UC3);
 #else
     Mat testData(CURRENT_SCREEN_HEIGHT, CURRENT_SCREEN_WIDTH, CV_8UC4);
@@ -43,7 +45,8 @@ void *pbo_process_thread(void *arg)
 		OSA_semWait(render.GetPBORcr(env)->getSemPBO(),100000);
 		int processId=render.GetPBORcr(env)->getCurrentPBOIdx();
 #if GSTREAM_CAP
-		gstCapturePushData(record_handle, (char *)*render.GetPBORcr(env)->getPixelBuffer(processId) , CURRENT_SCREEN_WIDTH*CURRENT_SCREEN_HEIGHT*iniCC);
+		if(IsgstCap)
+			gstCapturePushData(record_handle, (char *)*render.GetPBORcr(env)->getPixelBuffer(processId) , CURRENT_SCREEN_WIDTH*CURRENT_SCREEN_HEIGHT*iniCC);
 		#else
 		static int a=0;
 		a++;
