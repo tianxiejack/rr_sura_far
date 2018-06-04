@@ -20,7 +20,7 @@
 #include <math.h>
 #include <sys/time.h>
 #include <time.h>
-#include "Cyclops_Message.h"
+#include"Cap_Spi_Message.h"
 #include "spiH.h"
 
 void SpiSet() {
