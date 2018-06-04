@@ -241,7 +241,7 @@ void get_buffer(unsigned char* ptr, int chId)
 	memcpy(ptr,bufdata,w*SDI_HEIGHT*3);
 #else
 	static int a=0;
-	memcpy(ptr,bufdata,w*SDI_HEIGHT*4);
+	memcpy(ptr,bufdata,w*SDI_HEIGHT*3);
 #endif
 	OSA_bufPutEmpty(&alg_handle->bufHndl[chId],bufId);
 }

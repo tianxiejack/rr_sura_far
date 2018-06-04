@@ -65,7 +65,7 @@
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
 
-char chosenCam[2]={2,2};
+char chosenCam[2]={3,3};
 
 #if MVDECT
  extern MvDetect mv_detect;
@@ -677,7 +677,7 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		p_FixedBBD_5M(NULL),p_FixedBBD_8M(NULL),p_FixedBBD_1M(NULL),
 		m_presetCameraRotateCounter(0),m_ExtVideoId(EXT_CAM_0),
 		fboMode(FBO_ALL_VIEW_MODE),
-		displayMode(CHECK_MYSELF),
+		displayMode(ALL_VIEW_MODE),
 		SecondDisplayMode(SECOND_ALL_VIEW_MODE),
 		p_DynamicTrack(NULL),m_DynamicWheelAngle(0.0f),
 		stopcenterviewrotate(FALSE),rotateangle_per_second(10),set_scan_region_angle(SCAN_REGION_ANGLE),
@@ -924,6 +924,10 @@ void Render::GetFPS()
 // This is the first opportunity to do any OpenGL related tasks.
 void Render::SetupRC(int windowWidth, int windowHeight)
 {
+#if USE_CAP_SPI
+		ChangeMainChosenCamidx(3);
+		ChangeSubChosenCamidx(3);
+#endif
 	GLEnv & env=env1;
 	GLubyte *pBytes;
 #if 1
@@ -984,10 +988,7 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 		env.GettransformPipeline()->SetMatrixStacks(*(env.GetmodelViewMatrix()), *(env.GetprojectionMatrix()));
 		InitLineofRuler(env);
 
-#if USE_CAP_SPI
-		ChangeMainChosenCamidx(chosenCam[SUB]);
-		ChangeMainChosenCamidx(chosenCam[MAIN]);
-#endif
+
 #if 1
 		GenerateCenterView();
 		GenerateCompassView();
@@ -5925,13 +5926,13 @@ void Render::RenderSDIView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h, bool
 void Render::ChangeMainChosenCamidx(char idx)
 {
 #if USE_CAP_SPI
-	WriteMessage(MSG_TYPE_YUANJING_DATA1,idx );//0~9
+	WriteMessage(MSG_TYPE_YUANJING_DATA2,idx );//0~9
 #endif
 }
 void Render::ChangeSubChosenCamidx(char idx)
 {
 #if USE_CAP_SPI
-	WriteMessage(MSG_TYPE_YUANJING_DATA2, idx);//0~9
+	WriteMessage(MSG_TYPE_YUANJING_DATA1, idx);//0~9
 #endif
 }
 
@@ -8066,7 +8067,7 @@ GLEnv & env=env1;
 		case	'n':
 		{
 #if USE_CAP_SPI
-			chosenCam[MAIN]=(chosenCam[MAIN]+1)%CAM_COUNT;
+			chosenCam[MAIN]=(chosenCam[MAIN]+1)%CAM_COUNT+1;
 			ChangeMainChosenCamidx(chosenCam[MAIN]);
 #endif
 	//		FBO_MODE nextMode=FBO_MODE(((int)fboMode+1)%FBO_MODE_COUNT);
@@ -8573,7 +8574,7 @@ GLEnv & env=env1;
 				if(displayMode==ALL_VIEW_MODE)
 				{
 							p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
-							printf("m_cam_pos=%d\n",m_cam_pos);
+					//		printf("m_cam_pos=%d\n",m_cam_pos);
 						//	foresightPos.GetAngle()[0];
 					//		foresightPos.ShowPosX();
 					//		pano_pos2angle=p_ForeSightFacade->GetForeSightPosX()/PanoLen*360.0;
@@ -8665,7 +8666,7 @@ GLEnv & env=env1;
 				{
 					p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
 			//		foresightPos.GetAngle()[0];
-					printf("m_cam_pos=%d\n",m_cam_pos);
+		//			printf("m_cam_pos=%d\n",m_cam_pos);
 				//	foresightPos.ShowPosX();
 				}
 							else if(displayMode==TELESCOPE_FRONT_MODE

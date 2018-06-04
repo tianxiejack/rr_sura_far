@@ -58,7 +58,7 @@ void MvDetect::m_mvDetect(int idx,unsigned char* inframe,int w,int h)
 	uyvy2gray(inframe,grayFrame[idx]);
 
 	{
-		mvDetect((unsigned char) (idx+1), grayFrame[idx], w, h,tempoutRect[idx].rects);
+		mvDetect((unsigned char) (idx), grayFrame[idx-1], w, h,tempoutRect[idx-1].rects);
 	}
 	//mvDetect((unsigned char) idx, grayFrame[idx], w, h,&outRect[idx]);
 }

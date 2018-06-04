@@ -655,9 +655,9 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					//	chid[MAIN]=ChangeIdx2chid(MAIN);
 						nowGrayidx=GetNowPicIdx((unsigned char *)buffers[buf.index].start);
 			//todo  change
-						chid[MAIN]=MAIN_1;
+						chid[MAIN]=nowGrayidx+1;
 						//nowGrayidx=mv_count;
-						transformed_src_main=&MVDECT_data_main[nowGrayidx];
+						transformed_src_main=&MVDECT_data_main[nowGrayidx-1];
 						break;
 					case FPGA_SIX_CN:
 						chid[MAIN]=MAIN_FPGA_SIX;

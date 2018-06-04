@@ -69,17 +69,17 @@ void mvDetectorDraw(std::vector<TRK_RECT_INFO> &resTarget,int chId)
 #endif
 int main(int argc, char** argv)
 {
-
+#if USE_CAP_SPI
+	SpiSet();
+	//InitIPCModule();
+#endif
 #if MVDECT
 	mv_detect.init(1920,1080);
 #endif
 	Parayml param;
 	if(!param.readParams("./Param.yml"))
 		printf("read param error\n");
-#if USE_CAP_SPI
-	SpiSet();
-	//InitIPCModule();
-#endif
+
 
 #if USE_BMPCAP
 	env1.init(BMPPanoGroup::GetInstance(),

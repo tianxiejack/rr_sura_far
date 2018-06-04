@@ -576,8 +576,8 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 			case	'n':
 			{
 #if USE_CAP_SPI
-				chosenCam[SUB]=(chosenCam[SUB]+1)%CAM_COUNT;
-				ChangeMainChosenCamidx(chosenCam[SUB]);
+				chosenCam[SUB]=(chosenCam[SUB]+1)%CAM_COUNT+1;
+				ChangeSubChosenCamidx(chosenCam[SUB]);
 #endif
 			}
 			break;
