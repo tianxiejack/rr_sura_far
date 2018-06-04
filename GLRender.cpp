@@ -5925,13 +5925,13 @@ void Render::RenderSDIView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h, bool
 void Render::ChangeMainChosenCamidx(char idx)
 {
 #if USE_CAP_SPI
-	WriteMessage(MSG_TYPE_YUAN_CHEZHANG,idx );//0~9
+	WriteMessage(MSG_TYPE_YUANJING_DATA1,idx );//0~9
 #endif
 }
 void Render::ChangeSubChosenCamidx(char idx)
 {
 #if USE_CAP_SPI
-	WriteMessage(MSG_TYPE_YUAN_JIASHI, idx);//0~9
+	WriteMessage(MSG_TYPE_YUANJING_DATA2, idx);//0~9
 #endif
 }
 

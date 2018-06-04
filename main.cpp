@@ -77,6 +77,7 @@ int main(int argc, char** argv)
 	if(!param.readParams("./Param.yml"))
 		printf("read param error\n");
 #if USE_CAP_SPI
+	SpiSet();
 	//InitIPCModule();
 #endif
 
