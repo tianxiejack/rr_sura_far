@@ -8066,10 +8066,10 @@ GLEnv & env=env1;
 			break;
 		case	'n':
 		{
-#if USE_CAP_SPI
-			chosenCam[MAIN]=(chosenCam[MAIN]+1)%CAM_COUNT+1;
+			chosenCam[MAIN]=chosenCam[MAIN]+1;
+			if(chosenCam[MAIN]==11)
+				chosenCam[MAIN]=1;
 			ChangeMainChosenCamidx(chosenCam[MAIN]);
-#endif
 	//		FBO_MODE nextMode=FBO_MODE(((int)fboMode+1)%FBO_MODE_COUNT);
 	//		fboMode = nextMode;
 		}
