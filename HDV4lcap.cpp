@@ -691,7 +691,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 									if(saveSinglePic[i]==true)
 									{
 										saveSinglePic[i]=false;
-										sprintf(filename,"%2d.bmp",i);
+										sprintf(filename,"%.2d.bmp",(i+2)%CAM_COUNT);
 										save_single_pic(filename,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 									}
 								}
