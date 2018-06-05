@@ -80,7 +80,7 @@ SelfCheck::SelfCheck()
 	m_CheckResult[CHECK_ITEM_CAPTURE]=SELFCHECK_IDLE;
 	m_CheckResult[CHECK_ITEM_COMMUNICATION]=SELFCHECK_PASS;
 	m_CheckResult[CHECK_ITEM_BOARD]=SELFCHECK_PASS;
-	for(int i=0;i<CAM_COUNT+2+2;i++)
+	for(int i=0;i<CAM_COUNT;i++)
 	{
 		capture_state[i]=SELFCHECK_IDLE;
 		BrokenCam[i]=-1;

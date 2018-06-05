@@ -216,7 +216,7 @@ void Render::RenderSceneDS()
 							//	else
 								RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 			}
-			else if(displayMode==SECOND_TELESCOPE_BACK_MODE)
+			else if(SecondDisplayMode==SECOND_TELESCOPE_BACK_MODE)
 			{
 				p_ChineseCBillBoard->ChooseTga=RADAR_BACK_T;
 				//	if(mv_detect.CanUseMD())
