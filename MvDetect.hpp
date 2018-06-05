@@ -46,7 +46,7 @@ public:
 		else
 			targetidx[cam_idx][tidx]=0;
 		return targetidx[cam_idx][tidx];};
-	void SetoutRect(int idx);
+	void SetoutRect();
 private:
 	int targetidx[CAM_COUNT][4];
 	int targetnum[CAM_COUNT];

@@ -32,7 +32,6 @@ void SpiSet() {
 }
 
 void WriteMessage(MSG_TYPE n, char buf) {
-
 	unsigned char data[1024];
 	memset(data, 0, sizeof(data));
 	switch (n) {

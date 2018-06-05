@@ -705,7 +705,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 							//	if(mv_detect.MDisStart())
 								if(IsMvDetect)
 								{
-									mv_detect.SetoutRect(mv_count);
+									mv_detect.SetoutRect();
 									if(nowpicW==1280)
 									{
 										mv_detect.DrawRectOnpic(*transformed_src_main,MAIN_FPGA_FOUR);

@@ -56,7 +56,6 @@ void MvDetect::uyvy2gray(unsigned char* src,unsigned char* dst,int width,int hei
 void MvDetect::m_mvDetect(int idx,unsigned char* inframe,int w,int h)
 {
 	uyvy2gray(inframe,grayFrame[idx-1]);
-
 	{
 		mvDetect((unsigned char) (idx), grayFrame[idx-1], w, h,tempoutRect[idx-1].rects);
 	}
@@ -178,20 +177,22 @@ bool MvDetect::CanUseMD(int mainorsub)
 		return false;
 }
 
-void MvDetect::SetoutRect(int idx)
+void MvDetect::SetoutRect()
 {
-	outRect[idx].clear();
-	for(int j=0;j<6;j++)
+	for(int i=0;i<CAM_COUNT;i++)
 	{
-		if(tempoutRect[idx].rects[j].x>0)
+		outRect[i].clear();
+		for(int j=0;j<6;j++)
 		{
-			outRect[idx].push_back(tempoutRect[idx].rects[j]);
+			if(tempoutRect[i].rects[j].x>0)
+			{
+				outRect[i].push_back(tempoutRect[i].rects[j]);
+			}
 		}
 	}
 }
 void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 {
-	int cc=4;
 	std::vector<cv::Rect> tempRecv[CAM_COUNT];
 	if(capidx==MAIN_FPGA_SIX)
 	{
@@ -224,9 +225,9 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 				{
 					for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 					{
-						int startx=tempRecv[i][rectIdx].x/2;
-						int starty=tempRecv[i][rectIdx].y/2+540*i;
-						int w=tempRecv[i][rectIdx].width/2;
+						int startx=tempRecv[i][rectIdx].x/3;
+						int starty=tempRecv[i][rectIdx].y/2+540*(i-6);
+						int w=tempRecv[i][rectIdx].width/3;
 						int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
 						int endx=startx+w;
 						int endy=starty+h;
