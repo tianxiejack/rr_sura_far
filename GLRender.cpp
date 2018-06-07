@@ -79,7 +79,7 @@ bool saveSinglePic[CAM_COUNT]={false};
 bool isTracking=false;
 
 extern bool 	IsMvDetect;
-bool IsgstCap=false;
+bool IsgstCap=true;
 
 
 PanoCamOnForeSight  panocamonforesight[2];
@@ -924,7 +924,7 @@ void Render::GetFPS()
 // This is the first opportunity to do any OpenGL related tasks.
 void Render::SetupRC(int windowWidth, int windowHeight)
 {
-#if USE_CAP_SPI
+#if 1
 		ChangeMainChosenCamidx(3);
 		ChangeSubChosenCamidx(3);
 #endif

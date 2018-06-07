@@ -14,7 +14,7 @@ SelfCheck selfcheck;
 
 void   SelfCheck::CheckBrokenCam()
 {
-#if USE_GPIO
+#if 1
 	BrokenCam[0]=get_gpioNum_Value(GPIO_FAR_0_NUM);
 	BrokenCam[1]=get_gpioNum_Value(GPIO_FAR_1_NUM);
 	BrokenCam[2]=get_gpioNum_Value(GPIO_FAR_2_NUM);
