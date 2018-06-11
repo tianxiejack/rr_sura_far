@@ -177,6 +177,7 @@ int Telscenter_cam[2]={0};
 float Teltemp_math[2]={0};
 extern float track_pos[4];
 float  canshu[8]={0,0,0,0,0,0,0,0};
+float  menu_tpic[8]={0,0,0,0,0,0,0,0};
 #if TRACK_MODE
 CVideoProcess* trackMode=CVideoProcess::getInstance();
 #endif
@@ -200,6 +201,25 @@ void readcanshu()
 			fclose(fp);
 		}
 }
+
+void readmenu_tpic()
+{
+
+	FILE * fp;
+		int i=0;
+		fp=fopen("./data/menu_tpic.txt","r");
+		if(fp!=NULL)
+		{
+			for(i=0;i<8;i++)
+			{
+				fscanf(fp,"%f\n",&menu_tpic[i]);
+				printf("%f\n",menu_tpic[i]);
+			}
+			fclose(fp);
+		}
+}
+
+
 
 int getMaxData(int * data,int count)
 {
@@ -924,6 +944,7 @@ void Render::GetFPS()
 // This is the first opportunity to do any OpenGL related tasks.
 void Render::SetupRC(int windowWidth, int windowHeight)
 {
+	readmenu_tpic();
 #if 1
 		ChangeMainChosenCamidx(3);
 		ChangeSubChosenCamidx(3);
@@ -3378,8 +3399,7 @@ void  Render::InitBillBoard(GLEnv &m_env)
     {
 	cerr<<"BillBoard failed"<<endl;
     }
-
-	p_ChineseCBillBoard=new ChineseCharacterBillBoard(*(m_env.GetmodelViewMatrix()), *(m_env.GetprojectionMatrix()), &shaderManager);
+   	p_ChineseCBillBoard=new ChineseCharacterBillBoard(*(m_env.GetmodelViewMatrix()), *(m_env.GetprojectionMatrix()), &shaderManager);
 	   if(p_ChineseCBillBoard)
 	    {
 		   p_ChineseCBillBoard->Init();
@@ -3388,6 +3408,16 @@ void  Render::InitBillBoard(GLEnv &m_env)
 	    {
 		cerr<<"p_ChineseCBillBoard failed"<<endl;
 	    }
+	   p_ChineseCBillBoard_bottem_pos=new ChineseCharacterBillBoard(*(m_env.GetmodelViewMatrix()), *(m_env.GetprojectionMatrix()), &shaderManager);
+
+	   if(p_ChineseCBillBoard_bottem_pos)
+	  	    {
+		   p_ChineseCBillBoard_bottem_pos->Init(CBB_X,CBB_Y,CBB_WIDTH,CBB_HEIGHT);
+	  	    }
+	  	    else
+	  	    {
+	  		cerr<<"p_ChineseCBillBoard_bottem_pos failed"<<endl;
+	  	    }
 
     p_CompassBillBoard = new CompassBillBoard(*(m_env.GetmodelViewMatrix()), *(m_env.GetprojectionMatrix()),  &shaderManager);
     if(p_CompassBillBoard)
@@ -5839,7 +5869,7 @@ void Render::RenderBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
 	m_env.GetmodelViewMatrix()->PopMatrix();
 }
 
-void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
+void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,bool isbottem)
 {
 	glViewport(x,y,w,h);
 	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 4000.0f);
@@ -5848,14 +5878,15 @@ void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLi
 	m_env.GetmodelViewMatrix()->PushMatrix();
 	m_env.GetmodelViewMatrix()->LoadIdentity();
 	// move h since the shadow dimension is [-1,1], use h/2 if it is [0,1]
-	if(p_ChineseCBillBoard->ChooseTga==LOCATION_T)
-	{
-//		m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);
-	}
 	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);
 	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
 	{
 	//	p_ChineseCBillBoard->DoTextureBinding(choice);
+		if(isbottem)
+		{
+			p_ChineseCBillBoard_bottem_pos->DrawBillBoard(w,h);
+		}
+		else
 		p_ChineseCBillBoard->DrawBillBoard(w,h);
 	}
 	m_env.GetmodelViewMatrix()->PopMatrix();
@@ -7259,6 +7290,9 @@ if(setpriorityOnce)
 #endif
 
 #endif// RENDER2FRONT
+	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
+			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3],true);
+
 
 }
 
@@ -9867,12 +9901,9 @@ bool Render::BaseBillBoard::LoadTGATextureRect(const char *szFileName, GLenum mi
 	return true;
 }
 
-void Render::BaseBillBoard::Init()
+void Render::BaseBillBoard::Init(int x,int y,int width,int height)
 {
-	int x = 500;
-	int y = 155;
-	int width = 300;
-	int height = 155;
+
 	HZbatch.Begin(GL_TRIANGLE_FAN, 4, 1);
 
 	// Upper left hand corner
@@ -9965,6 +9996,7 @@ void Render::CompassBillBoard::DoTextureBinding()
 Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr)
 :BaseBillBoard((modelViewMat),(projectionMat),(mgr))
 {
+	strcpy( ChineseC_TextureFileName[MENU_T], MENU_TGA);
 	strcpy( ChineseC_TextureFileName[TURRET_T], TURRET_TGA);
 	strcpy( ChineseC_TextureFileName[PANORAMIC_MIRROR_T], PANORAMIC_MIRROR_TGA);
 	strcpy( ChineseC_TextureFileName[DEBUG_T], DEBUG_TGA);

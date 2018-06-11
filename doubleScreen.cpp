@@ -13,6 +13,7 @@ extern float forward_data;
 extern GLEnv env2,env1;
 extern ForeSightPos foresightPos[MS_COUNT];
 extern char chosenCam[2];
+extern float  menu_tpic[8];
 void InitBowlDS()
 {
 
@@ -169,7 +170,7 @@ void Render::RenderSceneDS()
 	break;
 	default :
 		break;
-	}
+		}
 		 if(SecondDisplayMode==	SECOND_559_ALL_VIEW_MODE)
 		{
 			p_ChineseCBillBoard->ChooseTga=ONEX_REALTIME_T;
@@ -233,6 +234,8 @@ void Render::RenderSceneDS()
 						RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 			}
 	}
+		 p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
+		 RenderChineseCharacterBillBoardAt(env,menu_tpic[4], menu_tpic[5], menu_tpic[6],menu_tpic[7],true);
 
 }
 void Render::SetupRCDS(int windowWidth, int windowHeight)

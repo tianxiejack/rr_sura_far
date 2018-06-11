@@ -386,7 +386,7 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define DEBUG_TGA "debug.tga"
 #define TURRET_TGA			"paota.tga"
 #define PANORAMIC_MIRROR_TGA "zhoushijing.tga"
-
+#define MENU_TGA				"menu.tga"
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
 		TWOX_REALTIME_T,
@@ -427,9 +427,13 @@ enum CCT_COUNT {
 		PANORAMIC_MIRROR_T,
 
 		DEBUG_T,
+		MENU_T,
 		CCT_COUNT
 		};
-
+#define CBB_X 0
+#define CBB_Y 155
+#define CBB_WIDTH 1920
+#define CBB_HEIGHT	(155)
 typedef enum TelBreak
 {
 	TEL_LEFT_BREAK,

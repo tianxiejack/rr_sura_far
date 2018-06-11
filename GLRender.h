@@ -215,7 +215,7 @@ private:
 		public:
 			BaseBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr=NULL);
 			virtual ~BaseBillBoard()=0;
-			void Init();
+			void Init(int x=500,int y=155,int width=300,int height=155);
 			virtual void processKeyDirection(int key)= 0;
 			inline void setBlendMode(int mode){blendmode = mode;};
 		public:
@@ -315,7 +315,7 @@ private:
 	unsigned int  	ChooseTga; //20
 	GLuint              ChineseC_Textures[CCT_COUNT];
 	char                ChineseC_TextureFileName[CCT_COUNT][64];
-		}*p_ChineseCBillBoard;
+		}*p_ChineseCBillBoard,*p_ChineseCBillBoard_bottem_pos;
 
 
 	class FreeCamera{
@@ -465,7 +465,7 @@ private:
 
 	void SendtoTrack();
 	void RenderTriangleView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
-	void RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h);
+	void RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,bool isbottem=false);
 	void RenderPanoTelView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,int direction,int mainOrsub=MAIN);
 	void RenderTrackForeSightView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
 

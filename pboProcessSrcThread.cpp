@@ -47,13 +47,6 @@ void *pbo_process_thread(void *arg)
 #if GSTREAM_CAP
 		if(IsgstCap)
 			gstCapturePushData(record_handle, (char *)*render.GetPBORcr(env)->getPixelBuffer(processId) , CURRENT_SCREEN_WIDTH*CURRENT_SCREEN_HEIGHT*iniCC);
-		static int a=0;
-		a++;
-					if(a==20)
-					{
-						memcpy(testData.data, (char *)*render.GetPBORcr(env)->getPixelBuffer(processId),CURRENT_SCREEN_HEIGHT*CURRENT_SCREEN_WIDTH*iniCC);
-						imwrite("./data/TEST_PBO.bmp",testData);
-					}
 		#else
 		static int a=0;
 		a++;
