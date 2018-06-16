@@ -651,7 +651,14 @@ public:
 						GLFrame	*getVGACameraFrame(){return &VGACameraFrame;};
 						GLFrame	*getRender2FrontCameraFrame(){return &Render2FrontCameraFrame;};
 						GLFrame	*getRenderTargetCameraFrame(int i){return &targetFrame[i];};
-
+	bool GetPSYButtonF1(){return psy_button_f1;};
+	void SetPSYButtonF1(bool enable){psy_button_f1=enable;};
+	bool GetPSYButtonF2(){return psy_button_f2;};
+	void SetPSYButtonF2(bool enable){psy_button_f2=enable;};
+	bool GetPSYButtonF3(){return psy_button_f3;};
+	void SetPSYButtonF3(bool enable){psy_button_f3=enable;};
+	bool GetPSYButtonF8(){return psy_button_f8;};
+	void SetPSYButtonF8(bool enable){psy_button_f8=enable;};
 private:
 	GLBatch Petal[CAM_COUNT];
 	GLBatch *Petal_OverLap[CAM_COUNT]; // overlap area bwtween petal[i] and [(i+1)%CAM_COUNT]
@@ -853,6 +860,11 @@ private:
 	float move_hor[CAM_COUNT];
 
 	float rotate_angle[CAM_COUNT];
+
+	bool psy_button_f1;
+	bool psy_button_f2;
+	bool psy_button_f3;
+	bool psy_button_f8;
 
 	OitVehicle *pPano;
 

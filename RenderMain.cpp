@@ -184,14 +184,19 @@ int RenderMain::start(int argc, char** argv)
 		initGlut(argc, argv);
 		initGlew();
 		render.initPixle();
-		glutFullScreen();
-		render.SetupRC(1920, 1080);//1920,1080);//
+		//glutFullScreen();
+		
 #if DOUBLE_SCREEN
 	doubleScreenInit(argc, argv);
 	initGlew();
 	glutFullScreen();
 //	render.SetupRCDS(1920, 1080);//1920,1080);//
 #endif
+	glutSetWindow(1);
+	glutHideWindow();
+	glutShowWindow();
+	glutFullScreen();
+	render.SetupRC(1920, 1080);//1920,1080);//
 	glutMainLoop();
 	return 0;
 }

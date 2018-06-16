@@ -387,6 +387,24 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define TURRET_TGA			"paota.tga"
 #define PANORAMIC_MIRROR_TGA "zhoushijing.tga"
 #define MENU_TGA				"menu.tga"
+
+
+#define FAR_START_UP_WINDOW "start_up_window.tga"
+#define FAR_STOP_UP_WINDOW "stop_up_window.tga"
+#define FAR_START_MOVE_DETECT "start_move_detect.tga"
+#define FAR_STOP_MOVE_DETECT "stop_move_detect.tga"
+#define FAR_START_ENHANCE "start_enhance.tga"
+#define FAR_STOP_ENHANCE "stop_enhance.tga"
+#define FAR_UP "up.tga"
+#define FAR_DOWN "down.tga"
+#define FAR_LEFT "left.tga"
+#define FAR_RIGHT "right.tga"
+#define FAR_START_TEST "start_test.tga"
+#define FAR_EXIT_TEST "stop_test.tga"
+#define FAR_NEXT "next.tga"
+#define STATE_LABEL "state_label.tga"
+#define STATE_LABEL2 "state_label2.tga"
+
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
 		TWOX_REALTIME_T,
@@ -428,6 +446,23 @@ enum CCT_COUNT {
 
 		DEBUG_T,
 		MENU_T,
+
+		F1_ON_T,
+		F1_OFF_T,
+		F2_ON_T,
+		F2_OFF_T,
+		F3_ON_T,
+		F3_OFF_T,
+		F4_T,
+		F5_T,
+		F6_T,
+		F7_T,
+		F8_ON_T,
+		F8_OFF_T,
+		F9_T,
+		STATE_LABEL_T,
+		STATE_LABEL2_T,
+
 		CCT_COUNT
 		};
 #define CBB_X 0

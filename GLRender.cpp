@@ -710,6 +710,7 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		m_VGAVideoId(VGA_CAM_0),
 		m_SDIVideoId(SDI_CAM_0),
 		p_CornerMarkerGroup(NULL),
+		psy_button_f1(true),psy_button_f2(true),psy_button_f3(true),psy_button_f8(true),
 		shaderManager2(GLShaderManager(CAM_COUNT)),
 		shaderManager(GLShaderManager(CAM_COUNT)),pPano(NULL)
 {
@@ -6588,6 +6589,28 @@ if(setpriorityOnce)
 	RenderRightForeSightView(env,0,g_windowHeight*643.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 }
+
+
+
+			{
+
+				int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
+				glViewport(x,y,w,h);
+			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
+				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+				env.GetmodelViewMatrix()->PushMatrix();
+
+				p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2, g_windowHeight/4, g_windowWidth/2, g_windowHeight/2);
+				p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
+RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowHeight/4, g_windowWidth/2, g_windowHeight/2);
+				
+				env.GetmodelViewMatrix()->PopMatrix();
+
+			}
 /*	p_ChineseCBillBoard->ChooseTga=TURRET_T;
 	RenderChineseCharacterBillBoardAt(env,g_windowWidth*160.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
 	p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
@@ -7293,6 +7316,89 @@ if(setpriorityOnce)
 	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
 			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3],true);
 
+			{
+
+				int x=0,y=0,w=g_windowWidth,h=g_windowHeight;
+				glViewport(x,y,w,h);
+			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
+				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+				env.GetmodelViewMatrix()->PushMatrix();
+
+				int index_i=-1;
+				int width_delta=100;
+				int w_y=0;
+				int t_width=600;
+				int t_height=700;
+				if(GetPSYButtonF1())
+				{
+					p_ChineseCBillBoard->ChooseTga=F1_ON_T;
+				}
+				else
+				{
+					p_ChineseCBillBoard->ChooseTga=F1_OFF_T;
+				}
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				if(GetPSYButtonF2())
+				{
+					p_ChineseCBillBoard->ChooseTga=F2_ON_T;
+				}
+				else
+				{
+					p_ChineseCBillBoard->ChooseTga=F2_OFF_T;
+				}
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				if(GetPSYButtonF3())
+				{
+					p_ChineseCBillBoard->ChooseTga=F3_ON_T;
+				}
+				else
+				{
+					p_ChineseCBillBoard->ChooseTga=F3_OFF_T;
+				}
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				p_ChineseCBillBoard->ChooseTga=F4_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				p_ChineseCBillBoard->ChooseTga=F5_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				p_ChineseCBillBoard->ChooseTga=F6_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				p_ChineseCBillBoard->ChooseTga=F7_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				if(GetPSYButtonF8())
+				{
+					p_ChineseCBillBoard->ChooseTga=F8_ON_T;
+				}
+				else
+				{
+					p_ChineseCBillBoard->ChooseTga=F8_OFF_T;
+				}
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				p_ChineseCBillBoard->ChooseTga=F9_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				index_i++;
+
+				env.GetmodelViewMatrix()->PopMatrix();
+
+			}
 
 }
 
@@ -9050,6 +9156,30 @@ GLEnv & env=env1;
 				#endif
 			}
 			break;
+			case '`':
+			{
+				bool button_f1=GetPSYButtonF1();
+				SetPSYButtonF1(!button_f1);
+			}
+			break;
+			case ':':
+			{
+				bool button_f2=GetPSYButtonF2();
+				SetPSYButtonF2(!button_f2);
+			}
+			break;
+			case '|':
+			{
+				bool button_f3=GetPSYButtonF3();
+				SetPSYButtonF3(!button_f3);
+			}
+			break;
+			case '*':
+			{
+				bool button_f8=GetPSYButtonF8();
+				SetPSYButtonF8(!button_f8);
+			}
+			break;
 
 
 
@@ -10036,6 +10166,21 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[WRONG_T], WRONG_TGA);
 		strcpy( ChineseC_TextureFileName[IDLE_T], IDLE_TGA);
 
+		strcpy( ChineseC_TextureFileName[F1_ON_T], FAR_START_UP_WINDOW);
+		strcpy( ChineseC_TextureFileName[F1_OFF_T], FAR_STOP_UP_WINDOW);
+		strcpy( ChineseC_TextureFileName[F2_ON_T], FAR_START_MOVE_DETECT);
+		strcpy( ChineseC_TextureFileName[F2_OFF_T], FAR_STOP_MOVE_DETECT);
+		strcpy( ChineseC_TextureFileName[F3_ON_T], FAR_START_ENHANCE);
+		strcpy( ChineseC_TextureFileName[F3_OFF_T], FAR_STOP_ENHANCE);
+		strcpy( ChineseC_TextureFileName[F4_T], FAR_UP);
+		strcpy( ChineseC_TextureFileName[F5_T], FAR_DOWN);
+		strcpy( ChineseC_TextureFileName[F6_T], FAR_LEFT);
+		strcpy( ChineseC_TextureFileName[F7_T], FAR_RIGHT);
+		strcpy( ChineseC_TextureFileName[F8_ON_T], FAR_START_TEST);
+		strcpy( ChineseC_TextureFileName[F8_OFF_T], FAR_EXIT_TEST);
+		strcpy( ChineseC_TextureFileName[F9_T], FAR_NEXT);
+		strcpy( ChineseC_TextureFileName[STATE_LABEL_T], STATE_LABEL);
+		strcpy( ChineseC_TextureFileName[STATE_LABEL2_T], STATE_LABEL2);
 
 }
 
