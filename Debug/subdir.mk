@@ -60,6 +60,7 @@ CPP_SRCS += \
 ../scanner.cpp \
 ../thread.cpp \
 ../updatebuffer.cpp \
+../Xin_IPC_Yuan_Recv_Message.cpp \
 ../v4l2camera.cpp 
 
 OBJ_SRCS += \
@@ -122,6 +123,7 @@ OBJS += \
 ./scanner.o \
 ./thread.o \
 ./updatebuffer.o \
+./Xin_IPC_Yuan_Recv_Message.o \
 ./v4l2camera.o 
 
 CPP_DEPS += \
@@ -181,6 +183,7 @@ CPP_DEPS += \
 ./scanner.d \
 ./thread.d \
 ./updatebuffer.d \
+./Xin_IPC_Yuan_Recv_Message.d \
 ./v4l2camera.d 
 
 
