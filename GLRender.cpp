@@ -62,6 +62,10 @@
 #include"Thread_Priority.h"
 #include"MvDetect.hpp"
 #include "thread_idle.h"
+
+#include "Xin_IPC_Yuan_Recv_Message.h"
+
+
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
 
@@ -740,6 +744,13 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 			env1.Setp_Panel_Petal_OverLap(i,env1.Getp_Panel_OverLap(i));
 			env2.Setp_Panel_Petal_OverLap(i,env2.Getp_Panel_OverLap(i));
 		}
+	for(int i=0;i<12;i++)
+	{
+		for(int j=0;j<3;j++)
+		{
+			state_label_data[i][j]=1;
+		}
+	}
 }
 
 Render::~Render()
@@ -947,6 +958,8 @@ void Render::GetFPS()
 // This is the first opportunity to do any OpenGL related tasks.
 void Render::SetupRC(int windowWidth, int windowHeight)
 {
+	IPC_Init_All();
+
 	readmenu_tpic();
 #if 1
 		ChangeMainChosenCamidx(3);
@@ -6617,13 +6630,13 @@ if(setpriorityOnce)
 				{
 		 			   
 		    			
-					
+/*					
 					for(int i=0;i<36;i++)
 					{
 						shaderManager.UseStockShader(GLT_SHADER_FLAT, env.GettransformPipeline()->GetModelViewProjectionMatrix(), vRed);
 						array_round_point[i].Draw();
 					}
-
+*/
 				}
 				
 				env.GetmodelViewMatrix()->PopMatrix();
@@ -6646,11 +6659,28 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowH
 				
 				int point_hor_delta=g_windowWidth/4+g_windowWidth/36;
 				int point_ver_delta=0;
+
+				
 				for(int cx_i=0;cx_i<6;cx_i++)
 				{
 					for(int cx_j=0;cx_j<3;cx_j++)
 					{
-p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+						if(state_label_data[cx_i][cx_j]==1)
+						{
+
+							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+
+
+						}
+						else if(state_label_data[cx_i][cx_j]==0)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+						}
+						else
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+						}
+						
 RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta-0.8*2*g_windowWidth/60,
 					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
 					}
@@ -6664,7 +6694,22 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*
 				{
 					for(int cx_j=0;cx_j<3;cx_j++)
 					{
-p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+
+						if(state_label_data[cx_i+6][cx_j]==1)
+						{
+
+							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+
+
+						}
+						else if(state_label_data[cx_i+6][cx_j]==0)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+						}
+						else
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+						}
 RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta,
 					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
 					}
@@ -7393,6 +7438,152 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*
 
 				env.GetmodelViewMatrix()->PushMatrix();
 
+
+
+
+
+				int net_show_mode=getKey_SwitchMode(TRANSFER_TO_APP_ETHOR);
+				static bool net_enable_move_cursor=false;
+				if(net_show_mode==Mode_Type_DEBUG)
+				{
+					
+					net_enable_move_cursor=!net_enable_move_cursor;
+					SetPSYButtonF8(!net_enable_move_cursor);
+					
+				}
+				else if(net_show_mode==Mode_Type_SINGLE_POPUP_WINDOWS)
+				{
+					if(displayMode==ALL_VIEW_MODE)
+					{
+						displayMode=CHOSEN_VIEW_MODE;
+						SetPSYButtonF1(false);
+						net_enable_move_cursor=false;
+						SetPSYButtonF8(!net_enable_move_cursor);
+					}
+					else
+					{
+						displayMode=ALL_VIEW_MODE;
+						SetPSYButtonF1(true);
+						net_enable_move_cursor=false;
+						SetPSYButtonF8(!net_enable_move_cursor);
+						
+					}
+				}
+				int net_open_mvdetect=getKey_TargetDetectionState(TRANSFER_TO_APP_ETHOR);
+				if(net_open_mvdetect==1)
+				{
+					IsMvDetect=!IsMvDetect;
+					SetPSYButtonF2(!IsMvDetect);
+				}
+
+				int net_open_enhance=getKey_ImageEnhancementState(TRANSFER_TO_APP_ETHOR);
+				static bool enhance_state=false;
+				if(net_open_enhance==1)
+				{
+					enhance_state=!enhance_state;
+					SetPSYButtonF3(!enhance_state);
+				}
+
+				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_ETHOR);
+				if(net_enable_move_cursor)
+				{
+					if(net_dirction==MOVE_TYPE_MOVELEFT)
+					{
+						p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
+					}
+					if(net_dirction==MOVE_TYPE_MOVERIGHT)
+					{
+						p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
+					}
+					if(net_dirction==MOVE_TYPE_MOVEUP)
+					{
+						p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
+					}
+					if(net_dirction==MOVE_TYPE_MOVEDOWN)
+					{
+						p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
+					}
+					
+				}
+				else
+				{
+					if(displayMode==CHOSEN_VIEW_MODE)
+					{
+						int camera_dir=chosenCam[MAIN]-1;
+						if((net_dirction==MOVE_TYPE_MOVELEFT)||(net_dirction==MOVE_TYPE_MOVEUP))
+						{
+							camera_dir=(camera_dir+9)%10;
+						}
+						else if((net_dirction==MOVE_TYPE_MOVERIGHT)||(net_dirction==MOVE_TYPE_MOVEDOWN))
+						{
+							camera_dir=(camera_dir+1)%10;
+						}
+						chosenCam[MAIN]=camera_dir+1;
+					}
+				}
+
+				calc_hor_data=getAngleFar_PeriscopicLens(TRANSFER_TO_APP_ETHOR).hor_angle;
+				calc_ver_data=getAngleFar_PeriscopicLens(TRANSFER_TO_APP_ETHOR).ver_angle;
+
+				gun_hor_angle=getAngleFar_GunAngle(TRANSFER_TO_APP_ETHOR).hor_angle;
+				gun_ver_angle=getAngleFar_GunAngle(TRANSFER_TO_APP_ETHOR).ver_angle;
+
+				canon_hor_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).hor_angle;
+				canon_ver_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).ver_angle;
+
+				state_label_data[0][0]=getCaptureMessage().cameraFrontTest;
+				state_label_data[0][1]=getCaptureMessage().cameraFrontState;
+
+				
+				state_label_data[1][0]=getCaptureMessage().cameraLeft1Test;
+				state_label_data[1][1]=getCaptureMessage().cameraLeft1State;
+
+				state_label_data[2][0]=getCaptureMessage().cameraLeft2Test;
+				state_label_data[2][1]=getCaptureMessage().cameraLeft2State;
+
+				state_label_data[3][0]=getCaptureMessage().cameraLeft3Test;
+				state_label_data[3][1]=getCaptureMessage().cameraLeft3State;
+
+				state_label_data[4][0]=getCaptureMessage().passengerTest;
+				state_label_data[4][1]=getCaptureMessage().passengerState;
+
+				state_label_data[5][0]=0;
+				state_label_data[5][1]=0;
+
+
+
+				
+				state_label_data[6][0]=getCaptureMessage().cameraBackTest;
+				state_label_data[6][1]=getCaptureMessage().cameraBackState;
+
+
+				state_label_data[7][0]=getCaptureMessage().cameraRight1Test;
+				state_label_data[7][1]=getCaptureMessage().cameraRight1State;
+
+
+				state_label_data[8][0]=getCaptureMessage().cameraRight2Test;
+				state_label_data[8][1]=getCaptureMessage().cameraRight2State;
+
+
+				state_label_data[9][0]=getCaptureMessage().cameraRight3Test;
+				state_label_data[9][1]=getCaptureMessage().cameraRight3State;
+
+
+				state_label_data[10][0]=getCaptureMessage().Cap_BoxTest;
+				state_label_data[10][1]=getCaptureMessage().Cap_BoxState;
+
+
+				state_label_data[11][0]=getCaptureMessage().nearBoardTest;
+				state_label_data[11][1]=getCaptureMessage().nearBoardState;
+
+
+
+				for(int x_i=0;x_i<12;x_i++)
+				{
+					state_label_data[x_i][2]=getCaptureMessage().Cap_FAULT_Colour;
+				}
+
+state_label_data[5][2]=0;
 				int index_i=-1;
 				int width_delta=100;
 				int w_y=0;
@@ -7492,13 +7683,13 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*
 				char text_data[20];
 				rect=new Rect(g_windowWidth/10+text_x,text_y,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",canon_hor_angle);
+				sprintf(text_data,"    %.4f",canon_hor_angle);
 				DrawCordsView(env,rect,text_data);
 
 				Rect * rect_1;
 				rect_1=new Rect(1*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",calc_hor_data);
+				sprintf(text_data,"    %.4f",calc_hor_data);
 				DrawCordsView(env,rect_1,text_data);
 
 				Rect * rect_touch;
@@ -7510,26 +7701,26 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*
 				Rect * rect2;
 				rect2=new Rect(3*g_windowWidth/10+text_x,text_y,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				sprintf(text_data,"    %.4f",canon_ver_angle);
 				DrawCordsView(env,rect2,text_data);
 
 
 				Rect * rect_2;
 				rect_2=new Rect(3*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",calc_ver_data);
+				sprintf(text_data,"    %.4f",calc_ver_data);
 				DrawCordsView(env,rect_2,text_data);
 
 				Rect * rect3;
 				rect3=new Rect(5*g_windowWidth/10+text_x,text_y,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				sprintf(text_data,"    %.4f",gun_hor_angle);
 				DrawCordsView(env,rect3,text_data);
 
 				Rect * rect4;
 				rect4=new Rect(7*g_windowWidth/10+text_x,text_y,text_width,text_height);
 				strcpy(text_data,"");
-				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				sprintf(text_data,"    %.4f",gun_ver_angle);
 				DrawCordsView(env,rect4,text_data);
 
 			}
@@ -9752,7 +9943,7 @@ void Render::DrawCords(GLEnv &m_env,int w, int h, const char* s)
     bzero(quote[0],160);
     int i,l,lenghOfQuote;
      int numberOfQuotes=1;
-    const GLfloat *PDefaultColor = vRed;
+    const GLfloat *PDefaultColor = vWhite;
     const GLfloat *pColor = PDefaultColor;
     strcpy(quote[0],"FreeView:");
     int min=MIN(160,strlen(s));
@@ -10316,9 +10507,9 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[STATE_LABEL_T], STATE_LABEL);
 		strcpy( ChineseC_TextureFileName[STATE_LABEL2_T], STATE_LABEL2);
 
-		strcpy( ChineseC_TextureFileName[POINT_RED_T], POINT_RED);
-		strcpy( ChineseC_TextureFileName[POINT_GREEN_T], POINT_GREEN);
-		strcpy( ChineseC_TextureFileName[POINT_GREY_T], POINT_GREY);
+		strcpy( ChineseC_TextureFileName[POINT_RED_T], POINT_RED_F);
+		strcpy( ChineseC_TextureFileName[POINT_GREEN_T], POINT_GREEN_F);
+		strcpy( ChineseC_TextureFileName[POINT_GREY_T], POINT_GREY_F);
 
 		strcpy( ChineseC_TextureFileName[CANON_HOR_T], CANON_HOR);
 		strcpy( ChineseC_TextureFileName[CANON_VER_T], CANON_VER);
