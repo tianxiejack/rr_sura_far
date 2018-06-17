@@ -711,6 +711,8 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		m_SDIVideoId(SDI_CAM_0),
 		p_CornerMarkerGroup(NULL),
 		psy_button_f1(true),psy_button_f2(true),psy_button_f3(true),psy_button_f8(true),
+		canon_hor_angle(0.0),canon_ver_angle(0.0),gun_hor_angle(0.0),gun_ver_angle(0.0),calc_hor_data(0.0),calc_ver_data(0.0),
+		touch_pos_x(0),touch_pos_y(0),
 		shaderManager2(GLShaderManager(CAM_COUNT)),
 		shaderManager(GLShaderManager(CAM_COUNT)),pPano(NULL)
 {
@@ -1092,6 +1094,9 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 		InitDynamicTrack(env);
 		InitCornerMarkerGroup(env);
 		initAlphaMask();
+
+
+		initLabelBatch();
 //		InitDataofAlarmarea();
 
 				FILE *fp;
@@ -6595,6 +6600,37 @@ if(setpriorityOnce)
 			{
 
 				int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
+
+				x=0;
+				y=0;
+				w=g_windowWidth;
+				h=g_windowHeight;
+
+				glViewport(x,y,w,h);
+			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
+				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+				env.GetmodelViewMatrix()->PushMatrix();
+				
+				{
+		 			   
+		    			
+					
+					for(int i=0;i<36;i++)
+					{
+						shaderManager.UseStockShader(GLT_SHADER_FLAT, env.GettransformPipeline()->GetModelViewProjectionMatrix(), vRed);
+						array_round_point[i].Draw();
+					}
+
+				}
+				
+				env.GetmodelViewMatrix()->PopMatrix();
+
+
+
+				x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
 				glViewport(x,y,w,h);
 			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
 				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
@@ -6604,13 +6640,43 @@ if(setpriorityOnce)
 				env.GetmodelViewMatrix()->PushMatrix();
 
 				p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2, g_windowHeight/4, g_windowWidth/2, g_windowHeight/2);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2, g_windowHeight/4, g_windowWidth/2, g_windowHeight*1.2/2);
 				p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
-RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowHeight/4, g_windowWidth/2, g_windowHeight/2);
+RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/4, g_windowWidth/2, g_windowHeight*1.2/2);
 				
+				int point_hor_delta=g_windowWidth/4+g_windowWidth/36;
+				int point_ver_delta=0;
+				for(int cx_i=0;cx_i<6;cx_i++)
+				{
+					for(int cx_j=0;cx_j<3;cx_j++)
+					{
+p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta-0.8*2*g_windowWidth/60,
+					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+					}
+									
+				}
+
+
+				point_hor_delta+=8*g_windowWidth/48;
+
+				for(int cx_i=0;cx_i<6;cx_i++)
+				{
+					for(int cx_j=0;cx_j<3;cx_j++)
+					{
+p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta,
+					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+					}
+									
+				}
+
+
 				env.GetmodelViewMatrix()->PopMatrix();
 
 			}
+
+
 /*	p_ChineseCBillBoard->ChooseTga=TURRET_T;
 	RenderChineseCharacterBillBoardAt(env,g_windowWidth*160.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
 	p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
@@ -7341,6 +7407,12 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowH
 					p_ChineseCBillBoard->ChooseTga=F1_OFF_T;
 				}
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=CANON_HOR_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=CALC_HOR_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
+
+
 				index_i++;
 
 				if(GetPSYButtonF2())
@@ -7363,6 +7435,13 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowH
 					p_ChineseCBillBoard->ChooseTga=F3_OFF_T;
 				}
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=CANON_VER_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=CALC_VER_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
+
+
+
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F4_T;
@@ -7371,6 +7450,9 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowH
 
 				p_ChineseCBillBoard->ChooseTga=F5_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=GUN_HOR_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F6_T;
@@ -7379,6 +7461,9 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowH
 
 				p_ChineseCBillBoard->ChooseTga=F7_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				p_ChineseCBillBoard->ChooseTga=GUN_VER_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+
 				index_i++;
 
 				if(GetPSYButtonF8())
@@ -7397,6 +7482,55 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/6, g_windowH
 				index_i++;
 
 				env.GetmodelViewMatrix()->PopMatrix();
+
+				int text_x=g_windowWidth/15;
+				int text_y=30;
+
+				int text_width=g_windowWidth/20;
+				int text_height=80;
+				Rect * rect;
+				char text_data[20];
+				rect=new Rect(g_windowWidth/10+text_x,text_y,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",canon_hor_angle);
+				DrawCordsView(env,rect,text_data);
+
+				Rect * rect_1;
+				rect_1=new Rect(1*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",calc_hor_data);
+				DrawCordsView(env,rect_1,text_data);
+
+				Rect * rect_touch;
+				rect_touch=new Rect(0*g_windowWidth/10+text_x,text_y+100,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%d,%d    ",touch_pos_x,touch_pos_y);
+				DrawCordsView(env,rect_touch,text_data);
+
+				Rect * rect2;
+				rect2=new Rect(3*g_windowWidth/10+text_x,text_y,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				DrawCordsView(env,rect2,text_data);
+
+
+				Rect * rect_2;
+				rect_2=new Rect(3*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",calc_ver_data);
+				DrawCordsView(env,rect_2,text_data);
+
+				Rect * rect3;
+				rect3=new Rect(5*g_windowWidth/10+text_x,text_y,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				DrawCordsView(env,rect3,text_data);
+
+				Rect * rect4;
+				rect4=new Rect(7*g_windowWidth/10+text_x,text_y,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"%.2f    ",canon_ver_angle);
+				DrawCordsView(env,rect4,text_data);
 
 			}
 
@@ -10182,6 +10316,18 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[STATE_LABEL_T], STATE_LABEL);
 		strcpy( ChineseC_TextureFileName[STATE_LABEL2_T], STATE_LABEL2);
 
+		strcpy( ChineseC_TextureFileName[POINT_RED_T], POINT_RED);
+		strcpy( ChineseC_TextureFileName[POINT_GREEN_T], POINT_GREEN);
+		strcpy( ChineseC_TextureFileName[POINT_GREY_T], POINT_GREY);
+
+		strcpy( ChineseC_TextureFileName[CANON_HOR_T], CANON_HOR);
+		strcpy( ChineseC_TextureFileName[CANON_VER_T], CANON_VER);
+		strcpy( ChineseC_TextureFileName[GUN_HOR_T], GUN_HOR);
+		strcpy( ChineseC_TextureFileName[GUN_VER_T], GUN_VER);
+
+		strcpy( ChineseC_TextureFileName[CALC_HOR_T], CALC_HOR);
+		strcpy( ChineseC_TextureFileName[CALC_VER_T], CALC_VER);
+
 }
 
 void Render::ChineseCharacterBillBoard::InitTextures()
@@ -12745,7 +12891,94 @@ if(deltatime>1000000)
 #endif
 }
 
+void Render::initLabelBatch()
+{
+    M3DVector3f vVerts[100];       
+	int start_x=20;
+	int start_y=300;
+	int hor_dis=50;
+	int ver_dis=30;
+	int two_dis=500;
+	int i=0,j=0;
 
+    	GLfloat r = 30.0f;
+    	GLfloat angle = 0.0f;   // Another looping variable
+	int nVerts = 0;
+
+	FILE * fp;
+	fp=fopen("label_point_pos.txt","r");
+	if(fp!=NULL)
+	{
+		fscanf(fp,"%d\n",&start_x);
+		fscanf(fp,"%d\n",&start_y);
+		fscanf(fp,"%d\n",&hor_dis);
+		fscanf(fp,"%d\n",&ver_dis);
+		fscanf(fp,"%d\n",&two_dis);
+		fscanf(fp,"%f\n",&r);
+		fclose(fp);
+	}
+	
+	for(i=0;i<6;i++)
+	{
+		for(j=0;j<3;j++)
+		{
+			
+			    nVerts = 0;
+			    vVerts[nVerts][0] = start_x+j*hor_dis-1000;
+			    vVerts[nVerts][1] = start_y-i*ver_dis+50;
+			    vVerts[nVerts][2] = 0.0f;
+				nVerts++;
+				for(angle = 0; angle < 2.0f * 3.141592f; angle += 0.2f) {
+				   
+				   vVerts[nVerts][0] = start_x+j*hor_dis -1000+ float(cos(angle)) * r;
+				   vVerts[nVerts][1] = start_y-i*ver_dis+50 + float(sin(angle)) * r;
+				   vVerts[nVerts][2] = 0.0f;
+					nVerts++;
+				   }
+			    
+			   
+			    vVerts[nVerts][0] = start_x+j*hor_dis -1000+ r;
+			    vVerts[nVerts][1] = start_y-i*ver_dis+50;
+			    vVerts[nVerts][2] = 0.0f;
+				nVerts++;
+				array_round_point[i*3+j].Begin(GL_TRIANGLE_FAN, nVerts);
+			    array_round_point[i*3+j].CopyVertexData3f(vVerts);
+			    array_round_point[i*3+j].End(); 
+			
+		}
+	}
+
+
+	for(i=0;i<6;i++)
+	{
+		for(j=0;j<3;j++)
+		{
+			
+			    nVerts = 0;
+			    vVerts[nVerts][0] = start_x+j*hor_dis+two_dis;
+			    vVerts[nVerts][1] = start_y-i*ver_dis+ver_dis;
+			    vVerts[nVerts][2] = 0.0f;
+				nVerts++;
+				for(angle = 0; angle < 2.0f * 3.141592f; angle += 0.2f) {
+				   
+				   vVerts[nVerts][0] = start_x+j*hor_dis+two_dis + float(cos(angle)) * r;
+				   vVerts[nVerts][1] = start_y-i*ver_dis+ver_dis + float(sin(angle)) * r;
+				   vVerts[nVerts][2] = 0.0f;
+					nVerts++;
+				   }
+			    
+			   
+			    vVerts[nVerts][0] = start_x+j*hor_dis+two_dis + r;
+			    vVerts[nVerts][1] = start_y-i*ver_dis+ver_dis;
+			    vVerts[nVerts][2] = 0.0f;
+				nVerts++;
+				array_round_point[i*3+j+18].Begin(GL_TRIANGLE_FAN, nVerts);
+			    array_round_point[i*3+j+18].CopyVertexData3f(vVerts);
+			    array_round_point[i*3+j+18].End(); 
+			
+		}
+	}	
+}
 
 
 

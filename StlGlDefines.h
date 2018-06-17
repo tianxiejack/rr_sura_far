@@ -404,6 +404,15 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define FAR_NEXT "next.tga"
 #define STATE_LABEL "state_label.tga"
 #define STATE_LABEL2 "state_label2.tga"
+#define POINT_RED "point_red.tga"
+#define POINT_GREEN "point_green.tga"
+#define POINT_GREY "point_grey.tga"
+#define CANON_HOR "canon_hor.tga"
+#define CANON_VER "canon_ver.tga"
+#define GUN_HOR "gun_hor.tga"
+#define GUN_VER "gun_ver.tga"
+#define CALC_HOR "calc_hor.tga"
+#define CALC_VER "calc_ver.tga"
 
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
@@ -462,6 +471,15 @@ enum CCT_COUNT {
 		F9_T,
 		STATE_LABEL_T,
 		STATE_LABEL2_T,
+		POINT_RED_T,
+		POINT_GREEN_T,
+		POINT_GREY_T,
+		CANON_HOR_T,
+		CANON_VER_T,
+		GUN_HOR_T,
+		GUN_VER_T,
+		CALC_HOR_T,
+		CALC_VER_T,
 
 		CCT_COUNT
 		};

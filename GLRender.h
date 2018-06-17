@@ -577,6 +577,8 @@ private:
 	 void InitPanoScaleArrayData();
 	 void ReadPanoScaleArrayData(char * filename);
 	 void WritePanoScaleArrayData(char * filename,float * arraydata_left,float * arraydata_right,float * arraydata_level);
+
+	void initLabelBatch();
 public:
 
 	 GLShaderManager		shaderManager2;			// Shader Manager
@@ -659,6 +661,26 @@ public:
 	void SetPSYButtonF3(bool enable){psy_button_f3=enable;};
 	bool GetPSYButtonF8(){return psy_button_f8;};
 	void SetPSYButtonF8(bool enable){psy_button_f8=enable;};
+
+	float GetCanonHorAngle(){return canon_hor_angle;};
+	void SetCanonHorAngle(float data){canon_hor_angle=data;};
+	float GetCanonVerAngle(){return canon_ver_angle;};
+	void SetCanonVerangle(float data){canon_ver_angle=data;};
+
+	float GetGunHorAngle(){return gun_hor_angle;};
+	void SetGunHorAngle(float data){gun_hor_angle=data;};
+	float GetGunVerAngle(){return gun_ver_angle;};
+	void SetGunVerAngle(float data){gun_ver_angle=data;};
+
+	float GetCalcHorData(){return calc_hor_data;};
+	void SetCalcHorData(float data){calc_hor_data=data;};
+	float GetCalcVerData(){return calc_ver_data;};
+	void SetCalcVerData(float data){calc_ver_data=data;};
+
+	int GetTouchPosX(){return touch_pos_x;};
+	void SetTouchPosX(int data){touch_pos_x=data;};
+	int GetTouchPosY(){return touch_pos_y;};
+	void SetTouchPosY(int data){touch_pos_y=data;};
 private:
 	GLBatch Petal[CAM_COUNT];
 	GLBatch *Petal_OverLap[CAM_COUNT]; // overlap area bwtween petal[i] and [(i+1)%CAM_COUNT]
@@ -689,6 +711,10 @@ private:
 	GLBatch triangleBatch;
 	GLBatch AlarmAreaBatch;
 	GLBatch AlarmLineBatch;
+
+
+	GLBatch array_round_point[36];
+
 	ForeSightFacade * p_ForeSightFacade[2];
 	ForeSightFacade * p_ForeSightFacade2[2];
 
@@ -865,6 +891,20 @@ private:
 	bool psy_button_f2;
 	bool psy_button_f3;
 	bool psy_button_f8;
+
+	float canon_hor_angle;
+	float canon_ver_angle;
+	float gun_hor_angle;
+	float gun_ver_angle;
+
+
+	float calc_hor_data;
+	float calc_ver_data;
+
+	int touch_pos_x;
+	int touch_pos_y;
+
+	int state_label_data[12][3];
 
 	OitVehicle *pPano;
 
