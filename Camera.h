@@ -129,7 +129,7 @@ public:
 	void CaptureFish(char* ptr){};
 	void SavePic(const char* name);
 	void saveOverLap(){};
-	void YUYVEnhance(unsigned char *ptr,unsigned char *temp_data,int w,int h);
+	//void YUYVEnhance(unsigned char *ptr,unsigned char *temp_data,int w,int h);
 	void YUYV2RGB(unsigned char*dst,unsigned char *src,int w,int h);
 private:
 	int m_qid;
