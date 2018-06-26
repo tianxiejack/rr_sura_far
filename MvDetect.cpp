@@ -5,6 +5,10 @@
 using namespace cv;
 Mat m4(2160,640,CV_8UC3);
 Mat m6(3240,640,CV_8UC3);
+unsigned char * p_newestMvSrc[CAM_COUNT]={NULL,NULL,NULL,NULL,NULL,NULL,NULL
+,NULL,NULL,NULL};
+extern MvDetect mv_detect;
+
 #if  MVDECT
 MvDetect::MvDetect()
 {
@@ -12,13 +16,13 @@ MvDetect::MvDetect()
 	{
 		for(int j=0;j<6;j++)
 		{
-			tempoutRect[i].rects[j].x=-1;
-			tempoutRect[i].rects[j].y=-1;
-			tempoutRect[i].rects[j].width=-1;
-			tempoutRect[i].rects[j].height=-1;
+			tempRect_Srcptr[i].tempoutRect.rects[j].x=-1;
+			tempRect_Srcptr[i].tempoutRect.rects[j].y=-1;
+			tempRect_Srcptr[i].tempoutRect.rects[j].width=-1;
+			tempRect_Srcptr[i].tempoutRect.rects[j].height=-1;
+			tempRect_Srcptr[i].isDetectionDone=false;
 		}
 	}
-
 for(int i=0;i<2;i++)
 {
 		enableMD[i]=false;
@@ -26,10 +30,7 @@ for(int i=0;i<2;i++)
 }
 		for(int i=0;i<CAM_COUNT;i++)
 		{
-			targetnum[i]=0;
 			grayFrame[i]=(unsigned char *)malloc(MAX_SCREEN_WIDTH*MAX_SCREEN_HEIGHT*1);
-			for(int j=0;j<4;j++)
-				targetidx[i][j]=0;
 		}
 }
 MvDetect::~MvDetect()
@@ -55,10 +56,32 @@ void MvDetect::uyvy2gray(unsigned char* src,unsigned char* dst,int width,int hei
 }
 void MvDetect::m_mvDetect(int idx,unsigned char* inframe,int w,int h)
 {
-	uyvy2gray(inframe,grayFrame[idx-1]);
+		idx-=1;
+		uyvy2gray(inframe,grayFrame[idx]);
+		{
+			tempRect_Srcptr[idx].isDetectionDone = false;
+
+	/*		for(int i=0;i<6;i++)
+			{
+				tempRect_Srcptr[idx].tempoutRect.rects[i].width=20;
+				tempRect_Srcptr[idx].tempoutRect.rects[i].height=80;
+				tempRect_Srcptr[idx].tempoutRect.rects[i].x=33;
+				tempRect_Srcptr[idx].tempoutRect.rects[i].y=432;
+			}
+			tempRect_Srcptr[idx].isDetectionDone = true;
+		*/
+
+			mvDetect((unsigned char) (idx+1), grayFrame[idx], w, h,
+					tempRect_Srcptr[idx].tempoutRect.rects,
+					&tempRect_Srcptr[idx].isDetectionDone);
+
+		}
+
+
+/*	uyvy2gray(inframe,grayFrame[idx-1]);
 	{
 		mvDetect((unsigned char) (idx), grayFrame[idx-1], w, h,tempoutRect[idx-1].rects);
-	}
+	}*/
 	//mvDetect((unsigned char) idx, grayFrame[idx], w, h,&outRect[idx]);
 }
 #endif
@@ -179,6 +202,25 @@ bool MvDetect::CanUseMD(int mainorsub)
 
 void MvDetect::SetoutRect()
 {
+	for(int idx=0;idx<CAM_COUNT;idx++)
+	{
+		if(tempRect_Srcptr[idx].isDetectionDone)//沒有檢測完成，保留上次結果
+				outRect[idx].clear();
+		mvRect tempOut;
+			for(int j=0;j<6;j++)
+			{
+				if(tempRect_Srcptr[idx].isDetectionDone){
+					if(tempRect_Srcptr[idx].tempoutRect.rects[j].x>0)
+					{
+					//	tempOut.srcptr=tempRect_Srcptr[idx].srcptr;
+						tempOut.outRect=tempRect_Srcptr[idx].tempoutRect.rects[j];
+						tempOut.camIdx=idx;
+						outRect[idx].push_back(tempOut);
+					}
+				}
+			}
+	}
+	/*
 	for(int i=0;i<CAM_COUNT;i++)
 	{
 		outRect[i].clear();
@@ -189,11 +231,212 @@ void MvDetect::SetoutRect()
 				outRect[i].push_back(tempoutRect[i].rects[j]);
 			}
 		}
-	}
+	}*/
 }
+
+
+
+#if 0
+void MvDetect:: DrawAllRectOri(int fourOrsix)
+{
+
+	vector<mvRect>::iterator  it;
+	vector<mvRect> *wholeV;
+	vector<mvRect> *wholeVrcv;
+	vector<mvRect> tempV;
+
+	m_WholeRect.clear();
+	for(int i=0;i<CAM_COUNT;i++)
+		m_WholeRect.insert(m_WholeRect.end(),outRect[i].begin(),outRect[i].end());
+	wholeVrcv=&m_WholeRect;
+//将范围内的rect找出
+	if(range[END]>range[START]){					//不跨360度
+		for(int i=0;i<wholeVrcv->size();i++)
+		{
+			if((*wholeVrcv)[i].x_angle()>range[START]   && (*wholeVrcv)[i].x_angle()<=range[END] )
+			{
+				tempV.push_back((*wholeVrcv)[i]);
+			}
+		}
+	}
+	else{//跨360度
+		for(int i=0;i<wholeVrcv->size();i++)
+		{
+			if((*wholeVrcv)[i].x_angle()>range[START]   && (*wholeVrcv)[i].x_angle()<=360.0)
+			{
+				tempV.push_back((*wholeVrcv)[i]);
+			}
+			for(int i=0;i<wholeVrcv->size();i++)
+			{
+				if((*wholeVrcv)[i].x_angle()>0   && (*wholeVrcv)[i].x_angle()<=range[END] )
+				{
+					tempV.push_back((*wholeVrcv)[i]);
+				}
+			}
+		}
+	}
+	wholeV=&tempV;
+
+		//按x从小到达排序
+		sort(wholeV->begin(),wholeV->end(),CmpXsamller);
+		/*****找出所以的框*****/
+		for(int i=0;i<wholeV->size();i++)
+		{
+			if(wholeV->size()>m_sumTarget)//个数大于m_sumTarget
+			{
+				if(i>=0&&i<=m_sumTarget) //前m_sumTarget个绿色
+				{
+					(*wholeV)[i].color[0]=0;
+					(*wholeV)[i].color[1]=255.0;
+					(*wholeV)[i].color[2]=0;
+					targetRect[i]=(*wholeV)[i];  //将前m_sumTarget个绿色的保留以显示图片
+					lastRect[i]=targetRect[i];//黄色target默认targetRect
+				}
+				else//红色
+				{
+					(*wholeV)[i].color[0]=255.0;
+					(*wholeV)[i].color[1]=0;
+					(*wholeV)[i].color[2]=0;
+				}
+			}
+			else if(wholeV->size()<=m_sumTarget)//个数小于等于m_sumTarget 全绿色
+			{
+				(*wholeV)[i].color[0]=0;
+				(*wholeV)[i].color[1]=255.0;
+				(*wholeV)[i].color[2]=0;
+				targetRect[i]=(*wholeV)[i];//将前n个绿色的保留以显示图片
+				lastRect[i]=targetRect[i];//黄色target默认targetRect
+			}
+		}
+		//个数小于m_sumTarget 个，其余的 targetRect lastRect的angle 为-1
+		 if(wholeV->size()<=m_sumTarget)
+		 {
+			int j=m_sumTarget-wholeV->size();
+			for(int k=wholeV->size();k<j;k++)
+			{
+				lastRect[k]=targetRect[k];
+			}
+		 }
+
+		if(ISanySingleRect())//如果有Singletarget在，则再画黄色
+		{
+			//m_sumTarget 个目标
+		for(int targetidx=0;targetidx<m_sumTarget;targetidx++)
+		{
+	//如果targetidx圈出的rect选择下一个
+	 if(IsChooseN(targetidx))
+	 {
+		 //在所有从小到大排序好的vector中插入lastrect[targetidx],找出lastrect的下一个作为黄色rect
+		 //并将这个rect赋值给lastrect[targetidx]
+			for(int i=0;i<wholeV->size();i++)
+			{
+				//如果找到第一个大于last的，则跳出循环
+				if(lastRect[targetidx].x_angle<(*wholeV)[i].x_angle)
+				{
+					(*wholeV)[i].color[0]=0;
+					(*wholeV)[i].color[1]=255;
+					(*wholeV)[i].color[2]=255;
+					lastRect[targetidx]=(*wholeV)[i];
+					break;
+				}
+				//如果没找，没有break出循环，则把第最小的给到lastrect，相当于转了一圈回来
+				lastRect[targetidx]=(*wholeV)[0];
+			}
+	 }//next
+	 else if(IsChooseP(targetidx))
+		 {
+		 	 sort(wholeV->begin(),wholeV->end(),CmpXbigger);
+			 //在所有从大到小排序好的vector中插入lastrect[targetidx],找出lastrect的上一个作为黄色rect
+			 //并将这个rect赋值给lastrect[targetidx]
+				for(int i=0;i<wholeV->size();i++)
+				{
+					//如果找到第一个小于last的，则跳出循环
+					if(lastRect[targetidx].x_angle>(*wholeV)[i].x_angle)
+					{
+						(*wholeV)[i].color[0]=0;
+						(*wholeV)[i].color[1]=255;
+						(*wholeV)[i].color[2]=255;
+						lastRect[targetidx]=(*wholeV)[i];
+						break;
+					}
+					//如果没找，没有break出循环，则把第最大的给到lastrect，相当于转了一圈回来
+					lastRect[targetidx]=(*wholeV)[0];
+				}
+		 }//pre
+	 else if(IsChooseUp(targetidx))
+		 {
+		 	 sort(wholeV->begin(),wholeV->end(),CmpYbigger);
+			 //在所有从大到小排序好的vector中插入lastrect[targetidx],找出lastrect的上一个作为黄色rect
+			 //并将这个rect赋值给lastrect[targetidx]
+				for(int i=0;i<wholeV->size();i++)
+				{
+					//如果找到第一个小于last的，则跳出循环
+					if(lastRect[targetidx].y_angle>(*wholeV)[i].y_angle)
+					{
+						(*wholeV)[i].color[0]=0;
+						(*wholeV)[i].color[1]=255;
+						(*wholeV)[i].color[2]=255;
+						lastRect[targetidx]=(*wholeV)[i];
+						break;
+					}
+					//如果没找，没有break出循环，则把第最大的给到lastrect，相当于转了一圈回来
+					lastRect[targetidx]=(*wholeV)[0];
+				}
+		 }//up
+	 else if(IsChooseDown(targetidx))
+		 {
+		 	 sort(wholeV->begin(),wholeV->end(),CmpYsmaller);
+			 //在所有从小到大排序好的vector中插入lastrect[targetidx],找出lastrect的下一个作为黄色rect
+			 //并将这个rect赋值给lastrect[targetidx]
+				for(int i=0;i<wholeV->size();i++)
+				{
+					//如果找到第一个大于last的，则跳出循环
+					if(lastRect[targetidx].y_angle<(*wholeV)[i].y_angle)
+					{
+						(*wholeV)[i].color[0]=0;
+						(*wholeV)[i].color[1]=255;
+						(*wholeV)[i].color[2]=255;
+						lastRect[targetidx]=(*wholeV)[i];
+						break;
+					}
+					//如果没找，没有break出循环，则把第最小的给到lastrect，相当于转了一圈回来
+					lastRect[targetidx]=(*wholeV)[0];
+				}
+		 }//down
+			}//从0～targetNUM次
+
+		}//有target在
+
+		/*******把绿色 红色 黄色 全画了****/
+				if(fourOrsix==MAIN_FPGA_FOUR)//只画cam 6~9
+				{
+					for(int i=0;i<wholeV->size();i++)
+					{
+						if((*wholeV)[i].camIdx>=6 &&(*wholeV)[i].camIdx<=9)
+						{
+							MRectangle(MAIN_FPGA_FOUR,&(*wholeV)[i]);
+						}
+					}
+				}
+				else if(fourOrsix==MAIN_FPGA_SIX)//只画cam 0~5
+				{
+					for(int i=0;i<wholeV->size();i++)
+					{
+						if((*wholeV)[i].camIdx>=0&&(*wholeV)[i].camIdx<=5)
+						{
+							MRectangle(MAIN_FPGA_SIX,&(*wholeV)[i]);
+						}
+					}
+				}
+
+}
+
+#endif
 void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 {
-	std::vector<cv::Rect> tempRecv[CAM_COUNT];
+	//DrawAllRectOri(capidx);
+
+	std::vector<mvRect> tempRecv[CAM_COUNT];
 	if(capidx==MAIN_FPGA_SIX)
 	{
 		m6.data=src;
@@ -204,10 +447,10 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 			{
 				for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 				{
-					int startx=tempRecv[i][rectIdx].x/3;
-					int starty=tempRecv[i][rectIdx].y/2+540*i;
-					int w=tempRecv[i][rectIdx].width/3;
-					int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
+					int startx=tempRecv[i][rectIdx].outRect.x/3;
+					int starty=tempRecv[i][rectIdx].outRect.y/2+540*i;
+					int w=tempRecv[i][rectIdx].outRect.width/3;
+					int h=tempRecv[i][rectIdx].outRect.height/2;//取出容器中rect的值
 					int endx=startx+w;
 					int endy=starty+h;
 					cv::rectangle(m6,cvPoint(startx,starty),cvPoint(endx,endy),cvScalar(0,0,0),1);
@@ -225,10 +468,10 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 				{
 					for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 					{
-						int startx=tempRecv[i][rectIdx].x/3;
-						int starty=tempRecv[i][rectIdx].y/2+540*(i-6);
-						int w=tempRecv[i][rectIdx].width/3;
-						int h=tempRecv[i][rectIdx].height/2;//取出容器中rect的值
+						int startx=tempRecv[i][rectIdx].outRect.x/3;
+						int starty=tempRecv[i][rectIdx].outRect.y/2+540*(i-6);
+						int w=tempRecv[i][rectIdx].outRect.width/3;
+						int h=tempRecv[i][rectIdx].outRect.height/2;//取出容器中rect的值
 						int endx=startx+w;
 						int endy=starty+h;
 						cv::rectangle(m4,cvPoint(startx,starty),cvPoint(endx,endy),cvScalar(0,0,0),1);
@@ -236,5 +479,6 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx)
 				}
 			}
 		}
+
 }
 

@@ -313,7 +313,23 @@ static const char *szTextureReplaceFP_bright =
 										"}";
 #endif
 
-
+										static const char *szTextureENHANCEVP =	"uniform mat4 mvpMatrix;"
+																				"attribute vec4 vVertex;"
+																				"attribute vec2 vTexCoord0;"
+																				"varying vec2 vTex;"
+																				"void main(void) "
+																				"{ vTex = vTexCoord0;"
+																				" gl_Position = mvpMatrix * vVertex; "
+																				"}";
+										static const char *szTextureENHANCEFP =
+										#ifdef OPENGL_ES
+																				"precision mediump float;"
+										#endif
+																				"varying vec2 vTex;"
+																				"uniform sampler2D textureUnit0;"
+																				"void main(void) "
+																				"{  gl_FragColor= texture2D(textureUnit0, vTex); "
+																				"}";
 static const char *szTextureORIVP =	"uniform mat4 mvpMatrix;"
 										"attribute vec4 vVertex;"
 										"attribute vec2 vTexCoord0;"
@@ -426,6 +442,35 @@ static const char *szTexturePointLightDiffFP =
 												"}";
 
 //GLT_SHADER_TEXTURE_BLENDING
+static const char *szTextureBlendingENHANCEVP =	"uniform mat4 mvpMatrix;"
+										"attribute vec4 vVertex;"
+										"attribute vec2 vTexCoord0;"
+										"attribute vec2 vTexCoord1;"
+										"attribute vec2 vTexCoord2;"
+										"varying vec2 vTex0;"
+										"varying vec2 vTex1;"
+										"varying vec2 vTex2;"
+										"void main(void) "
+										"{ vTex0 = vTexCoord0;"
+										" vTex1 = vTexCoord1;"
+										" vTex2 = vTexCoord2;"
+										" gl_Position = mvpMatrix * vVertex; "
+										"}";
+
+
+static const char *szTextureBlendingENHANCEFP =	"varying vec2 vTex0;"
+								"varying vec2 vTex1;"
+								"varying vec2 vTex2;"
+								"uniform sampler2D textureUnit0;"
+								"uniform sampler2D textureUnit1;"
+								"uniform sampler2D textureUnit2;"
+								"void main(void) "
+								"{ vec4 t0 = texture2D(textureUnit0, vTex0.st);"
+								" vec4 t1 = texture2D(textureUnit1, vTex1.st);"
+								" vec4 t2 = texture2D(textureUnit2, vTex2.st);"
+								"gl_FragColor = mix(t0, t1, t2.a); "
+								"}";
+
 // Just put the texture on the polygons., note: now we use UYVx as texuture. Must convert to BGR
 static const char *szTextureBlendingVP =	"uniform mat4 mvpMatrix;"
 										"attribute vec4 vVertex;"
@@ -665,6 +710,9 @@ bool GLShaderManager::InitializeStockShaders(void)
 	uiStockShaders[GLT_SHADER_ORI]  = gltLoadShaderPairSrcWithAttributes(szTextureORIVP, szTextureORIFP, 2,
 																										GLT_ATTRIBUTE_VERTEX, "vVertex", GLT_ATTRIBUTE_TEXTURE0, "vTexCoord0");
 
+	uiStockShaders[GLT_SHADER_ENHANCE]  = gltLoadShaderPairSrcWithAttributes(szTextureENHANCEVP, szTextureENHANCEFP, 2,
+																											GLT_ATTRIBUTE_VERTEX, "vVertex", GLT_ATTRIBUTE_TEXTURE0, "vTexCoord0");
+
 	uiStockShaders[GLT_SHADER_TEXTURE_MODULATE] = gltLoadShaderPairSrcWithAttributes(szTextureModulateVP, szTextureModulateFP, 2,
 														GLT_ATTRIBUTE_VERTEX, "vVertex", GLT_ATTRIBUTE_TEXTURE0, "vTexCoord0");
 
@@ -680,6 +728,12 @@ bool GLShaderManager::InitializeStockShaders(void)
                                                                                                  GLT_ATTRIBUTE_TEXTURE0, "vTexCoord0",
                                                                                                  GLT_ATTRIBUTE_TEXTURE1, "vTexCoord1",
                                                                                                  GLT_ATTRIBUTE_TEXTURE2, "vTexCoord2");
+
+    uiStockShaders[GLT_SHADER_TEXTURE_ENHANCE_BLENDING] = gltLoadShaderPairSrcWithAttributes(szTextureBlendingENHANCEVP, szTextureBlendingENHANCEFP, 4,
+                                                                                                    GLT_ATTRIBUTE_VERTEX, "vVertex",
+                                                                                                    GLT_ATTRIBUTE_TEXTURE0, "vTexCoord0",
+                                                                                                    GLT_ATTRIBUTE_TEXTURE1, "vTexCoord1",
+                                                                                                    GLT_ATTRIBUTE_TEXTURE2, "vTexCoord2");
 
     if(uiStockShaders[0] != 0)
 		return true;
@@ -762,6 +816,15 @@ GLint GLShaderManager::UseStockShader(GLT_STOCK_SHADER nShaderID, ...)
 			vColor = va_arg(uniformList, M3DVector4f*);
 			glUniform4fv(iColor, 1, *vColor);
 			break;
+		case	GLT_SHADER_ENHANCE:
+			iTransform = glGetUniformLocation(uiStockShaders[nShaderID], "mvpMatrix");
+						mvpMatrix = va_arg(uniformList, M3DMatrix44f*);
+						glUniformMatrix4fv(iTransform, 1, GL_FALSE, *mvpMatrix);
+
+						iTextureUnit = glGetUniformLocation(uiStockShaders[nShaderID], "textureUnit0");
+						iInteger = va_arg(uniformList, int);
+						glUniform1i(iTextureUnit, iInteger);
+						break;
 		case GLT_SHADER_ORI:
 			iTransform = glGetUniformLocation(uiStockShaders[nShaderID], "mvpMatrix");
 			mvpMatrix = va_arg(uniformList, M3DMatrix44f*);
@@ -890,6 +953,39 @@ GLint GLShaderManager::UseStockShader(GLT_STOCK_SHADER nShaderID, ...)
 			vColor = va_arg(uniformList, M3DVector4f*);
 			glUniform4fv(iColor, 1, *vColor);
 			break;
+
+		case	GLT_SHADER_TEXTURE_ENHANCE_BLENDING:
+		iTransform = glGetUniformLocation(uiStockShaders[nShaderID], "mvpMatrix");
+				mvpMatrix = va_arg(uniformList, M3DMatrix44f*);
+				glUniformMatrix4fv(iTransform, 1, GL_FALSE, *mvpMatrix);
+
+				iTextureUnit0 = glGetUniformLocation(uiStockShaders[nShaderID], "textureUnit0");
+				iInteger0 = va_arg(uniformList, int);
+				glUniform1i(iTextureUnit0, iInteger0);
+
+				iTextureUnit1 = glGetUniformLocation(uiStockShaders[nShaderID], "textureUnit1");
+				iInteger1 = va_arg(uniformList, int);
+				glUniform1i(iTextureUnit1, iInteger1);
+
+				iTextureUnit2 = glGetUniformLocation(uiStockShaders[nShaderID], "textureUnit2");
+				iInteger2 = va_arg(uniformList, int);
+				glUniform1i(iTextureUnit2, iInteger2);
+
+	#if USE_GAIN
+					van_num = va_arg(uniformList, int);
+					alpha_gain_A = glGetUniformLocation(uiStockShaders[nShaderID], "van_gain_Color");
+					glUniform4fv(alpha_gain_A, 1,vanColor[van_num]);
+						//	glUniform4fv(alpha_gain_A, 1,van_gain_Color[van_num]);
+					alpha_gain_B = glGetUniformLocation(uiStockShaders[nShaderID], "van_gain_Color2");
+					if(van_num+1==m_cam_count)//m_cam_count)
+						glUniform4fv(alpha_gain_B, 1,vanColor[0]);
+					else
+					glUniform4fv(alpha_gain_B, 1,vanColor[van_num+1]);
+						//	glUniform4fv(alpha_gain_B, 1,van_gain_Color[van_num+1]);
+
+	#endif
+					break;
+
 		case GLT_SHADER_TEXTURE_BLENDING:	// Just the texture blending
 			iTransform = glGetUniformLocation(uiStockShaders[nShaderID], "mvpMatrix");
 			mvpMatrix = va_arg(uniformList, M3DMatrix44f*);

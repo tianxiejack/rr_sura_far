@@ -182,6 +182,9 @@ float Teltemp_math[2]={0};
 extern float track_pos[4];
 float  canshu[8]={0,0,0,0,0,0,0,0};
 float  menu_tpic[8]={0,0,0,0,0,0,0,0};
+
+extern bool enable_hance;
+
 #if TRACK_MODE
 CVideoProcess* trackMode=CVideoProcess::getInstance();
 #endif
@@ -2391,11 +2394,23 @@ int alpha[12]={1,1,1,1,1,1,1,1,1,1,1,1};
 
 #if USE_GAIN
 #if WHOLE_PIC
+#define USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,i)        {\
+        shaderManager.UseStockShader(GLT_SHADER_TEXTURE_ENHANCE_BLENDING, \
+            m_env.GettransformPipeline()->GetModelViewProjectionMatrix(),0,\
+           0,ALPHA_TEXTURE_IDX0+alpha[i],i);\
+                }
+
+
 #define USE_TEXTURE_ON_PETAL_OVERLAP(m_env,i)        {\
                                                shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BLENDING, \
                                                    m_env.GettransformPipeline()->GetModelViewProjectionMatrix(),0,\
                                                   0,ALPHA_TEXTURE_IDX0+alpha[i],i);\
                                                        }
+/*#define USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,i)        {\
+                                               shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BLENDING_ORI, \
+                                                   m_env.GettransformPipeline()->GetModelViewProjectionMatrix(),0,\
+                                                  0,ALPHA_TEXTURE_IDX0+alpha[i],i);\
+                                                       }*/
 #else
 #define USE_TEXTURE_ON_PETAL_OVERLAP(m_env,i)        {\
                                                shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BLENDING, \
@@ -2488,14 +2503,28 @@ void Render::DrawPanel(GLEnv &m_env,bool needSendData,int *p_petalNum,int mainOr
 						SEND_TEXTURE_TO_PETAL(i,m_env);
 			}
 			for(int i = 0; i < CAM_COUNT; i++){
-	#if USE_CPU
-					shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
-	 #else
+				if(	enable_hance)
+				{
+#if ENABLE_ENHANCE_FUNCTION
+					shaderManager.UseStockShader(GLT_SHADER_ENHANCE, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
+#endif
+				}else
 					shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BRIGHT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
 			//	shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
-	#endif
+
 				 (*m_env.GetPanel_Petal(i)).Draw();
-				USE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
+
+
+				if(	enable_hance)
+				{
+#if ENABLE_ENHANCE_FUNCTION
+				USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
+#endif
+				}
+				else
+				{
+					USE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
+				}
 				m_env.Getp_Panel_Petal_OverLap(i)->Draw();
 			}
 		}
@@ -2509,17 +2538,27 @@ void Render::DrawPanel(GLEnv &m_env,bool needSendData,int *p_petalNum,int mainOr
 				{
 					if(p_petalNum[i]!=-1)
 					{
-	#if USE_CPU
+						if(	enable_hance)
 						{
-							shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
+#if ENABLE_ENHANCE_FUNCTION
+							shaderManager.UseStockShader(GLT_SHADER_ENHANCE, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
+#endif
 						}
-	#else
+						else
 						shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BRIGHT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
 				//shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
-	#endif
 				(*m_env.GetPanel_Petal(p_petalNum[i])).Draw();
 				{
+					if(enable_hance)
+					{
+						#if ENABLE_ENHANCE_FUNCTION
+					USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+#endif
+					}
+					else
+					{
 					USE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+					}
 				}
 				m_env.Getp_Panel_Petal_OverLap(p_petalNum[i])->Draw();
 					}
@@ -9432,7 +9471,7 @@ GLEnv & env=env1;
 				break;
 			case '?':
 			{
-
+				enable_hance=!enable_hance;
 			//	int Vanw,Vanh;
 			//	Vanw=glutGet(GLUT_WINDOW_WIDTH);
 			//	Vanh=glutGet(GLUT_WINDOW_HEIGHT);

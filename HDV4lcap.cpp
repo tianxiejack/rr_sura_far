@@ -46,7 +46,7 @@ extern void DeinterlaceYUV_Neon(unsigned char *lpYUVFrame, int ImgWidth, int Img
 //unsigned char * sdi_data_main[6];
 //unsigned char * sdi_data_sub[6];
 unsigned char * target_data[CAM_COUNT];
-
+extern bool enable_hance;
 //static HDv4l_cam hdv4lcap(0,SDI_WIDTH,SDI_HEIGHT);
 
 
@@ -699,6 +699,11 @@ int HDv4l_cam::read_frame(int now_pic_format)
 							}
 							else
 							{
+								if(	enable_hance)
+								{
+									memcpy(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW*nowpicH*2);
+								}
+								else
 								UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 								//todo //４副　６副
 #if MVDECT
