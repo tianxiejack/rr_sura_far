@@ -28,7 +28,7 @@ int initStitchConfig(bool needSavePic)
 		if(!common.getStateChannel(index))
 		{
 			printf("\n--%s, %d\n",__FUNCTION__,__LINE__);
-			sprintf(buf,"./Hydra_StitchX -p ./data/%02d.yml",index);
+			sprintf(buf,"./stitchX -p ./data/%02d.yml",index);
 			state = system(buf);
 			usleep(1500*1000);
 			printf("\n----%s, %d\n",__FUNCTION__,__LINE__);
