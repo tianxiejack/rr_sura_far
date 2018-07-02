@@ -23,7 +23,7 @@ void Render::FBOdraw()
 		RenderLeftPanoView(env,0,1080.0*864.0/1080.0,1920, 1080.0*216.0/1080.0,MAIN,false);
 		if(displayMode!=TRIM_MODE)
 		{
-			RenderOnetimeView(env,0,0,1920*1152/1920, 1080.0*648/1080,MAIN);
+			RenderOnetimeView(env,0,0,1920*1152/1920, 1080.0*640/1080,MAIN);
 			p_ChineseCBillBoard->ChooseTga=TURRET_T;
 			RenderChineseCharacterBillBoardAt(env,g_windowWidth*1700/1920.0, g_windowHeight*500.0/1080.0, g_windowWidth*0.6,g_windowHeight*0.6);
 			p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
