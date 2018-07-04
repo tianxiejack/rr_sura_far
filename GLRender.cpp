@@ -9355,8 +9355,10 @@ GLEnv & env=env1;
 			{
 				if(CHOSEN_VIEW_MODE==displayMode)
 				{
-				#if USE_CAP_SPI
-					saveSinglePic[chosenCam[MAIN]]=true;
+				#if 1//USE_CAP_SPI
+					saveSinglePic[chosenCam[MAIN]-1]=true;
+				//		printf("chosenCam %d\n",chosenCam[MAIN]);
+				//	printf("savePic=%d\n",chosenCam[MAIN]-1);
 				#endif
 				}
 				if(displayMode==	ALL_VIEW_FRONT_BACK_ONE_DOUBLE_MODE)
