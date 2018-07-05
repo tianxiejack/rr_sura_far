@@ -7635,25 +7635,25 @@ state_label_data[5][2]=0;
 					Rect * rect;
 					rect=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
 					strcpy(text_data,"");
-					sprintf(text_data,"%f    ",canon_hor_angle);
+					sprintf(text_data,"    %.2f",canon_hor_angle);
 					DrawCordsView(env,rect,text_data);
 
 					Rect * rect2;
 					rect2=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
 					strcpy(text_data,"");
-					sprintf(text_data,"%f    ",canon_ver_angle);
+					sprintf(text_data,"    %.2f",canon_ver_angle);
 					DrawCordsView(env,rect2,text_data);
 
 					Rect * rect3;
 					rect3=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
 					strcpy(text_data,"");
-					sprintf(text_data,"%f    ",calc_hor_data);
+					sprintf(text_data,"    %.2f",calc_hor_data);
 					DrawCordsView(env,rect3,text_data);
 
 					Rect * rect4;
 					rect4=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
 					strcpy(text_data,"");
-					sprintf(text_data,"%f    ",calc_ver_data);
+					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,rect4,text_data);
 				}
 				env.GetmodelViewMatrix()->PopMatrix();
