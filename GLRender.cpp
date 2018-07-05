@@ -191,6 +191,7 @@ CVideoProcess* trackMode=CVideoProcess::getInstance();
 #if MVDETECTOR_MODE
 mvDetector* pSingleMvDetector=mvDetector::getInstance();
 #endif
+
 void readcanshu()
 {
 
@@ -718,8 +719,8 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		m_SDIVideoId(SDI_CAM_0),
 		p_CornerMarkerGroup(NULL),
 		psy_button_f1(true),psy_button_f2(true),psy_button_f3(true),psy_button_f8(true),
-		canon_hor_angle(0.0),canon_ver_angle(0.0),gun_hor_angle(0.0),gun_ver_angle(0.0),calc_hor_data(0.0),calc_ver_data(0.0),
-		touch_pos_x(0),touch_pos_y(0),
+		canon_hor_angle(32768.0),canon_ver_angle(0.0),gun_hor_angle(0.0),gun_ver_angle(0.0),calc_hor_data(0.0),calc_ver_data(3000.0),
+		touch_pos_x(0),touch_pos_y(0),hide_label_state(SHOW_ALL_LABEL),
 		shaderManager2(GLShaderManager(CAM_COUNT)),
 		shaderManager(GLShaderManager(CAM_COUNT)),pPano(NULL)
 {
@@ -1314,6 +1315,7 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 #endif
 	}
 	glMatrixMode(GL_MODELVIEW);
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -4529,21 +4531,21 @@ void Render::RenderMilView(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
 		if(displayMode!=TRIM_MODE)
 		{
 		Rect2i rect1(g_windowWidth*2450.0/1920.0,g_windowHeight*420.0/1920.0, g_windowWidth/5, g_windowHeight/5);
-		DrawAngleCordsView(m_env,&rect1,text,0.65);
+//		DrawAngleCordsView(m_env,&rect1,text,0.65);
 		Rect2i rect2(g_windowWidth*2450.0/1920.0,g_windowHeight*780.0/1920.0, g_windowWidth/5, g_windowHeight/5);
-		DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//		DrawAngleCordsView(m_env,&rect2,text2,0.65);
 		}
 		for(int k=0;k<j;k++)
 		{
 			if(k<5)
 			{
 				Rect2i rect1(g_windowWidth*(2450.0+k*100)/1920.0,g_windowHeight*(1200.0)/1920.0, g_windowWidth/5, g_windowHeight/5);
-				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
+//				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
 			}
 			else
 			{
 				Rect2i rect1(g_windowWidth*(2450.0+(k-5)*100)/1920.0,g_windowHeight*(1100.0)/1920.0, g_windowWidth/5, g_windowHeight/5);
-				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
+//				DrawAngleCordsView(m_env,&rect1,text3[k],0.65);
 			}
 		}
 	}
@@ -4672,20 +4674,20 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 					Rect2i rect4(g_windowWidth*900/1024,g_windowHeight*280.0/768.0, g_windowWidth/20, g_windowHeight*1/20);
 					DrawAngleCordsView(m_env,&rect4,text3,0.8);*/
 					Rect2i rect1(g_windowWidth*2600.0/1920.0,g_windowHeight/4, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect1,text,0.65);
+//					DrawAngleCordsView(m_env,&rect1,text,0.65);
 					Rect2i rect2(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 				}
 				else
 				{
 					Rect2i rect1(g_windowWidth*89.5/100,g_windowHeight/4, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect1,text,0.65);
+//					DrawAngleCordsView(m_env,&rect1,text,0.65);
 					Rect2i rect2(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 					Rect2i rect3(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 					Rect2i rect4(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 				}
 			}
 
@@ -4700,16 +4702,16 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 					)
 			{
 					Rect2i rect1(g_windowWidth*89.5/100,g_windowHeight/4, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect1,text,0.65);
+//					DrawAngleCordsView(m_env,&rect1,text,0.65);
 					Rect2i rect2(g_windowWidth*89.5/100,g_windowHeight*400.0/1920.0, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 								static int textnum2=0;
 									for(int i=0;i<12;i++)
 									{
 										for(int j=0;j<3;j++)
 										{
 											Rect2i temprect(g_windowWidth*(90+3.5*j)/100,g_windowHeight/pos1[i], g_windowWidth/20, g_windowHeight*1/20);
-											DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
+//											DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
 											textnum2++;
 										}
 									}
@@ -4720,7 +4722,7 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 											for(int j=0;j<3;j++)
 											{
 												Rect2i temprect(g_windowWidth*(90+3.5*j-3.5*3)/100,g_windowHeight/pos1[i+1], g_windowWidth/20, g_windowHeight*1/20);
-												DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
+//												DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
 												textnum2++;
 											}
 										}
@@ -4735,7 +4737,7 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 												textnum2=100;
 											}
 											Rect2i temprect(g_windowWidth*(90+3.5*j-3.5*3*2)/100,g_windowHeight/pos1[i+1], g_windowWidth/20, g_windowHeight*1/20);
-											DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
+//											DrawAngleCordsView(m_env,&temprect,text4[textnum2],0.65);
 											textnum2++;
 										}
 									}
@@ -4767,21 +4769,21 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 						)
 				{
 					Rect2i rect1(g_windowWidth*85/100,g_windowHeight/2.02, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect1,text,0.65);
+//					DrawAngleCordsView(m_env,&rect1,text,0.65);
 					Rect2i rect2(g_windowWidth*85/100,g_windowHeight/2.15, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//					DrawAngleCordsView(m_env,&rect2,text2,0.65);
 					Rect2i rect3(g_windowWidth*85/100,g_windowHeight/2.3, g_windowWidth/20, g_windowHeight*1/20);
-					DrawAngleCordsView(m_env,&rect3,text3,0.65);
+//					DrawAngleCordsView(m_env,&rect3,text3,0.65);
 				}
 
 					else
 					{
 						Rect2i rect1(g_windowWidth*85/100,g_windowHeight/1.95, g_windowWidth/20, g_windowHeight*1/20);
-						DrawAngleCordsView(m_env,&rect1,text,0.65);
+//						DrawAngleCordsView(m_env,&rect1,text,0.65);
 						Rect2i rect2(g_windowWidth*85/100,g_windowHeight/2.08, g_windowWidth/20, g_windowHeight*1/20);
-						DrawAngleCordsView(m_env,&rect2,text2,0.65);
+//						DrawAngleCordsView(m_env,&rect2,text2,0.65);
 						Rect2i rect3(g_windowWidth*85/100,g_windowHeight/2.22, g_windowWidth/20, g_windowHeight*1/20);
-						DrawAngleCordsView(m_env,&rect3,text3,0.65);
+//						DrawAngleCordsView(m_env,&rect3,text3,0.65);
 					}
 					static int textnum=0;
 					for(int i=0;i<12;i++)
@@ -4789,7 +4791,7 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 						for(int j=0;j<3;j++)
 						{
 							Rect2i temprect(g_windowWidth*(85+5*j)/100,g_windowHeight/pos2[i], g_windowWidth/20, g_windowHeight*1/20);
-							DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
+//							DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
 							textnum++;
 						}
 					}
@@ -4800,7 +4802,7 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 							for(int j=0;j<3;j++)
 							{
 								Rect2i temprect(g_windowWidth*(85+5*j-15)/100,g_windowHeight/pos2[i+1], g_windowWidth/20, g_windowHeight*1/20);
-								DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
+//								DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
 								textnum++;
 							}
 						}
@@ -4815,7 +4817,7 @@ void Render::RenderPositionView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h)
 								textnum=100;
 							}
 							Rect2i temprect(g_windowWidth*(85+5*j-15*2)/100,g_windowHeight/pos2[i+1], g_windowWidth/20, g_windowHeight*1/20);
-							DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
+//							DrawAngleCordsView(m_env,&temprect,text4[textnum],0.65);
 							textnum++;
 						}
 					} //98
@@ -5935,9 +5937,11 @@ void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLi
 
 	m_env.GetmodelViewMatrix()->PushMatrix();
 	m_env.GetmodelViewMatrix()->LoadIdentity();
+
 	// move h since the shadow dimension is [-1,1], use h/2 if it is [0,1]
-	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);
-	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+//	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);
+//	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+
 	{
 	//	p_ChineseCBillBoard->DoTextureBinding(choice);
 		if(isbottem)
@@ -6042,6 +6046,10 @@ void Render::RenderChosenView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h, i
 		m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
 		DrawChosenVideo(m_env,needSendData,mainorsub);
 		m_env.GetmodelViewMatrix()->PopMatrix();
+
+		p_ChineseCBillBoard->ChooseTga=ORI00_T+(chosenCam[MAIN]+7)%CAM_COUNT;
+		RenderChineseCharacterBillBoardAt(m_env,-g_windowWidth*0.15,g_windowHeight*0.85, g_windowWidth*0.3, g_windowHeight*0.4);
+
 }
 
 
@@ -6102,7 +6110,7 @@ void Render::DrawInitView(GLEnv &m_env,Rect* rec, bool needSendData)
 		if(common.getStateChannel(i))
 		{
 			char text[]="Pass     ";
-			startx = wid*(i%4) + (wid/pic_count_hor);
+			startx = wid*(i%pic_count_hor) + (wid/pic_count_hor);
 			starty = hei*(1 - i/pic_count_hor) ;
 			DrawCordsView(m_env,new Rect(startx, starty,rec->width/24,rec->height/10),text);
 		}
@@ -6647,127 +6655,6 @@ if(setpriorityOnce)
 	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 }
 
-
-
-			{
-
-				int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
-
-				x=0;
-				y=0;
-				w=g_windowWidth;
-				h=g_windowHeight;
-
-				glViewport(x,y,w,h);
-			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
-				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
-
-				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
-
-				env.GetmodelViewMatrix()->PushMatrix();
-				
-				{
-		 			   
-		    			
-/*					
-					for(int i=0;i<36;i++)
-					{
-						shaderManager.UseStockShader(GLT_SHADER_FLAT, env.GettransformPipeline()->GetModelViewProjectionMatrix(), vRed);
-						array_round_point[i].Draw();
-					}
-*/
-				}
-				
-				env.GetmodelViewMatrix()->PopMatrix();
-
-
-
-				x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
-				glViewport(x,y,w,h);
-			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
-				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
-
-				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
-
-				env.GetmodelViewMatrix()->PushMatrix();
-
-				p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2, g_windowHeight/4, g_windowWidth/2, g_windowHeight*1.2/2);
-				p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
-RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/4, g_windowWidth/2, g_windowHeight*1.2/2);
-				
-				int point_hor_delta=g_windowWidth/4+g_windowWidth/36;
-				int point_ver_delta=0;
-
-				
-				for(int cx_i=0;cx_i<6;cx_i++)
-				{
-					for(int cx_j=0;cx_j<3;cx_j++)
-					{
-						if(state_label_data[cx_i][cx_j]==1)
-						{
-
-							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
-
-
-						}
-						else if(state_label_data[cx_i][cx_j]==0)
-						{
-							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
-						}
-						else
-						{
-							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
-						}
-						
-RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta-0.8*2*g_windowWidth/60,
-					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
-					}
-									
-				}
-
-
-				point_hor_delta+=8*g_windowWidth/48;
-
-				for(int cx_i=0;cx_i<6;cx_i++)
-				{
-					for(int cx_j=0;cx_j<3;cx_j++)
-					{
-
-						if(state_label_data[cx_i+6][cx_j]==1)
-						{
-
-							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
-
-
-						}
-						else if(state_label_data[cx_i+6][cx_j]==0)
-						{
-							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
-						}
-						else
-						{
-							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
-						}
-RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/60+point_hor_delta,
-					g_windowHeight/4+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
-					}
-									
-				}
-
-
-				env.GetmodelViewMatrix()->PopMatrix();
-
-			}
-
-
-/*	p_ChineseCBillBoard->ChooseTga=TURRET_T;
-	RenderChineseCharacterBillBoardAt(env,g_windowWidth*160.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
-	p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
-	RenderChineseCharacterBillBoardAt(env,g_windowWidth*600.0/1920.0, g_windowHeight*250.0/1080.0, g_windowWidth*800.0/1920.0,g_windowHeight*1000.0/1920.0);
-*/
-	//RenderRightPanoView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
-	//	RenderLeftPanoView(env,0,g_windowHeight*648.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
 			break;
 	}
 	case TRIM_MODE:
@@ -7520,44 +7407,45 @@ RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*
 				if(net_open_enhance==1)
 				{
 					enhance_state=!enhance_state;
+					enable_hance=!enable_hance;
 					SetPSYButtonF3(!enhance_state);
 				}
 
 				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_ETHOR);
-				if(net_enable_move_cursor)
+
+				if(displayMode==CHOSEN_VIEW_MODE)
 				{
-					if(net_dirction==MOVE_TYPE_MOVELEFT)
+					int camera_dir=chosenCam[MAIN]-1;
+					if((net_dirction==MOVE_TYPE_MOVELEFT)||(net_dirction==MOVE_TYPE_MOVEUP))
 					{
-						p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
+						camera_dir=(camera_dir+9)%10;
 					}
-					if(net_dirction==MOVE_TYPE_MOVERIGHT)
+					else if((net_dirction==MOVE_TYPE_MOVERIGHT)||(net_dirction==MOVE_TYPE_MOVEDOWN))
 					{
-						p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
+						camera_dir=(camera_dir+1)%10;
 					}
-					if(net_dirction==MOVE_TYPE_MOVEUP)
-					{
-						p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
-					}
-					if(net_dirction==MOVE_TYPE_MOVEDOWN)
-					{
-						p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
-					}
-					
+					chosenCam[MAIN]=camera_dir+1;
 				}
 				else
 				{
-					if(displayMode==CHOSEN_VIEW_MODE)
 					{
-						int camera_dir=chosenCam[MAIN]-1;
-						if((net_dirction==MOVE_TYPE_MOVELEFT)||(net_dirction==MOVE_TYPE_MOVEUP))
+						if(net_dirction==MOVE_TYPE_MOVELEFT)
 						{
-							camera_dir=(camera_dir+9)%10;
+							p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
 						}
-						else if((net_dirction==MOVE_TYPE_MOVERIGHT)||(net_dirction==MOVE_TYPE_MOVEDOWN))
+						if(net_dirction==MOVE_TYPE_MOVERIGHT)
 						{
-							camera_dir=(camera_dir+1)%10;
+							p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
 						}
-						chosenCam[MAIN]=camera_dir+1;
+						if(net_dirction==MOVE_TYPE_MOVEUP)
+						{
+							p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
+						}
+						if(net_dirction==MOVE_TYPE_MOVEDOWN)
+						{
+							p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
+						}
+
 					}
 				}
 
@@ -7626,7 +7514,7 @@ state_label_data[5][2]=0;
 				int index_i=-1;
 				int width_delta=100;
 				int w_y=0;
-				int t_width=600;
+				int t_width=600*0.7;
 				int t_height=700;
 				if(GetPSYButtonF1())
 				{
@@ -7636,11 +7524,11 @@ state_label_data[5][2]=0;
 				{
 					p_ChineseCBillBoard->ChooseTga=F1_OFF_T;
 				}
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=CANON_HOR_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=CALC_HOR_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=CANON_HOR_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=CALC_HOR_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
 
 
 				index_i++;
@@ -7653,7 +7541,7 @@ state_label_data[5][2]=0;
 				{
 					p_ChineseCBillBoard->ChooseTga=F2_OFF_T;
 				}
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
 
 				if(GetPSYButtonF3())
@@ -7664,38 +7552,36 @@ state_label_data[5][2]=0;
 				{
 					p_ChineseCBillBoard->ChooseTga=F3_OFF_T;
 				}
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=CANON_VER_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=CALC_VER_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
-
-
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=CANON_VER_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=CALC_VER_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
 
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F4_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F5_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=GUN_HOR_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=GUN_HOR_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
 
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F6_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
 
 				p_ChineseCBillBoard->ChooseTga=F7_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
-				p_ChineseCBillBoard->ChooseTga=GUN_VER_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
+//				p_ChineseCBillBoard->ChooseTga=GUN_VER_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
 
 				index_i++;
-
+/*
 				if(GetPSYButtonF8())
 				{
 					p_ChineseCBillBoard->ChooseTga=F8_ON_T;
@@ -7704,15 +7590,77 @@ state_label_data[5][2]=0;
 				{
 					p_ChineseCBillBoard->ChooseTga=F8_OFF_T;
 				}
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
+				*/
+				p_ChineseCBillBoard->ChooseTga=INFO_SHOW_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta+g_windowWidth*0.035, w_y+g_windowHeight*0.016, t_width*0.8, t_height*0.8);
 				index_i++;
 
-				p_ChineseCBillBoard->ChooseTga=F9_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y, t_width, t_height);
-				index_i++;
+//				p_ChineseCBillBoard->ChooseTga=F9_T;
+//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
+//				index_i++;
+				hide_label_state=getOverlayInformation(TRANSFER_TO_APP_ETHOR);
+				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
+				{
+					p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3, g_windowWidth*0.3, g_windowHeight*1/3);
 
+					p_ChineseCBillBoard->ChooseTga=GUN_CANON_COMPASS_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*0.4, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5);
+
+					DrawNeedleGunonCompass(env);
+					DrawNeedleGunonDegree(env);
+
+					DrawVerGunAngle(env);
+
+
+					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3, g_windowWidth*0.3, g_windowHeight*1/3);
+
+					p_ChineseCBillBoard->ChooseTga=GUN_CANON_COMPASS_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*0.4, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5);
+					DrawNeedleCanononCompass(env);
+
+					DrawNeedleCanononDegree(env);
+
+					DrawVerCanonAngle(env);
+
+					char text_data[20];
+
+					int text_x=g_windowWidth/15;
+					int text_y=g_windowHeight/4;
+
+					int text_width=g_windowWidth/20;
+					int text_height=80;
+
+					Rect * rect;
+					rect=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
+					strcpy(text_data,"");
+					sprintf(text_data,"%f    ",canon_hor_angle);
+					DrawCordsView(env,rect,text_data);
+
+					Rect * rect2;
+					rect2=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
+					strcpy(text_data,"");
+					sprintf(text_data,"%f    ",canon_ver_angle);
+					DrawCordsView(env,rect2,text_data);
+
+					Rect * rect3;
+					rect3=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
+					strcpy(text_data,"");
+					sprintf(text_data,"%f    ",calc_hor_data);
+					DrawCordsView(env,rect3,text_data);
+
+					Rect * rect4;
+					rect4=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
+					strcpy(text_data,"");
+					sprintf(text_data,"%f    ",calc_ver_data);
+					DrawCordsView(env,rect4,text_data);
+				}
 				env.GetmodelViewMatrix()->PopMatrix();
 
+
+
+/*
 				int text_x=g_windowWidth/15;
 				int text_y=30;
 
@@ -7761,12 +7709,80 @@ state_label_data[5][2]=0;
 				strcpy(text_data,"");
 				sprintf(text_data,"    %.4f",gun_ver_angle);
 				DrawCordsView(env,rect4,text_data);
+*/
+				if(hide_label_state==SHOW_ALL_LABEL)
+				{
+
+					int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
+					int label_hor_move=-g_windowWidth/15;
+					glViewport(x,y,w,h);
+					env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+					env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+					env.GetmodelViewMatrix()->PushMatrix();
+
+					p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
+					p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
+//					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0, g_windowWidth/2, g_windowHeight*1.2/2);
+
+					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
+					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
+
+					for(int cx_i=0;cx_i<6;cx_i++)
+					{
+						for(int cx_j=0;cx_j<3;cx_j++)
+						{
+							if(state_label_data[cx_i][cx_j]==1)
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+							}
+							else if(state_label_data[cx_i][cx_j]==0)
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+							}
+							else
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+							}
+//							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta-0.8*2*g_windowWidth/60-7,
+//						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+point_ver_delta+g_windowHeight/100, g_windowWidth/12, g_windowHeight/8);
+
+						}
+					}
+					point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
+
+					for(int cx_i=0;cx_i<6;cx_i++)
+					{
+						for(int cx_j=0;cx_j<3;cx_j++)
+						{
+
+							if(state_label_data[cx_i+6][cx_j]==1)
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+							}
+							else if(state_label_data[cx_i+6][cx_j]==0)
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+							}
+							else
+							{
+								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+							}
+	RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+						}
+					}
+					env.GetmodelViewMatrix()->PopMatrix();
+				}
+
 
 			}
-
 }
-
-
 
 void Render::setOverlapPeta(int chId, float alphaId)
 {
@@ -9355,10 +9371,8 @@ GLEnv & env=env1;
 			{
 				if(CHOSEN_VIEW_MODE==displayMode)
 				{
-				#if 1//USE_CAP_SPI
-					saveSinglePic[chosenCam[MAIN]-1]=true;
-				//		printf("chosenCam %d\n",chosenCam[MAIN]);
-				//	printf("savePic=%d\n",chosenCam[MAIN]-1);
+				#if USE_CAP_SPI
+					saveSinglePic[chosenCam[MAIN]]=true;
 				#endif
 				}
 				if(displayMode==	ALL_VIEW_FRONT_BACK_ONE_DOUBLE_MODE)
@@ -9546,6 +9560,14 @@ GLEnv & env=env1;
 				SetPSYButtonF8(!button_f8);
 			}
 			break;
+			case '_':
+				test_angle+=1.0;
+				if(test_angle>=360.0)
+				{
+					test_angle=0.0;
+				}
+				hide_label_state=(hide_label_state+1)%HIDE_LABEL_STATE_COUNT;
+				break;
 
 
 
@@ -10560,6 +10582,24 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[CALC_HOR_T], CALC_HOR);
 		strcpy( ChineseC_TextureFileName[CALC_VER_T], CALC_VER);
 
+		strcpy( ChineseC_TextureFileName[GUN_CANON_COMPASS_T], GUN_CANON_COMPASS);
+
+		strcpy( ChineseC_TextureFileName[INFO_SHOW_T], INFO_SHOW);
+		strcpy( ChineseC_TextureFileName[AROUND_MIRROR_T], AROUND_MIRROR);
+		strcpy( ChineseC_TextureFileName[CANON_DATA_T], CANON_DATA);
+
+		strcpy( ChineseC_TextureFileName[ORI00_T], ORI00);
+		strcpy( ChineseC_TextureFileName[ORI01_T], ORI01);
+		strcpy( ChineseC_TextureFileName[ORI02_T], ORI02);
+		strcpy( ChineseC_TextureFileName[ORI03_T], ORI03);
+		strcpy( ChineseC_TextureFileName[ORI04_T], ORI04);
+		strcpy( ChineseC_TextureFileName[ORI05_T], ORI05);
+		strcpy( ChineseC_TextureFileName[ORI06_T], ORI06);
+		strcpy( ChineseC_TextureFileName[ORI07_T], ORI07);
+		strcpy( ChineseC_TextureFileName[ORI08_T], ORI08);
+		strcpy( ChineseC_TextureFileName[ORI09_T], ORI09);
+
+
 }
 
 void Render::ChineseCharacterBillBoard::InitTextures()
@@ -10986,10 +11026,10 @@ void Render::DrawSlideonPanel(GLEnv &m_env)
 	GLfloat vTracks[30][3];
 	GLfloat fixBBDPos[3];
 	GLfloat Track_to_Vehicle_width_rate = DEFAULT_TRACK2_VEHICLE_WIDTH_RATE;
-	const GLfloat* pVehicleDimension = pVehicle->GetDimensions();
-	const GLfloat* pVehicleYMaxMin = pVehicle->GetYMaxMins();
-	GLfloat   TrackLength = DEFAULT_TRACK_LENGTH_METER;
-	GLfloat   TrackWidth = Track_to_Vehicle_width_rate*pVehicleDimension[0];
+//	const GLfloat* pVehicleDimension = pVehicle->GetDimensions();
+//	const GLfloat* pVehicleYMaxMin = pVehicle->GetYMaxMins();
+//	GLfloat   TrackLength = DEFAULT_TRACK_LENGTH_METER;
+//	GLfloat   TrackWidth = Track_to_Vehicle_width_rate*pVehicleDimension[0];
 	int i = 0;
 
 	float pano_length=0.0,pano_height=0.0,scan_view_length=0.0;
@@ -11595,14 +11635,8 @@ void Render::repositioncamera()
 		}
 		else
 		tel_pano_dis+=Len;   //ORI POS is LEN left  so move right
-
-
-
-
 		//pano_dis=move_dis+(PanelLoader.Getextent_pos_x()-PanelLoader.Getextent_neg_x())/2.0;
 		pano_dis=move_dis;
-
-
 		PanoViewCameraFrame.MoveRight(4.0*last_pano_dis);
 		PanoViewCameraFrame.MoveRight(-4.0*pano_dis);
 
@@ -12351,6 +12385,726 @@ void Render::DrawNeedleonCompass(GLEnv &m_env)
 	NeedleFrameBatch.End();
 }
 
+void Render::DrawNeedleGunonCompass(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=1.6,rec_height=2.0;
+//	float rec_center_x=13.2-rec_width/2.0,rec_center_y=10.0-rec_height/2.0;
+	//	float needle_radius=0.9;
+	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0;
+//	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+
+	float get_angle=calc_hor_data*360.0/6000.0;//test_angle;
+	float angle=450.0-get_angle;
+
+	float delta_angle=0.0;
+
+	if(((get_angle>=45.0)&&(get_angle<=135.0))||((get_angle>=225.0)&&(get_angle<=315.0)))
+	{
+		delta_angle=abs(get_angle-90.0);
+		if(delta_angle<=45.0)
+		{
+			needle_radius=1.1+0.1*delta_angle/45.0;
+		}
+		else
+		{
+			delta_angle=abs(get_angle-270.0);
+			needle_radius=1.1+0.1*delta_angle/45.0;
+		}
+	}
+	else
+	{
+		delta_angle=abs(get_angle-180.0);
+		if(delta_angle<=45.0)
+		{
+			needle_radius=1.2+0.3*(45.0-delta_angle)/45.0;
+		}
+		else
+		{
+			if(get_angle<45.0)
+			{
+				needle_radius=1.2+0.3*(45.0-get_angle)/45.0;
+			}
+			else
+			{
+				needle_radius=1.2+0.3*(get_angle-315.0)/45.0;
+			}
+		}
+	}
+
+	a=0;
+	b=1;
+	c=2;
+/*
+	vTracks[i][a] = 0.0;//-rec_length/2.0;
+	vTracks[i][b] =0.0;//100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.3;//+rec_length;
+	vTracks[i][b] = 10.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.3;//+rec_length;
+	vTracks[i][b] = 10.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2-rec_width;//+rec_length;
+	vTracks[i][b] = 10.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2-rec_width;//+rec_length;
+	vTracks[i][b] = 10.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2-rec_width;//+rec_length;
+	vTracks[i][b] = 10.0-rec_height;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2-rec_width;//+rec_length;
+	vTracks[i][b] = 10.0-rec_height;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2;//+rec_length;
+	vTracks[i][b] = 10.0-rec_height;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2;//+rec_length;
+	vTracks[i][b] = 10.0-rec_height;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = 13.2;//+rec_length;
+	vTracks[i][b] = 10.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+	float math_x[3],math_y[3];
+
+	math_x[0]=rec_center_x+needle_radius*cos(angle*PI/180.0);
+	math_y[0]=rec_center_y+needle_radius*sin(angle*PI/180.0);
+
+	math_x[1]=rec_center_x+(needle_radius-0.2)*cos((angle-3.0)*PI/180.0);
+	math_y[1]=rec_center_y+(needle_radius-0.2)*sin((angle-3.0)*PI/180.0);
+
+	math_x[2]=rec_center_x+(needle_radius-0.2)*cos((angle+3.0)*PI/180.0);
+	math_y[2]=rec_center_y+(needle_radius-0.2)*sin((angle+3.0)*PI/180.0);
+
+/*
+	vTracks[i][a] = rec_center_x+needle_radius*cos(angle*PI/180.0);
+	vTracks[i][b] = rec_center_y+needle_radius*sin(angle*PI/180.0);//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x;//+rec_length;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+	vTracks[i][a] = math_x[0];//+rec_length;
+	vTracks[i][b] = math_y[0];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[1];//+rec_length;
+	vTracks[i][b] = math_y[1];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[1];//+rec_length;
+	vTracks[i][b] = math_y[1];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[2];//+rec_length;
+	vTracks[i][b] = math_y[2];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[2];//+rec_length;
+	vTracks[i][b] = math_y[2];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[0];//+rec_length;
+	vTracks[i][b] = math_y[0];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	NeedleGunBatch.Begin(GL_LINES, i);
+	NeedleGunBatch.CopyVertexData3f(vTracks);
+	NeedleGunBatch.End();
+
+	int w=g_windowWidth,h=g_windowHeight;
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+//	m_env.GetviewFrustum()->SetPerspective(90.0f, float(g_windowWidth) / float(g_windowHeight), 0.0f, 4000.0f);
+//	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+//	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);//-h
+//	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vYellow);
+	NeedleGunBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+
+}
+
+void Render::DrawVerCanonAngle(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=2.4,rec_height=3.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+
+//	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+
+	float angle=canon_hor_angle*360.0/65536-180.0;
+
+	float angle_cross_width=rec_width*0.7/2.0/*0.3*/,angle_cross_height=0.5;
+	float angle_cross_x=rec_center_x;
+	float angle_cross_y=angle*rec_height/360.0+rec_center_y;
+
+	a=0;
+	b=1;
+	c=2;
+
+	vTracks[i][a] = angle_cross_x-angle_cross_width/2.0;
+	vTracks[i][b] = angle_cross_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = angle_cross_x+angle_cross_width/2.0;
+	vTracks[i][b] = angle_cross_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+/*
+	vTracks[i][a] = angle_cross_x;
+	vTracks[i][b] = angle_cross_y-angle_cross_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = angle_cross_x;
+	vTracks[i][b] = angle_cross_y+angle_cross_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+	int w=g_windowWidth,h=g_windowHeight;
+
+	VerCanonAngleBatch.Begin(GL_LINES, i);
+	VerCanonAngleBatch.CopyVertexData3f(vTracks);
+	VerCanonAngleBatch.End();
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vYellow);
+	VerCanonAngleBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+
+
+
+	i=0;
+
+	vTracks[i][a] = rec_center_x-rec_width*0.5/2.0;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width*0.5/2.0;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	for(int j=1;j<5;j++)
+	{
+		vTracks[i][a] = rec_center_x-rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y+rec_height*j/12.0;//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y+rec_height*j/12.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x-rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y-rec_height*j/12.0;//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y-rec_height*j/12.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+	}
+
+
+
+	VerCanonRulerBatch.Begin(GL_LINES, i);
+	VerCanonRulerBatch.CopyVertexData3f(vTracks);
+	VerCanonRulerBatch.End();
+
+
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vWhite);
+	VerCanonRulerBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+}
+
+void Render::DrawNeedleCanononCompass(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=2.4,rec_height=3.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+
+//	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+	float get_angle=canon_hor_angle*360.0/65536.0;
+	float angle=450.0-get_angle;
+
+	float delta_angle=0.0;
+
+	if(((get_angle>=45.0)&&(get_angle<=135.0))||((get_angle>=225.0)&&(get_angle<=315.0)))
+	{
+		delta_angle=abs(get_angle-90.0);
+		if(delta_angle<=45.0)
+		{
+			needle_radius=1.1+0.1*delta_angle/45.0;
+		}
+		else
+		{
+			delta_angle=abs(get_angle-270.0);
+			needle_radius=1.1+0.1*delta_angle/45.0;
+		}
+	}
+	else
+	{
+		delta_angle=abs(get_angle-180.0);
+		if(delta_angle<=45.0)
+		{
+			needle_radius=1.2+0.3*(45.0-delta_angle)/45.0;
+		}
+		else
+		{
+			if(get_angle<45.0)
+			{
+				needle_radius=1.2+0.3*(45.0-get_angle)/45.0;
+			}
+			else
+			{
+				needle_radius=1.2+0.3*(get_angle-315.0)/45.0;
+			}
+		}
+	}
+
+	a=0;
+	b=1;
+	c=2;
+
+
+	float math_x[3],math_y[3];
+
+	math_x[0]=rec_center_x+needle_radius*cos(angle*PI/180.0);
+	math_y[0]=rec_center_y+needle_radius*sin(angle*PI/180.0);
+
+	math_x[1]=rec_center_x+(needle_radius-0.2)*cos((angle-3.0)*PI/180.0);
+	math_y[1]=rec_center_y+(needle_radius-0.2)*sin((angle-3.0)*PI/180.0);
+
+	math_x[2]=rec_center_x+(needle_radius-0.2)*cos((angle+3.0)*PI/180.0);
+	math_y[2]=rec_center_y+(needle_radius-0.2)*sin((angle+3.0)*PI/180.0);
+
+/*
+	vTracks[i][a] = rec_center_x-rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y-rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y-rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y-rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y+rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y+rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x-rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y+rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x-rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y+rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x-rec_width/2.0;//+rec_length;
+	vTracks[i][b] = rec_center_y-rec_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+
+/*
+	vTracks[i][a] = rec_center_x+needle_radius*cos(angle*PI/180.0);
+	vTracks[i][b] = rec_center_y+needle_radius*sin(angle*PI/180.0);//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x;//+rec_length;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+
+	vTracks[i][a] = math_x[0];//+rec_length;
+	vTracks[i][b] = math_y[0];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[1];//+rec_length;
+	vTracks[i][b] = math_y[1];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[1];//+rec_length;
+	vTracks[i][b] = math_y[1];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[2];//+rec_length;
+	vTracks[i][b] = math_y[2];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[2];//+rec_length;
+	vTracks[i][b] = math_y[2];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = math_x[0];//+rec_length;
+	vTracks[i][b] = math_y[0];//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+
+//	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);//-h
+//	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+	NeedleCanonBatch.Begin(GL_LINES, i);
+	NeedleCanonBatch.CopyVertexData3f(vTracks);
+	NeedleCanonBatch.End();
+
+	int w=g_windowWidth,h=g_windowHeight;
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vYellow);
+	NeedleCanonBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+}
+
+void Render::DrawNeedleCanononDegree(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=2.4,rec_height=3.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+
+//	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+	float needle_inner_radius=1.0;
+	float angle=450.0-270.0;
+
+	a=0;
+	b=1;
+	c=2;
+
+	for(int j=0;j<4;j++)
+	{
+
+		vTracks[i][a] = rec_center_x+needle_radius*cos((90.0*j+45.0)*PI/180.0);
+		vTracks[i][b] = rec_center_y+needle_radius*sin((90.0*j+45.0)*PI/180.0);//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+needle_inner_radius*cos((90.0*j+45.0)*PI/180.0);
+		vTracks[i][b] = rec_center_y+needle_inner_radius*sin((90.0*j+45.0)*PI/180.0);//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+	}
+
+//	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);//-h
+//	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+	DegreeCanonBatch.Begin(GL_LINES, i);
+	DegreeCanonBatch.CopyVertexData3f(vTracks);
+	DegreeCanonBatch.End();
+
+	int w=g_windowWidth,h=g_windowHeight;
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(4.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vGreen);
+	DegreeCanonBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+}
+
+void Render::DrawVerGunAngle(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=2.4,rec_height=3.0;
+	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+
+	float angle=calc_ver_data*360.0/6000.0-180.0;
+
+	float angle_cross_width=rec_width*0.7/2.0/*0.3*/,angle_cross_height=0.5;
+	float angle_cross_x=rec_center_x;
+	float angle_cross_y=angle*rec_height/360.0+rec_center_y;
+
+	a=0;
+	b=1;
+	c=2;
+
+	vTracks[i][a] = angle_cross_x-angle_cross_width/2.0;
+	vTracks[i][b] = angle_cross_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = angle_cross_x+angle_cross_width/2.0;
+	vTracks[i][b] = angle_cross_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+/*
+	vTracks[i][a] = angle_cross_x;
+	vTracks[i][b] = angle_cross_y-angle_cross_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = angle_cross_x;
+	vTracks[i][b] = angle_cross_y+angle_cross_height/2.0;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+*/
+	int w=g_windowWidth,h=g_windowHeight;
+
+	VerGunAngleBatch.Begin(GL_LINES, i);
+	VerGunAngleBatch.CopyVertexData3f(vTracks);
+	VerGunAngleBatch.End();
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vYellow);
+	VerGunAngleBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+
+
+
+	i=0;
+
+	vTracks[i][a] = rec_center_x-rec_width*0.5/2.0;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	vTracks[i][a] = rec_center_x+rec_width*0.5/2.0;
+	vTracks[i][b] = rec_center_y;//-100.0;
+	vTracks[i][c] = -10.0;//center_y-rec_length;
+	i++;
+
+	for(int j=1;j<5;j++)
+	{
+		vTracks[i][a] = rec_center_x-rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y+rec_height*j/12.0;//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y+rec_height*j/12.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x-rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y-rec_height*j/12.0;//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+rec_width*(0.2+0.1*((j-1)%2))/2.0;
+		vTracks[i][b] = rec_center_y-rec_height*j/12.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+	}
+
+
+
+	VerGunRulerBatch.Begin(GL_LINES, i);
+	VerGunRulerBatch.CopyVertexData3f(vTracks);
+	VerGunRulerBatch.End();
+
+
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(2.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vWhite);
+	VerGunRulerBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+}
+
+void Render::DrawNeedleGunonDegree(GLEnv &m_env)
+{
+
+	GLfloat vTracks[50][3];
+	int i = 0;
+
+	float center_x=g_windowWidth*2.0/4.0;
+	float center_y=g_windowHeight*3.0/4.0;
+	float rec_length=g_windowWidth/2.0;
+
+	int a=0,b=1,c=2;
+
+	float rec_width=2.4,rec_height=3.0;
+	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
+//	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
+	float needle_radius=1.2;
+	float needle_inner_radius=1.0;
+	float angle=450.0-270.0;
+
+	a=0;
+	b=1;
+	c=2;
+
+	for(int j=0;j<4;j++)
+	{
+
+		vTracks[i][a] = rec_center_x+needle_radius*cos((90.0*j+45.0)*PI/180.0);
+		vTracks[i][b] = rec_center_y+needle_radius*sin((90.0*j+45.0)*PI/180.0);//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+
+		vTracks[i][a] = rec_center_x+needle_inner_radius*cos((90.0*j+45.0)*PI/180.0);
+		vTracks[i][b] = rec_center_y+needle_inner_radius*sin((90.0*j+45.0)*PI/180.0);//-100.0;
+		vTracks[i][c] = -10.0;//center_y-rec_length;
+		i++;
+	}
+
+//	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.0f, -h);//-h
+//	m_env.GetmodelViewMatrix()->Scale(w, h, 1.0f);
+	DegreeGunBatch.Begin(GL_LINES, i);
+	DegreeGunBatch.CopyVertexData3f(vTracks);
+	DegreeGunBatch.End();
+
+	int w=g_windowWidth,h=g_windowHeight;
+
+    glViewport(0,0,g_windowWidth,g_windowHeight);
+
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+
+	glLineWidth(4.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vGreen);
+	DegreeGunBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+
+}
 
 void Render::GenerateVGAView()
 {

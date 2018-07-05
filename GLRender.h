@@ -194,6 +194,13 @@ private:
 			 FBO_MODE_COUNT
 		 }fboMode;
 
+		 enum HideLabelState{
+			 SHOW_ALL_LABEL,
+			 HIDE_TEST_LABEL,
+			 HIDE_TEST_COMPASS_LABEL,
+			 HIDE_LABEL_STATE_COUNT
+		 };
+
 	class TimeBar{
 		public:
 			TimeBar():delta_year(0),delta_month(0),delta_day(0),delta_hour(0),delta_minute(0),delta_second(0),indicator(0){buf[0] = 0;}
@@ -549,6 +556,13 @@ private:
 	void DrawCrossonPanel(GLEnv &m_env);
 	void DrawRuleronPanel(GLEnv &m_env);
 	void DrawNeedleonCompass(GLEnv &m_env);
+	void DrawNeedleGunonCompass(GLEnv &m_env);
+	void DrawNeedleGunonDegree(GLEnv &m_env);
+	void DrawVerGunAngle(GLEnv &m_env);
+	void DrawNeedleCanononCompass(GLEnv &m_env);
+	void DrawNeedleCanononDegree(GLEnv &m_env);
+	void DrawVerCanonAngle(GLEnv &m_env);
+	void DrawStateLabel(GLEnv &m_env);
 
 	void DrawTriangle(GLEnv &m_env);
 	 void set_SightWide(int recvWide);
@@ -706,6 +720,16 @@ private:
 	GLBatch CrossFrameBatch;
 	GLBatch RulerFrameBatch;
 	GLBatch NeedleFrameBatch;
+
+	GLBatch NeedleGunBatch;
+	GLBatch DegreeGunBatch;
+	GLBatch VerGunAngleBatch;
+	GLBatch VerGunRulerBatch;
+
+	GLBatch NeedleCanonBatch;
+	GLBatch DegreeCanonBatch;
+	GLBatch VerCanonAngleBatch;
+	GLBatch VerCanonRulerBatch;
 
 	float RulerAngle;
 	GLBatch triangleBatch;
@@ -906,9 +930,15 @@ private:
 
 	int state_label_data[12][3];
 
+	float test_angle;
+
+	int hide_label_state;
+
 	OitVehicle *pPano;
 
 	vector <vector <int> > overlappoint[CAM_COUNT];
+
+	GLFrame NeedleCameraFrame;
 };
 
 void* getDefaultShaderMgr();

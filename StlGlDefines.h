@@ -413,6 +413,20 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define GUN_VER "gun_ver.tga"
 #define CALC_HOR "calc_hor.tga"
 #define CALC_VER "calc_ver.tga"
+#define GUN_CANON_COMPASS "m_compass.tga"
+#define INFO_SHOW "m_info_show.tga"
+#define AROUND_MIRROR "m_around_mirror.tga"
+#define CANON_DATA "m_canon_data.tga"
+#define ORI00 "m_ori00.tga"
+#define ORI01 "m_ori01.tga"
+#define ORI02 "m_ori02.tga"
+#define ORI03 "m_ori03.tga"
+#define ORI04 "m_ori04.tga"
+#define ORI05 "m_ori05.tga"
+#define ORI06 "m_ori06.tga"
+#define ORI07 "m_ori07.tga"
+#define ORI08 "m_ori08.tga"
+#define ORI09 "m_ori09.tga"
 
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
@@ -480,6 +494,23 @@ enum CCT_COUNT {
 		GUN_VER_T,
 		CALC_HOR_T,
 		CALC_VER_T,
+
+		GUN_CANON_COMPASS_T,
+
+		INFO_SHOW_T,
+		CANON_DATA_T,
+		AROUND_MIRROR_T,
+
+		ORI00_T,
+		ORI01_T,
+		ORI02_T,
+		ORI03_T,
+		ORI04_T,
+		ORI05_T,
+		ORI06_T,
+		ORI07_T,
+		ORI08_T,
+		ORI09_T,
 
 		CCT_COUNT
 		};

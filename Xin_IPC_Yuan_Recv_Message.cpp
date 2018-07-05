@@ -55,49 +55,13 @@ typedef enum {
 	KEY_TYPE_MOVEDOWN,
 	KEY_TYPE_MOVELEFT,
 	KEY_TYPE_MOVERIGHT,
-	KEY_TYPE_DEBUGMODE,
+	KEY_TYPE_OVERLAY_INFORMATION,
 
 	KEY_TYPE_F9,
 	KEY_TYPE_F10,
 
 	KEY_TYPE_RESERVE,
 } KEY_TYPE;
-
-typedef enum {
-	DEBUG_ORDER_ORIGIN,
-
-	DEBUG_ORDER_PERISCOPIC_MODE = 0x01,
-	DEBUG_ORDER_CROSS_MOVEUP,
-	DEBUG_ORDER_CROSS_MOVEDOWN,
-	DEBUG_ORDER_CROSS_MOVELEFT,
-	DEBUG_ORDER_CROSS_MOVERIGHT,
-	DEBUG_ORDER_TARGETDETECTION_ON,
-	DEBUG_ORDER_TARGETDETECTION_OFF,
-	DEBUG_ORDER_TRIMMING_ON,
-	DEBUG_ORDER_CHOOSECAMERA_LEFT,
-	DEBUG_ORDER_CHOOSECAMERA_RIGHT,
-	DEBUG_ORDER_CHECKEDCAMERA_MOVEUP,
-	DEBUG_ORDER_CHECKEDCAMERA_MOVEDOWN,
-	DEBUG_ORDER_CHECKEDCAMERA_MOVELEFT,
-	DEBUG_ORDER_CHECKEDCAMERA_MOVERIGHT,
-	DEBUG_ORDER_SAVE_TRIMMING_RESULT,
-	DEBUG_ORDER_CLEAN_CHECKEDCAMERA_RESULT,
-	DEBUG_ORDER_CLEAN_ALLCAMERA_RESULT,
-	DEBUG_ORDER_TRIMMING_OFF,
-	DEBUG_ORDER_SINGLECAMERA_MODE,
-	DEBUG_ORDER_SINGLECAMERA_0,
-	DEBUG_ORDER_SINGLECAMERA_1,
-	DEBUG_ORDER_SINGLECAMERA_2,
-	DEBUG_ORDER_SINGLECAMERA_3,
-	DEBUG_ORDER_SINGLECAMERA_4,
-	DEBUG_ORDER_SINGLECAMERA_5,
-	DEBUG_ORDER_SINGLECAMERA_6,
-	DEBUG_ORDER_SINGLECAMERA_7,
-	DEBUG_ORDER_SINGLECAMERA_8,
-	DEBUG_ORDER_SINGLECAMERA_9,
-
-	DEBUG_ORDER_RESERVE,
-} DEBUG_ORDER;
 
 typedef struct {
 	long msg_type;
@@ -124,14 +88,8 @@ ANGLE_GROUP AngleFar_GunAngle = { 0, 0 };
 ANGLE_GROUP AngleFar_CanonAngle = { 0, 0 };
 Cap_Msg CaptureMessage = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		1, 1, 1, 1, 1, 1, 1 };
-DEBUG_MODE Debug_SwitchMode[2] = { DEBUG_MODE_START, DEBUG_MODE_START };
-MOVE_TYPE Debug_CrossMoveDirectiom[2] = { MOVETYPE_START, MOVETYPE_START };
-int Debug_TargetDetectionState[2] = { -1, -1 };
-DEBUG_STATE Debug_State[2] = { DEBUG_STATE_ORIGIN, DEBUG_STATE_ORIGIN };
-DEBUG_CHOOSECAMERA Debug_ChooseCamera[2] = { DEBUG_CHOOSEVIDEO_ORIGIN,
-		DEBUG_CHOOSEVIDEO_ORIGIN };
-MOVE_TYPE Debug_CameraMoveDirection[2] = { MOVETYPE_START, MOVETYPE_START };
-
+DEBUG_ORDER DebugModeOrder[2] = { DEBUG_ORDER_ORIGIN, DEBUG_ORDER_ORIGIN };
+int OverlayInformation[2] = { 0, 0 };
 #define  IPC_ftok_path "/home/"
 pthread_mutex_t Mutex[2] = PTHREAD_MUTEX_INITIALIZER;
 
@@ -335,8 +293,9 @@ void *Recv_ipc_Ephor(void *arg) {
 			case KEY_TYPE_SINGLE_WINDOWS:
 				Key_SwitchMode[0] = Mode_Type_SINGLE_POPUP_WINDOWS;
 				break;
-			case KEY_TYPE_DEBUGMODE:
-				Key_SwitchMode[0] = Mode_Type_DEBUG;
+			case KEY_TYPE_OVERLAY_INFORMATION:
+				OverlayInformation[0] += 1;
+				OverlayInformation[0] %= 3;
 				break;
 			case KEY_TYPE_TARGET_DETECTION:
 				Key_TargetDetectionState[0] = 1;
@@ -363,105 +322,13 @@ void *Recv_ipc_Ephor(void *arg) {
 			break;
 		case IPC_MSG_TYPE_TRIMMING:
 			pthread_mutex_lock(&Mutex[0]);
-			switch (msg.payload.key_value) {
-			case DEBUG_ORDER_PERISCOPIC_MODE:
-				Debug_SwitchMode[0] = DEBUG_MODE_PERISCOPIC;
-				break;
-			case DEBUG_ORDER_CROSS_MOVEUP:
-				Debug_CrossMoveDirectiom[0] = MOVE_TYPE_MOVEUP;
-				break;
-			case DEBUG_ORDER_CROSS_MOVEDOWN:
-				Debug_CrossMoveDirectiom[0] = MOVE_TYPE_MOVEDOWN;
-				break;
-			case DEBUG_ORDER_CROSS_MOVELEFT:
-				Debug_CrossMoveDirectiom[0] = MOVE_TYPE_MOVELEFT;
-				break;
-			case DEBUG_ORDER_CROSS_MOVERIGHT:
-				Debug_CrossMoveDirectiom[0] = MOVE_TYPE_MOVERIGHT;
-				break;
-			case DEBUG_ORDER_TARGETDETECTION_ON:
-				Debug_TargetDetectionState[0] = 1;
-				break;
-			case DEBUG_ORDER_TARGETDETECTION_OFF:
-				Debug_TargetDetectionState[0] = 0;
-				break;
-			case DEBUG_ORDER_TRIMMING_ON:
-				Debug_State[0] = DEBUG_STATE_ON;
-				break;
-			case DEBUG_ORDER_CHOOSECAMERA_LEFT:
-				Debug_ChooseCamera[0] = DEBUG_CHOOSEVIDEO_LEFT;
-				break;
-			case DEBUG_ORDER_CHOOSECAMERA_RIGHT:
-				Debug_ChooseCamera[0] = DEBUG_CHOOSEVIDEO_RIGHT;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVEUP:
-				Debug_CameraMoveDirection[0] = MOVE_TYPE_MOVEUP;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVEDOWN:
-				Debug_CameraMoveDirection[0] = MOVE_TYPE_MOVEDOWN;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVELEFT:
-				Debug_CameraMoveDirection[0] = MOVE_TYPE_MOVELEFT;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVERIGHT:
-				Debug_CameraMoveDirection[0] = MOVE_TYPE_MOVERIGHT;
-				break;
-			case DEBUG_ORDER_SAVE_TRIMMING_RESULT:
-				Debug_State[0] = DEBUG_STATE_SAVE;
-				break;
-			case DEBUG_ORDER_CLEAN_CHECKEDCAMERA_RESULT:
-				Debug_State[0] = DEBUG_STATE_CLEAN_CHECKEDCAMERA;
-				break;
-			case DEBUG_ORDER_CLEAN_ALLCAMERA_RESULT:
-				Debug_State[0] = DEBUG_STATE_CLEAN_ALLCAMERA;
-				break;
-			case DEBUG_ORDER_TRIMMING_OFF:
-				Debug_State[0] = DEBUG_STATE_OFF;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_MODE:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_0:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO0;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_1:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO1;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_2:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO2;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_3:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO3;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_4:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO4;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_5:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO5;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_6:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO6;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_7:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO7;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_8:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO8;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_9:
-				Debug_SwitchMode[0] = DEBUG_MODE_SINGLE_VIDEO9;
-				break;
-			default:
-				printf("No DEBUG_ORDER!\n");
-			}
+			DebugModeOrder[0] = msg.payload.debugorder;
 			pthread_mutex_unlock(&Mutex[0]);
 			break;
 		default:
 			printf("%s no msg.msg_type ", __FUNCTION__);
 		}
 	}
-	printf("++++++++++++Recv_ipc_Ephor msg.msg_type:%0.2ld+++++++++++++++++\n",
-			msg.msg_type);
 }
 
 void *Recv_ipc_Driver(void *arg) {
@@ -486,6 +353,37 @@ void *Recv_ipc_Driver(void *arg) {
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_DRIVER_KEY:
+			pthread_mutex_lock(&Mutex[1]);
+			switch (msg.payload.key_value) {
+			case KEY_TYPE_SINGLE_WINDOWS:
+				Key_SwitchMode[1] = Mode_Type_SINGLE_POPUP_WINDOWS;
+				break;
+			case KEY_TYPE_OVERLAY_INFORMATION:
+				OverlayInformation[1] += 1;
+				OverlayInformation[1] %= 3;
+				break;
+			case KEY_TYPE_TARGET_DETECTION:
+				Key_TargetDetectionState[1] = 1;
+				break;
+			case KEY_TYPE_IMAGE_ENHANCEMENT:
+				Key_ImageEnhancementState[1] = 1;
+				break;
+			case KEY_TYPE_MOVEUP:
+				Key_MoveDirection[1] = MOVE_TYPE_MOVEUP;
+				break;
+			case KEY_TYPE_MOVEDOWN:
+				Key_MoveDirection[1] = MOVE_TYPE_MOVEDOWN;
+				break;
+			case KEY_TYPE_MOVELEFT:
+				Key_MoveDirection[1] = MOVE_TYPE_MOVELEFT;
+				break;
+			case KEY_TYPE_MOVERIGHT:
+				Key_MoveDirection[1] = MOVE_TYPE_MOVERIGHT;
+				break;
+			default:
+				printf("No KEY_TYPE!\n");
+			}
+			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_TURN_STATE:
 			break;
@@ -561,131 +459,11 @@ void *Recv_ipc_Driver(void *arg) {
 		case IPC_MSG_TYPE_CAPTURE_CONTROL:
 			break;
 		case IPC_MSG_TYPE_ETHOR_KEY:
-			pthread_mutex_lock(&Mutex[1]);
-			switch (msg.payload.key_value) {
-			case KEY_TYPE_SINGLE_WINDOWS:
-				Key_SwitchMode[1] = Mode_Type_SINGLE_POPUP_WINDOWS;
-				break;
-			case KEY_TYPE_DEBUGMODE:
-				Key_SwitchMode[1] = Mode_Type_DEBUG;
-				break;
-			case KEY_TYPE_TARGET_DETECTION:
-				Key_TargetDetectionState[1] = 1;
-				break;
-			case KEY_TYPE_IMAGE_ENHANCEMENT:
-				Key_ImageEnhancementState[1] = 1;
-				break;
-			case KEY_TYPE_MOVEUP:
-				Key_MoveDirection[1] = MOVE_TYPE_MOVEUP;
-				break;
-			case KEY_TYPE_MOVEDOWN:
-				Key_MoveDirection[1] = MOVE_TYPE_MOVEDOWN;
-				break;
-			case KEY_TYPE_MOVELEFT:
-				Key_MoveDirection[1] = MOVE_TYPE_MOVELEFT;
-				break;
-			case KEY_TYPE_MOVERIGHT:
-				Key_MoveDirection[1] = MOVE_TYPE_MOVERIGHT;
-				break;
-			default:
-				printf("No KEY_TYPE!\n");
-			}
-			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_TRIMMING:
 			pthread_mutex_lock(&Mutex[1]);
-			switch (msg.payload.key_value) {
-			case DEBUG_ORDER_PERISCOPIC_MODE:
-				Debug_SwitchMode[1] = DEBUG_MODE_PERISCOPIC;
-				break;
-			case DEBUG_ORDER_CROSS_MOVEUP:
-				Debug_CrossMoveDirectiom[1] = MOVE_TYPE_MOVEUP;
-				break;
-			case DEBUG_ORDER_CROSS_MOVEDOWN:
-				Debug_CrossMoveDirectiom[1] = MOVE_TYPE_MOVEDOWN;
-				break;
-			case DEBUG_ORDER_CROSS_MOVELEFT:
-				Debug_CrossMoveDirectiom[1] = MOVE_TYPE_MOVELEFT;
-				break;
-			case DEBUG_ORDER_CROSS_MOVERIGHT:
-				Debug_CrossMoveDirectiom[1] = MOVE_TYPE_MOVERIGHT;
-				break;
-			case DEBUG_ORDER_TARGETDETECTION_ON:
-				Debug_TargetDetectionState[1] = 1;
-				break;
-			case DEBUG_ORDER_TARGETDETECTION_OFF:
-				Debug_TargetDetectionState[1] = 0;
-				break;
-			case DEBUG_ORDER_TRIMMING_ON:
-				Debug_State[1] = DEBUG_STATE_ON;
-				break;
-			case DEBUG_ORDER_CHOOSECAMERA_LEFT:
-				Debug_ChooseCamera[1] = DEBUG_CHOOSEVIDEO_LEFT;
-				break;
-			case DEBUG_ORDER_CHOOSECAMERA_RIGHT:
-				Debug_ChooseCamera[1] = DEBUG_CHOOSEVIDEO_RIGHT;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVEUP:
-				Debug_CameraMoveDirection[1] = MOVE_TYPE_MOVEUP;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVEDOWN:
-				Debug_CameraMoveDirection[1] = MOVE_TYPE_MOVEDOWN;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVELEFT:
-				Debug_CameraMoveDirection[1] = MOVE_TYPE_MOVELEFT;
-				break;
-			case DEBUG_ORDER_CHECKEDCAMERA_MOVERIGHT:
-				Debug_CameraMoveDirection[1] = MOVE_TYPE_MOVERIGHT;
-				break;
-			case DEBUG_ORDER_SAVE_TRIMMING_RESULT:
-				Debug_State[1] = DEBUG_STATE_SAVE;
-				break;
-			case DEBUG_ORDER_CLEAN_CHECKEDCAMERA_RESULT:
-				Debug_State[1] = DEBUG_STATE_CLEAN_CHECKEDCAMERA;
-				break;
-			case DEBUG_ORDER_CLEAN_ALLCAMERA_RESULT:
-				Debug_State[1] = DEBUG_STATE_CLEAN_ALLCAMERA;
-				break;
-			case DEBUG_ORDER_TRIMMING_OFF:
-				Debug_State[1] = DEBUG_STATE_OFF;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_MODE:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_0:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO0;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_1:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO1;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_2:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO2;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_3:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO3;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_4:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO4;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_5:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO5;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_6:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO6;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_7:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO7;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_8:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO8;
-				break;
-			case DEBUG_ORDER_SINGLECAMERA_9:
-				Debug_SwitchMode[1] = DEBUG_MODE_SINGLE_VIDEO9;
-				break;
-			default:
-				printf("No DEBUG_ORDER!\n");
-			}
-			pthread_mutex_unlock(&Mutex[0]);
+			DebugModeOrder[1] = msg.payload.debugorder;
+			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		default:
 			printf("%s no msg.msg_type!\n ", __FUNCTION__);
@@ -727,7 +505,7 @@ Mode_Type getKey_SwitchMode(IPC_NUM_TYPE n) {
 	Mode_Type temp = Key_SwitchMode[n];
 	Key_SwitchMode[n] = Mode_Type_START;
 	return temp;
-} //得到车长显示器按键切换的模式,只能调用一次，之后数据会清除
+} //得到显示器按键切换的模式,只能调用一次，之后数据会清除
 int getKey_TargetDetectionState(IPC_NUM_TYPE n) {
 	err_IPC_NUM_TYPE(n);
 	int temp = Key_TargetDetectionState[n];
@@ -766,37 +544,20 @@ Cap_Msg getCaptureMessage() {
 	return temp;
 } //采集信息，数据会一直保存，并根据新信息更新
 /*微调*/
-DEBUG_MODE getDebug_SwitchMode(IPC_NUM_TYPE n) {
+
+DEBUG_ORDER getDebugModeOrder(IPC_NUM_TYPE n) {
 	err_IPC_NUM_TYPE(n);
-	DEBUG_MODE temp = Debug_SwitchMode[n];
-	Debug_SwitchMode[n] = DEBUG_MODE_START;
-	return temp;
-} //切换模式，数据调用后清除
-MOVE_TYPE getDebug_CrossMoveDirectiom(IPC_NUM_TYPE n) {
+	if ((DebugModeOrder[n] > DEBUG_ORDER_ORIGIN)
+			&& (DebugModeOrder[n] < DEBUG_ORDER_RESERVE)) {
+		DEBUG_ORDER temp = DebugModeOrder[n];
+		DebugModeOrder[n] = DEBUG_ORDER_ORIGIN;
+		return temp;
+	} else {
+		DebugModeOrder[n] = DEBUG_ORDER_ORIGIN;
+		return DEBUG_ORDER_ORIGIN;
+	}
+} //得到微调发送的命令编号，调用一次后清除
+int getOverlayInformation(IPC_NUM_TYPE n) {
 	err_IPC_NUM_TYPE(n);
-	MOVE_TYPE temp = Debug_CrossMoveDirectiom[n];
-	Debug_CrossMoveDirectiom[n] = MOVETYPE_START;
-	return temp;
-} //十字标移动方向，数据调用后清除
-int getDebug_TargetDetectionState(IPC_NUM_TYPE n) {
-	err_IPC_NUM_TYPE(n);
-	int temp = Debug_TargetDetectionState[n];
-	Debug_TargetDetectionState[n] = 0;
-	return temp;
-} //目标检测状态，数据调用后清除
-DEBUG_STATE getDebug_State(IPC_NUM_TYPE n) {
-	err_IPC_NUM_TYPE(n);
-	DEBUG_STATE temp = Debug_State[n];
-	Debug_State[n] = DEBUG_STATE_ORIGIN;
-	return temp;
-} //微调状态，数据调用后清除
-DEBUG_CHOOSECAMERA getDebug_ChooseCamera(IPC_NUM_TYPE n) {
-	err_IPC_NUM_TYPE(n);
-	DEBUG_CHOOSECAMERA temp;
-	return temp;
-} //选择相机，数据调用后清除
-MOVE_TYPE getDebug_CameraMoveDirection(IPC_NUM_TYPE n) {
-	err_IPC_NUM_TYPE(n);
-	MOVE_TYPE temp;
-	return temp;
-} //相机画面移动方向，数据调用后清除
+	return OverlayInformation[n];
+} //得到叠加信息的显示状态，数据会保存不清除，返回值0：默认全部显示；1：隐藏检测信息；2：同时隐藏炮塔和周视镜方位信息
