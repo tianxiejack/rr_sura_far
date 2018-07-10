@@ -7,6 +7,7 @@ public:
 	static ChosenCaptureGroup * GetMainInstance();
 	static ChosenCaptureGroup * GetSubInstance();
 	static ChosenCaptureGroup * GetMvDetectInstance();
+	static ChosenCaptureGroup * GetMvDetect_add_Instance();
 		~ChosenCaptureGroup();
 	virtual void CreateProducers();
 	virtual void OpenProducers();
@@ -17,6 +18,7 @@ private:
 	static ChosenCaptureGroup MainChosenGroup;
 	static ChosenCaptureGroup SubChosenGroup;
 	static ChosenCaptureGroup MvDetectGroup;
+	static ChosenCaptureGroup MvDetect_add_Group;
 };
 #endif
 

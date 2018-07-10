@@ -6457,6 +6457,42 @@ if(setpriorityOnce)
 	int extBillBoardx = 0, extBillBoardy = g_windowHeight*15/16;//*7/8;
 	static int last_mode=0;
 
+	if(IsMvDetect)
+	{
+		tIdle.threadRun(MVDECT_CN);
+		tIdle.threadRun(MVDECT_ADD_CN);
+	}
+	static int mv_open_once=true;
+	static int mv_close_once=true;
+	if(IsMvDetect)
+	{
+#if MVDECT
+		if(mv_open_once)
+		{
+			setFirst();
+		//	printf("setFirst+++++++++\n");
+			mv_open_once=false;
+			mv_close_once=true;
+		}
+#endif
+		//tIdle.threadRun(MVDECT_CN);
+		//tIdle.threadRun(MVDECT_ADD_CN);
+	}
+	else
+	{
+#if MVDECT
+		if(mv_close_once)
+		{
+			deleteZombie();
+		//	printf("deleteZombie--------------\n");
+			mv_open_once=true;
+			mv_close_once=false;
+		}
+#endif
+		//tIdle.threadIdle(MVDECT_CN);
+		//tIdle.threadIdle(MVDECT_ADD_CN);
+	}
+
 #ifdef GL_TIME_STAMP
 	GLuint queries[4];
 	GLuint startTime, rearTime, birdTime, fboTime;

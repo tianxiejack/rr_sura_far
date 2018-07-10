@@ -13,7 +13,7 @@ class GLEnv
 public:
 	GLEnv(CaptureGroup *p_pano=NULL,CaptureGroup *p_chosen=NULL,CaptureGroup *p_misc=NULL);
 	~GLEnv(){};
-	void init(CaptureGroup *p_pano,CaptureGroup *p_chosen,CaptureGroup *p_mvdetect,CaptureGroup *p_misc);
+	void init(CaptureGroup *p_pano,CaptureGroup *p_chosen,CaptureGroup *p_mvdetect,CaptureGroup *p_mvdetect_add,CaptureGroup *p_misc);
 	GLMatrixStack *GetmodelViewMatrix();
 	GLMatrixStack	*GetprojectionMatrix();
 	GLGeometryTransform *GettransformPipeline();
@@ -46,6 +46,7 @@ private:
 	CaptureGroup * m_chosenCaptureGroup;
 	CaptureGroup * m_miscCaptureGroup;
 	CaptureGroup *m_mvdectCaptureGroup;
+	CaptureGroup *m_mvdect_addCaptureGroup;
 	GLMatrixStack	modelViewMatrix;
 	GLMatrixStack	projectionMatrix;
 	GLGeometryTransform transformPipeline;

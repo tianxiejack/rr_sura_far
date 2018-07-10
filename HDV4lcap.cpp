@@ -620,14 +620,10 @@ int HDv4l_cam::read_frame(int now_pic_format)
 				assert(buf.index < n_buffers);
 			 if (buffers[buf.index].start!=NULL)
 			{
-				 if(now_pic_format==0)
-				 {
-					 printf("now_pic_format=0,0 dev is not used!\n");
-					 assert(false);
-				 }
 				 char filename[20];
 				 static int mvDectCount=0;
 				 static int mv_count=0;
+				 int CC_enh_mvd=0;
 					int chid[2]={-1,-1};
 					int nowGrayidx=-1;
 					int nowpicW=SDI_WIDTH,nowpicH=SDI_HEIGHT;
@@ -652,12 +648,24 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						transformed_src_main=&select_bgr_data_main;
 						break;
 					case MVDECT_CN:
+					case MVDECT_ADD_CN:
 					//	chid[MAIN]=ChangeIdx2chid(MAIN);
 						nowGrayidx=GetNowPicIdx((unsigned char *)buffers[buf.index].start);
 			//todo  change
-						chid[MAIN]=nowGrayidx+1;
+						if(nowGrayidx>=11||nowGrayidx<=0)
+						{
+						//	printf("nowGrayidx~~~~~~~~~~~~~~~~~~=%d\n",nowGrayidx);
+						chid[MAIN]=0;
 						//nowGrayidx=mv_count;
-						transformed_src_main=&MVDECT_data_main[nowGrayidx-1];
+						transformed_src_main=&MVDECT_data_main[0];
+
+						}
+						else
+						{
+							chid[MAIN]=nowGrayidx+1;
+							//nowGrayidx=mv_count;
+							transformed_src_main=&MVDECT_data_main[nowGrayidx-1];
+						}
 						break;
 					case FPGA_SIX_CN:
 						chid[MAIN]=MAIN_FPGA_SIX;
@@ -670,7 +678,8 @@ int HDv4l_cam::read_frame(int now_pic_format)
 					}
 					if(chid[MAIN]!=-1) //车长
 					{
-						if(now_pic_format==MVDECT_CN)//移动检测
+						if(now_pic_format==MVDECT_CN
+								||now_pic_format==MVDECT_ADD_CN)//移动检测
 						{
 						{
 							#if MVDECT
@@ -701,10 +710,14 @@ int HDv4l_cam::read_frame(int now_pic_format)
 							{
 								if(	enable_hance)
 								{
+									CC_enh_mvd=2;
 									memcpy(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW*nowpicH*2);
 								}
 								else
-								UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								{
+									CC_enh_mvd=3;
+									UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
+								}
 								//todo //４副　６副
 #if MVDECT
 							//	if(mv_detect.MDisStart())
@@ -713,11 +726,11 @@ int HDv4l_cam::read_frame(int now_pic_format)
 									mv_detect.SetoutRect();
 									if(nowpicW==1280)
 									{
-										mv_detect.DrawRectOnpic(*transformed_src_main,MAIN_FPGA_FOUR);
+										mv_detect.DrawRectOnpic(*transformed_src_main,MAIN_FPGA_FOUR,CC_enh_mvd);
 									}
 									else if (nowpicW==1920)
 									{
-										mv_detect.DrawRectOnpic(*transformed_src_main,MAIN_FPGA_SIX);
+										mv_detect.DrawRectOnpic(*transformed_src_main,MAIN_FPGA_SIX,CC_enh_mvd);
 									}
 								}
 #endif
@@ -1012,6 +1025,9 @@ void HDv4l_cam::mainloop(int now_pic_format)
 		case	 FPGA_SIX_CN :
 			l=THREAD_L_6;
 						break;
+		case	 MVDECT_ADD_CN	:
+				l=THREAD_L_MVDECT;
+							break;
 		default:
 			assert(false);
 
@@ -1041,7 +1057,8 @@ void HDv4l_cam::mainloop(int now_pic_format)
 		}else if (0 == ret)
 		{
 			fprintf(stderr, "select timeout\n");
-			exit(EXIT_FAILURE);
+			return;
+			//exit(EXIT_FAILURE);
 		}
 			if (-1 == read_frame(now_pic_format))  /* EAGAIN - continue select loop. */
 				return;

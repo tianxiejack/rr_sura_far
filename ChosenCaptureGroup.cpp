@@ -2,7 +2,8 @@
 #include"HDV4lcap.h"
 ChosenCaptureGroup ChosenCaptureGroup::MainChosenGroup(SDI_WIDTH,SDI_HEIGHT,3,MAIN_AND_SUB_EXT_COUNT);
 ChosenCaptureGroup ChosenCaptureGroup::SubChosenGroup(SDI_WIDTH,SDI_HEIGHT,3,SUB_EXT_COUNT);
-ChosenCaptureGroup ChosenCaptureGroup::MvDetectGroup(SDI_WIDTH,SDI_HEIGHT,3,MVDECT_CAM_COUNT);
+ChosenCaptureGroup ChosenCaptureGroup::MvDetectGroup(SDI_WIDTH,SDI_HEIGHT,3,MVDECT_CAM_COUNT/2);
+ChosenCaptureGroup ChosenCaptureGroup::MvDetect_add_Group(SDI_WIDTH,SDI_HEIGHT,3,MVDECT_CAM_COUNT/2);
 static HDAsyncVCap4* pHDAsyncVCap[MAX_CC]={0};
 ChosenCaptureGroup::ChosenCaptureGroup(unsigned int w,unsigned int h,int NCHAN,unsigned int capCount):
 		HDCaptureGroup(w,h,NCHAN,capCount)
@@ -20,6 +21,10 @@ void  ChosenCaptureGroup::CreateProducers()
 			if(pHDAsyncVCap[dev_id]==NULL)
 				pHDAsyncVCap[dev_id] = new HDAsyncVCap4(auto_ptr<BaseVCap>( new HDv4l_cam(dev_id,SDI_WIDTH,SDI_HEIGHT)),dev_id);
 
+			dev_id=MVDECT_ADD_CN;
+					if(pHDAsyncVCap[dev_id]==NULL)
+						pHDAsyncVCap[dev_id] = new HDAsyncVCap4(auto_ptr<BaseVCap>( new HDv4l_cam(dev_id,SDI_WIDTH,SDI_HEIGHT)),dev_id);
+
 };
 
 void  ChosenCaptureGroup::OpenProducers()
@@ -30,7 +35,8 @@ void  ChosenCaptureGroup::OpenProducers()
 	 pHDAsyncVCap[dev_id]->Open();
 	 dev_id=MVDECT_CN;
 	 	 pHDAsyncVCap[dev_id]->Open();
-
+	 dev_id=MVDECT_ADD_CN;
+			 pHDAsyncVCap[dev_id]->Open();
 }
 
 ChosenCaptureGroup::~ChosenCaptureGroup()
@@ -43,19 +49,31 @@ ChosenCaptureGroup::~ChosenCaptureGroup()
 		}
 	}
 }
-ChosenCaptureGroup * ChosenCaptureGroup::GetMvDetectInstance()
+ChosenCaptureGroup * ChosenCaptureGroup::GetMvDetect_add_Instance()
 {
-	int queueid[10]={MAIN_1,
+	int queueid[5]={MAIN_1,
 			MAIN_2,
 			MAIN_3,
 			MAIN_4,
-			MAIN_5,
+			MAIN_5
+		};
+	int count=5;
+	static bool once =true;
+	if(once){
+		MvDetect_add_Group.init(queueid,count);
+		once =false;
+	}
+	return &MvDetect_add_Group;
+}
+ChosenCaptureGroup * ChosenCaptureGroup::GetMvDetectInstance()
+{
+	int queueid[5]={
 			MAIN_6,
 			MAIN_7,
 			MAIN_8,
 			MAIN_9,
 			MAIN_10};
-	int count=10;
+	int count=5;
 	static bool once =true;
 	if(once){
 		MvDetectGroup.init(queueid,count);

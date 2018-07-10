@@ -7,7 +7,8 @@ using namespace std;
 extern void createDetect(unsigned char inNumber,int inwidth,int inheight);
 extern void exitDetect();
 extern void mvDetect(unsigned char index,unsigned char* inframe,int width,int height,cv::Rect *boundRect,bool* done);
-
+extern void setFirst();
+extern void deleteZombie();
 //index 代表第几个 检测OBJ 执行，boundRect 输出 目标的矩形框参数
 //extern void mvDetect(unsigned char index,unsigned char* inframe,int width,int height,vector<cv::Rect> *boundRect);
 #define  MAX_RECT_COUNT 6
@@ -38,7 +39,7 @@ public:
 	MvDetect();
 	~MvDetect();
 
-	void DrawRectOnpic(unsigned char *src,int capidx);
+	void DrawRectOnpic(unsigned char *src,int capidx,int CC_enh_mvd);
 	void selectFrame(unsigned char *dst,unsigned char *src,int targetId,int camIdx);
 
 

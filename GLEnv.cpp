@@ -108,11 +108,12 @@ void GLEnv::Set_FboPboFacade(FBOManager  &FBOMgr,PBOReceiver  &PBORcr)
 	mp_FboPboFacade=new PBO_FBO_Facade(FBOMgr,PBORcr);
 }
 
-void GLEnv::init(CaptureGroup *p_pano,CaptureGroup *p_chosen,CaptureGroup *p_mvdetect,CaptureGroup *p_misc)
+void GLEnv::init(CaptureGroup *p_pano,CaptureGroup *p_chosen,CaptureGroup *p_mvdetect,CaptureGroup *p_mvdetect_add,CaptureGroup *p_misc)
 {
 	m_panoCaptureGroup=p_pano;
 	m_chosenCaptureGroup=p_chosen;
 	m_miscCaptureGroup=p_misc;
 	m_mvdectCaptureGroup=p_mvdetect;
+	m_mvdect_addCaptureGroup=p_mvdetect_add;
 }
 
