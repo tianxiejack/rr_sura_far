@@ -4363,6 +4363,7 @@ m_env.GetmodelViewMatrix()->Translate(0.0,0.0,-3.0);
 
 void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,int mainOrsub)
 {
+
 			int petal0[CAM_COUNT];
 			memset(petal0,-1,sizeof(petal0));
 			int petal1[CAM_COUNT];
@@ -4370,7 +4371,7 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 			int petal2[CAM_COUNT];
 			memset(petal2,-1,sizeof(petal2));
 			int temp_petal[CAM_COUNT];
-			memset(temp_petal,-1,sizeof(temp_petal));
+					memset(temp_petal,-1,sizeof(temp_petal));
 			int petal3[CAM_COUNT];
 			memset(petal3,-1,sizeof(petal3));
 			int petal4[CAM_COUNT];
@@ -4415,14 +4416,10 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 			center_cam[mainOrsub]=(int)temp_math[mainOrsub];
 			center_cam[mainOrsub]++;
 		}
-			if(Cam_num[center_cam[mainOrsub]]==0)
-			{
-				petal0[9]=9;
-			}
-			else
-				petal0[Cam_num[center_cam[mainOrsub]]-1]=Cam_num[center_cam[mainOrsub]]-1;
+
+		petal0[(Cam_num[center_cam[mainOrsub]]+CAM_COUNT-1)%CAM_COUNT]=(Cam_num[center_cam[mainOrsub]]+CAM_COUNT-1)%CAM_COUNT;
 		petal1[Cam_num[center_cam[mainOrsub]]]=Cam_num[center_cam[mainOrsub]];
-		petal2[Cam_num[center_cam[mainOrsub]]+1]=Cam_num[center_cam[mainOrsub]]+1;
+		petal2[(Cam_num[center_cam[mainOrsub]]+1)%CAM_COUNT]=(Cam_num[center_cam[mainOrsub]]+1)%CAM_COUNT;
 		if(Cam_num[center_cam[mainOrsub]]==9)
 		{
 			petal3[0]=0;
@@ -7628,6 +7625,9 @@ state_label_data[5][2]=0;
 //				p_ChineseCBillBoard->ChooseTga=F9_T;
 //				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 //				index_i++;
+
+if(displayMode==ALL_VIEW_MODE)
+{
 				hide_label_state=getOverlayInformation(TRANSFER_TO_APP_ETHOR);
 				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
 				{
@@ -7678,11 +7678,11 @@ state_label_data[5][2]=0;
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
 				}
-				env.GetmodelViewMatrix()->PopMatrix();
+
 
 				if(hide_label_state==SHOW_ALL_LABEL)
 				{
-
+					env.GetmodelViewMatrix()->PopMatrix();
 					int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
 					int label_hor_move=-g_windowWidth/15;
 					glViewport(x,y,w,h);
@@ -7748,7 +7748,7 @@ state_label_data[5][2]=0;
 					}
 					env.GetmodelViewMatrix()->PopMatrix();
 				}
-
+}
 
 			}
 }

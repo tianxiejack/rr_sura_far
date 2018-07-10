@@ -30,10 +30,11 @@ void Render::FBOdraw()
 			RenderChineseCharacterBillBoardAt(env,g_windowWidth*1700/1920.0, g_windowHeight*500.0/1080.0, g_windowWidth*0.6,g_windowHeight*0.6);
 			p_ChineseCBillBoard->ChooseTga=PANORAMIC_MIRROR_T;
 			RenderChineseCharacterBillBoardAt(env,g_windowWidth*1700/1920.0, g_windowHeight*300.0/1080.0, g_windowWidth*0.6,g_windowHeight*0.6);
-			DrawGapLine(env);
+		}
+		DrawGapLine(env);
 			RenderRulerView(env,(-3.0*1920.0)/1920.0,1080.0*1030/1080.0,1920.0,1080.0*140.0/1080.0/2.0,RULER_90);
 			RenderRulerView(env,(-3.0*1920.0)/1920.0,1080.0*779.0/1080.0+34,1920.0,1080.0*140.0/1080.0/2.0,RULER_180);
-		}
+
 //		p_ChineseCBillBoard->ChooseTga=ANGLE_T;
 //		RenderChineseCharacterBillBoardAt(env,g_windowWidth*1250/1920.0, g_windowHeight*630.0/1080.0, g_windowWidth*0.85,g_windowHeight*0.85);
 
