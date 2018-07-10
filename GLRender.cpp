@@ -6710,7 +6710,7 @@ if(setpriorityOnce)
 //if(g_windowHeight==768)
 {
 	//	RenderRightForeSightView(env,0,g_windowHeight*538.0/768.0,g_windowWidth, g_windowHeight*116.0/768.0,MAIN);
-		//RenderLeftForeSightView(env,0,g_windowHeight*655.0/768.0,g_windowWidth, g_windowHeight*115.0/768.0,MAIN);
+	//	RenderLeftForeSightView(env,0,g_windowHeight*655.0/768.0,g_windowWidth, g_windowHeight*115.0/768.0,MAIN);
 }
 //else
 {
@@ -7714,11 +7714,13 @@ if(displayMode==ALL_VIEW_MODE)
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
 				}
-
-
+}
+				env.GetmodelViewMatrix()->PopMatrix();
+	if(displayMode==ALL_VIEW_MODE)
+	{
 				if(hide_label_state==SHOW_ALL_LABEL)
 				{
-					env.GetmodelViewMatrix()->PopMatrix();
+
 					int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
 					int label_hor_move=-g_windowWidth/15;
 					glViewport(x,y,w,h);
@@ -7784,7 +7786,7 @@ if(displayMode==ALL_VIEW_MODE)
 					}
 					env.GetmodelViewMatrix()->PopMatrix();
 				}
-}
+	}
 
 			}
 }
