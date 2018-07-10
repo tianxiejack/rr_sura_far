@@ -220,13 +220,13 @@ private:
 	class BaseBillBoard{
 	
 		public:
-			BaseBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr=NULL);
+			BaseBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr=NULL,int bmodeIdx=6);
 			virtual ~BaseBillBoard()=0;
 			void Init(int x=500,int y=155,int width=300,int height=155);
 			virtual void processKeyDirection(int key)= 0;
 			inline void setBlendMode(int mode){blendmode = mode;};
 		public:
-			void DrawBillBoard(int w, int h);
+			void DrawBillBoard(int w, int h,int bmode=6);
 		protected:
 			bool LoadTGATextureRect(const char *szFileName, GLenum minFilter, GLenum magFilter, GLenum wrapMode);
 			virtual void InitTextures() = 0;
@@ -472,7 +472,7 @@ private:
 
 	void SendtoTrack();
 	void RenderTriangleView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
-	void RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,bool isbottem=false);
+	void RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,int bmode=6,	bool isbottem=false);
 	void RenderPanoTelView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,int direction,int mainOrsub=MAIN);
 	void RenderTrackForeSightView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h);
 
@@ -559,6 +559,7 @@ private:
 	void DrawNeedleGunonCompass(GLEnv &m_env);
 	void DrawNeedleGunonDegree(GLEnv &m_env);
 	void DrawVerGunAngle(GLEnv &m_env);
+	void DrawGapLine(GLEnv &m_env);
 	void DrawNeedleCanononCompass(GLEnv &m_env);
 	void DrawNeedleCanononDegree(GLEnv &m_env);
 	void DrawVerCanonAngle(GLEnv &m_env);
@@ -720,7 +721,7 @@ private:
 	GLBatch CrossFrameBatch;
 	GLBatch RulerFrameBatch;
 	GLBatch NeedleFrameBatch;
-
+	GLBatch GapLineBatch;
 	GLBatch NeedleGunBatch;
 	GLBatch DegreeGunBatch;
 	GLBatch VerGunAngleBatch;

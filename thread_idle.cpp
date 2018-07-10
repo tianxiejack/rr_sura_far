@@ -4,16 +4,16 @@ thread_idle tIdle;
 thread_idle::thread_idle()
 {
 Idle[FPGA_FOUR_CN]=false;
-Idle[SUB_CN]=false;
-Idle[MAIN_CN]=false;
-Idle[MVDECT_CN]=false;
+Idle[SUB_CN]=true;
+Idle[MAIN_CN]=true;
+Idle[MVDECT_CN]=true;
 Idle[FPGA_SIX_CN]=false;
 }
 bool thread_idle::isToIdle(int idx){
 	return Idle[idx];}
 		void thread_idle::threadIdle(int idx){
-		//	Idle[idx]=true;
+			Idle[idx]=true;
 			};
 		void thread_idle::threadRun(int idx){
-		//	Idle[idx]=false;
+			Idle[idx]=false;
 			};

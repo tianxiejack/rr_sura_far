@@ -65,9 +65,14 @@
 
 #include "Xin_IPC_Yuan_Recv_Message.h"
 
-
+extern float Rh;
+extern float Lh;
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
+
+int BMODE_1 =1;
+int BMODE_6=6;
+int BMODE_8=8;
 
 char chosenCam[2]={3,3};
 
@@ -2025,14 +2030,14 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 		set_alpha[y].y=y_data[y];
 	}
 
-
+	int notdraw=2;
 	for(int x = 0 ; x <poly_count ; x++)//loop through all vertex in triangles
 	{
 		//if(x>=(poly_count*11/42+24) && (x<poly_count*22/42))  //poly_count/512==40
 		//	{																								//	p_c/480=42
 		//	continue;poly_count*33/42-416
 		//	}
-		if(x>=(poly_count/80*19) && (x<poly_count/80*62))
+		if(x>=(poly_count/80*(19-notdraw)) && (x<poly_count/80*(62+notdraw)))
 				{																								//	38400
 				continue;
 				}
@@ -2725,63 +2730,64 @@ void Render::InitForesightGroupTrack(GLEnv &m_env)
 
 	 int porindex=0;
 	GLfloat pano_outer_rect[48][3];
-	float ttdelta=pano_length/9/25;
+	float ttdelta=pano_length/9/25-1.2;
+	float yydelta=0.01;//0.06;
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta+pano_length/outsideLen;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH+pano_length/outsideLen;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH+pano_length/outsideLen-yydelta;
 
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta-pano_length/outsideLen;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH-yydelta;
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height/outsideDH+pano_length/outsideLen;
+	pano_outer_rect[porindex++][2] =  pano_height/outsideDH+pano_length/outsideLen-yydelta;
 
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta-pano_length/outsideLen;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 	pano_outer_rect[porindex][0] =pano_length/9/2-ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH-pano_length/outsideLen;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH-pano_length/outsideLen+yydelta;
 
 
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta+pano_length/outsideLen;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH+yydelta;
 	pano_outer_rect[porindex][0] =-pano_length/9/2+ttdelta;
 	pano_outer_rect[porindex][1] =0;
-	pano_outer_rect[porindex++][2] =  pano_height*outsideUH-pano_length/outsideLen;
+	pano_outer_rect[porindex++][2] =  pano_height*outsideUH-pano_length/outsideLen+yydelta;
 
 
 /*******2********/
@@ -3472,7 +3478,7 @@ void  Render::InitBillBoard(GLEnv &m_env)
 
 	   if(p_ChineseCBillBoard_bottem_pos)
 	  	    {
-		   p_ChineseCBillBoard_bottem_pos->Init(CBB_X,CBB_Y,CBB_WIDTH,CBB_HEIGHT);
+		   	   p_ChineseCBillBoard_bottem_pos->Init(CBB_X,CBB_Y,CBB_WIDTH,CBB_HEIGHT);
 	  	    }
 	  	    else
 	  	    {
@@ -4357,10 +4363,14 @@ m_env.GetmodelViewMatrix()->Translate(0.0,0.0,-3.0);
 
 void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,int mainOrsub)
 {
+			int petal0[CAM_COUNT];
+			memset(petal0,-1,sizeof(petal0));
 			int petal1[CAM_COUNT];
 			memset(petal1,-1,sizeof(petal1));
 			int petal2[CAM_COUNT];
 			memset(petal2,-1,sizeof(petal2));
+			int temp_petal[CAM_COUNT];
+			memset(temp_petal,-1,sizeof(temp_petal));
 			int petal3[CAM_COUNT];
 			memset(petal3,-1,sizeof(petal3));
 			int petal4[CAM_COUNT];
@@ -4395,26 +4405,33 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 		}
 			int Cam_num[10]={2,1,0,9,8,7,6,5,4,3};
 
-//		if((Angle<18.0)||(Angle>=342.0))
-			if((Angle>=342.0-18))
+			if((Angle>=338||Angle<14))
 		{
 			center_cam[mainOrsub]=0;
 		}
 		else
 		{
-			temp_math[mainOrsub]=(Angle)/36.0;
+			temp_math[mainOrsub]=(Angle-14)/36.0;
 			center_cam[mainOrsub]=(int)temp_math[mainOrsub];
 			center_cam[mainOrsub]++;
 		}
+			if(Cam_num[center_cam[mainOrsub]]==0)
+			{
+				petal0[9]=9;
+			}
+			else
+				petal0[Cam_num[center_cam[mainOrsub]]-1]=Cam_num[center_cam[mainOrsub]]-1;
 		petal1[Cam_num[center_cam[mainOrsub]]]=Cam_num[center_cam[mainOrsub]];
 		petal2[Cam_num[center_cam[mainOrsub]]+1]=Cam_num[center_cam[mainOrsub]]+1;
-
 		if(Cam_num[center_cam[mainOrsub]]==9)
 		{
 			petal3[0]=0;
+			temp_petal[8]=8;
 			petal4[9]=9;
+
 			m_env.GetmodelViewMatrix()->PushMatrix();
 			DrawPanel(m_env,false,petal4,mainOrsub);
+			DrawPanel(m_env,false,temp_petal,mainOrsub);
 			m_env.GetmodelViewMatrix()->PopMatrix();
 
 			m_env.GetmodelViewMatrix()->PushMatrix();
@@ -4430,15 +4447,28 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 			{
 				m_env.GetmodelViewMatrix()->Translate(-PanoLen,0.0,0.0);
 			}
+			DrawPanel(m_env,false,petal0,mainOrsub);
 				DrawPanel(m_env,false,petal1,mainOrsub);
 				DrawPanel(m_env,false,petal2,mainOrsub);
 
 			m_env.GetmodelViewMatrix()->PopMatrix();
 		}
-		else if(Cam_num[center_cam[mainOrsub]]>=0&&Cam_num[center_cam[mainOrsub]]<4)
+		else if(Cam_num[center_cam[mainOrsub]]>0&&Cam_num[center_cam[mainOrsub]]<4)
 		{
 			m_env.GetmodelViewMatrix()->PushMatrix();
 			m_env.GetmodelViewMatrix()->Translate(-PanoLen,0.0,0.0); //1
+			DrawPanel(m_env,false,petal0,mainOrsub);
+			DrawPanel(m_env,false,petal1,mainOrsub);
+			DrawPanel(m_env,false,petal2,mainOrsub);
+			m_env.GetmodelViewMatrix()->PopMatrix();
+		}
+		else if(Cam_num[center_cam[mainOrsub]]==0)
+		{
+
+			m_env.GetmodelViewMatrix()->PushMatrix();
+			DrawPanel(m_env,false,petal0,mainOrsub);
+			m_env.GetmodelViewMatrix()->Translate(-PanoLen,0.0,0.0); //1
+			DrawPanel(m_env,false,petal0,mainOrsub);
 			DrawPanel(m_env,false,petal1,mainOrsub);
 			DrawPanel(m_env,false,petal2,mainOrsub);
 			m_env.GetmodelViewMatrix()->PopMatrix();
@@ -4446,11 +4476,11 @@ void Render::RenderOnetimeView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,i
 		else
 		{
 		m_env.GetmodelViewMatrix()->PushMatrix();
+		DrawPanel(m_env,false,petal0,mainOrsub);
 		DrawPanel(m_env,false,petal1,mainOrsub);
 		DrawPanel(m_env,false,petal2,mainOrsub);
 		m_env.GetmodelViewMatrix()->PopMatrix();
 		}
-
 
 #if 0
 	if(RulerAngle<160.0 ||RulerAngle>=270.0)
@@ -5929,7 +5959,7 @@ void Render::RenderBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
 	m_env.GetmodelViewMatrix()->PopMatrix();
 }
 
-void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,bool isbottem)
+void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,int bmode,bool isbottem)
 {
 	glViewport(x,y,w,h);
 	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 4000.0f);
@@ -5946,10 +5976,10 @@ void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLi
 	//	p_ChineseCBillBoard->DoTextureBinding(choice);
 		if(isbottem)
 		{
-			p_ChineseCBillBoard_bottem_pos->DrawBillBoard(w,h);
+			p_ChineseCBillBoard_bottem_pos->DrawBillBoard(w,h,bmode);
 		}
 		else
-		p_ChineseCBillBoard->DrawBillBoard(w,h);
+		p_ChineseCBillBoard->DrawBillBoard(w,h,bmode);
 	}
 	m_env.GetmodelViewMatrix()->PopMatrix();
 }
@@ -6651,8 +6681,8 @@ if(setpriorityOnce)
 }
 //else
 {
-	RenderRightForeSightView(env,0,g_windowHeight*643.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
-	RenderLeftForeSightView(env,0,g_windowHeight*864.0/1080.0,g_windowWidth, g_windowHeight*216.0/1080.0,MAIN);
+	RenderRightForeSightView(env,0,1080*643.0/1080.0-18,1920, 1080*216.0/1080.0,MAIN);
+	RenderLeftForeSightView(env,0,1080*864.0/1080.0-17+2.5,1920, 1080*216.0/1080.0,MAIN);
 }
 
 			break;
@@ -7351,7 +7381,7 @@ if(setpriorityOnce)
 
 #endif// RENDER2FRONT
 	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
-			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3],true);
+			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3]);
 
 			{
 
@@ -7602,114 +7632,54 @@ state_label_data[5][2]=0;
 				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
 				{
 					p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3, g_windowWidth*0.3, g_windowHeight*1/3);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
-					p_ChineseCBillBoard->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*0.4, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5);
+					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+
+					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+
+					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					DrawNeedleGunonCompass(env);
 					DrawNeedleGunonDegree(env);
-
 					DrawVerGunAngle(env);
-
-
-					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3, g_windowWidth*0.3, g_windowHeight*1/3);
-
-					p_ChineseCBillBoard->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*0.4, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5);
 					DrawNeedleCanononCompass(env);
-
 					DrawNeedleCanononDegree(env);
-
 					DrawVerCanonAngle(env);
 
 					char text_data[20];
 
 					int text_x=g_windowWidth/15;
 					int text_y=g_windowHeight/4;
-
+//-35  -24
 					int text_width=g_windowWidth/20;
 					int text_height=80;
 
-					Rect * rect;
-					rect=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
+					Rect2i rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_hor_angle);
-					DrawCordsView(env,rect,text_data);
+					DrawCordsView(env,&rect,text_data);
 
-					Rect * rect2;
-					rect2=new Rect(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
+					Rect2i rect2(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_ver_angle);
-					DrawCordsView(env,rect2,text_data);
+					DrawCordsView(env,&rect2,text_data);
 
-					Rect * rect3;
-					rect3=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4,text_width,text_height);
+					Rect2i rect3(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_hor_data);
-					DrawCordsView(env,rect3,text_data);
+					DrawCordsView(env,&rect3,text_data);
 
-					Rect * rect4;
-					rect4=new Rect(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4,text_width,text_height);
+					Rect2i rect4(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_ver_data);
-					DrawCordsView(env,rect4,text_data);
+					DrawCordsView(env,&rect4,text_data);
 				}
 				env.GetmodelViewMatrix()->PopMatrix();
 
-
-
-/*
-				int text_x=g_windowWidth/15;
-				int text_y=30;
-
-				int text_width=g_windowWidth/20;
-				int text_height=80;
-				Rect * rect;
-				char text_data[20];
-				rect=new Rect(g_windowWidth/10+text_x,text_y,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",canon_hor_angle);
-				DrawCordsView(env,rect,text_data);
-
-				Rect * rect_1;
-				rect_1=new Rect(1*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",calc_hor_data);
-				DrawCordsView(env,rect_1,text_data);
-
-				Rect * rect_touch;
-				rect_touch=new Rect(0*g_windowWidth/10+text_x,text_y+100,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"%d,%d    ",touch_pos_x,touch_pos_y);
-				DrawCordsView(env,rect_touch,text_data);
-
-				Rect * rect2;
-				rect2=new Rect(3*g_windowWidth/10+text_x,text_y,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",canon_ver_angle);
-				DrawCordsView(env,rect2,text_data);
-
-
-				Rect * rect_2;
-				rect_2=new Rect(3*g_windowWidth/10+text_x,text_y+50,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",calc_ver_data);
-				DrawCordsView(env,rect_2,text_data);
-
-				Rect * rect3;
-				rect3=new Rect(5*g_windowWidth/10+text_x,text_y,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",gun_hor_angle);
-				DrawCordsView(env,rect3,text_data);
-
-				Rect * rect4;
-				rect4=new Rect(7*g_windowWidth/10+text_x,text_y,text_width,text_height);
-				strcpy(text_data,"");
-				sprintf(text_data,"    %.4f",gun_ver_angle);
-				DrawCordsView(env,rect4,text_data);
-*/
 				if(hide_label_state==SHOW_ALL_LABEL)
 				{
 
@@ -7723,10 +7693,10 @@ state_label_data[5][2]=0;
 					env.GetmodelViewMatrix()->PushMatrix();
 
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7+13.1, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
 //					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0, g_windowWidth/2, g_windowHeight*1.2/2);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
 
 					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
 					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
@@ -7755,7 +7725,6 @@ state_label_data[5][2]=0;
 						}
 					}
 					point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
-
 					for(int cx_i=0;cx_i<6;cx_i++)
 					{
 						for(int cx_j=0;cx_j<3;cx_j++)
@@ -7774,7 +7743,7 @@ state_label_data[5][2]=0;
 								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
 							}
 	RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1, g_windowWidth/12, g_windowHeight/8);
 						}
 					}
 					env.GetmodelViewMatrix()->PopMatrix();
@@ -8486,9 +8455,21 @@ GLEnv & env=env1;
 			break;
 		case '2':
 		case '3':
+			 Rh+=0.1;
+			 printf("RH=%f\n",Rh);
+			 break;
 		case '4':
+			 Rh-=0.1;
+			 printf("RH=%f\n",Rh);
+			 break;
 		case '5':
+			Lh+=1.0;
+			 printf("LH=%f\n",Lh);
+			 break;
 		case '6':
+			Lh-=1.0;
+			 printf("Lh=%f\n",Lh);
+			 break;
 		case '7':
 			blendMode = key-'0';
 						if((INIT_VIEW_MODE==displayMode)&&(EnterSinglePictureSaveMode==true))
@@ -10078,7 +10059,7 @@ void Render::SwitchBlendMode(int blendmode)
 	switch (blendmode)
 		{
 		case 1:
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_COLOR);
 			break;
 		case 2:
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_DST_ALPHA);
@@ -10097,6 +10078,9 @@ void Render::SwitchBlendMode(int blendmode)
 			break;
 		case 7:
 			glBlendFuncSeparate(GL_SRC_COLOR, GL_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			break;
+		case 8:
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			break;
 		default:
 			glDisable(GL_BLEND);
@@ -10382,8 +10366,8 @@ void Render::TimeBar::SetHWClockFromSysClock(int utc)
 //==============end of embedded timebar implementation================
 //===============embedded BaseBillBoard implemntation===================
 
-Render::BaseBillBoard::BaseBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr):
-	m_pShaderManager(mgr),modelViewMatrix(modelViewMat),projectionMatrix(projectionMat),	blendmode(6)
+Render::BaseBillBoard::BaseBillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr,int bmodeIdx):
+	m_pShaderManager(mgr),modelViewMatrix(modelViewMat),projectionMatrix(projectionMat),	blendmode(bmodeIdx)
 {
 	if(NULL == m_pShaderManager){
 		m_pShaderManager = (GLShaderManager*)getDefaultShaderMgr();
@@ -10444,7 +10428,7 @@ void Render::BaseBillBoard::Init(int x,int y,int width,int height)
 	InitTextures();
 	
 }
-void Render::BaseBillBoard::DrawBillBoard(int w, int h)
+void Render::BaseBillBoard::DrawBillBoard(int w, int h,int bmode)
 {
 	M3DMatrix44f mScreenSpace;
 	m3dMakeOrthographicMatrix(mScreenSpace, 0.0f,800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
@@ -10454,7 +10438,7 @@ void Render::BaseBillBoard::DrawBillBoard(int w, int h)
 	glActiveTexture(GL_TEXTURE0);
 	DoTextureBinding();
 
-	Render::SwitchBlendMode(blendmode);
+	Render::SwitchBlendMode(bmode);
 	m_pShaderManager->UseStockShader(GLT_SHADER_TEXTURE_RECT_REPLACE,mScreenSpace,0);
 	HZbatch.Draw();
 	    // Restore no blending and depth test
@@ -12345,7 +12329,32 @@ void Render::DrawTriangle(GLEnv &m_env)
 	triangleBatch.CopyVertexData3f(vTracks);
 	triangleBatch.End();
 }
+void  Render::DrawGapLine(GLEnv &m_env)
+{
+	GLfloat vTracks[50][3];
+	int i = 0;
+	int a=0,b=1,c=2;
+	float rec_center_x=7.275,rec_center_y=2.01;
+	vTracks[i][a] = -10.0/1024*1920.0;
+	vTracks[i][b] = rec_center_y;
+	vTracks[i][c] = -10.0;
+	i++;
+	vTracks[i][a] = 10.0/1024.0*1920.0;
+	vTracks[i][b] = rec_center_y;
+	vTracks[i][c] = -10.0;
+	i++;
 
+	GapLineBatch.Begin(GL_LINES, i);
+	GapLineBatch.CopyVertexData3f(vTracks);
+	GapLineBatch.End();
+    glViewport(0,0,1920,1080);
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glLineWidth(4.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), vYellow);
+	GapLineBatch.Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
 void Render::DrawNeedleonCompass(GLEnv &m_env)
 {
 	GLfloat vTracks[50][3];
@@ -12390,17 +12399,12 @@ void Render::DrawNeedleGunonCompass(GLEnv &m_env)
 
 	GLfloat vTracks[50][3];
 	int i = 0;
-
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
-
 	int a=0,b=1,c=2;
 
 	float rec_width=1.6,rec_height=2.0;
 //	float rec_center_x=13.2-rec_width/2.0,rec_center_y=10.0-rec_height/2.0;
 	//	float needle_radius=0.9;
-	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 
@@ -12579,14 +12583,10 @@ void Render::DrawVerCanonAngle(GLEnv &m_env)
 	GLfloat vTracks[50][3];
 	int i = 0;
 
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
-
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -12700,15 +12700,10 @@ void Render::DrawNeedleCanononCompass(GLEnv &m_env)
 
 	GLfloat vTracks[50][3];
 	int i = 0;
-
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
-
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -12877,14 +12872,11 @@ void Render::DrawNeedleCanononDegree(GLEnv &m_env)
 	GLfloat vTracks[50][3];
 	int i = 0;
 
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
 
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -12934,15 +12926,10 @@ void Render::DrawVerGunAngle(GLEnv &m_env)
 
 	GLfloat vTracks[50][3];
 	int i = 0;
-
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
-
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 	float needle_radius=1.2;
 
 	float angle=calc_ver_data*360.0/6000.0-180.0;
@@ -13054,15 +13041,10 @@ void Render::DrawNeedleGunonDegree(GLEnv &m_env)
 
 	GLfloat vTracks[50][3];
 	int i = 0;
-
-	float center_x=g_windowWidth*2.0/4.0;
-	float center_y=g_windowHeight*3.0/4.0;
-	float rec_length=g_windowWidth/2.0;
-
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
+	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0-0.35+0.56;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 	float needle_inner_radius=1.0;

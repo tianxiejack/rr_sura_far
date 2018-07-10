@@ -5,6 +5,7 @@
 #include"Thread_Priority.h"
 #include "thread_idle.h"
 #include"MvDetect.hpp"
+#include"Xin_IPC_Yuan_Recv_Message.h"
 extern thread_idle tIdle;
 extern Render render;
 extern MvDetect mv_detect;
@@ -14,6 +15,9 @@ extern GLEnv env2,env1;
 extern ForeSightPos foresightPos[MS_COUNT];
 extern char chosenCam[2];
 extern float  menu_tpic[8];
+extern int BMODE_1;
+extern int BMODE_6;
+extern int BMODE_8;
 void InitBowlDS()
 {
 
@@ -56,7 +60,7 @@ void Render::RenderSceneDS()
 #endif
 		tIdle.threadIdle(SUB_CN);
 		env.Getp_FboPboFacade()->Render2Front(SUB,g_subwindowWidth,g_subwindowHeight);
-		if(g_windowHeight==768)
+		if(0)//g_windowHeight==768)
 		{
 				RenderRightForeSightView(env,0,g_subwindowHeight*538.0/768.0,g_subwindowWidth, g_subwindowHeight*116.0/768.0,SUB);
 				RenderLeftForeSightView(env,0,g_subwindowHeight*655.0/768.0,g_subwindowWidth, g_subwindowHeight*115.0/768.0,SUB);
@@ -70,14 +74,14 @@ void Render::RenderSceneDS()
 		}
 		else
 		{
-			RenderRightForeSightView(env,0,g_subwindowHeight*643.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
-			RenderLeftForeSightView(env,0,g_subwindowHeight*864.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
-			glScissor(0,0,1152,648);
+				RenderRightForeSightView(env,0,g_subwindowHeight*643.0/1080.0-18,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
+				RenderLeftForeSightView(env,0,g_subwindowHeight*864.0/1080.0-17+2.5,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
+			glScissor(0,0,g_subwindowWidth,648*g_subwindowHeight/1920.0);
 									//glScissor(g_subwindowWidth*448.0/1920.0,g_subwindowHeight*156.0/1080.0,g_subwindowWidth*1024,g_subwindowHeight*537);
 			glEnable(GL_SCISSOR_TEST);
 			glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 			glDisable(GL_SCISSOR_TEST);
-			RenderOnetimeView(env,0,0,g_subwindowWidth*1152.0/1920.0, g_subwindowHeight*648.0/1080,SUB);
+			RenderOnetimeView(env,0,0,g_subwindowWidth, g_subwindowHeight*648.0/1080,SUB);
 
 		}
 
@@ -234,8 +238,152 @@ void Render::RenderSceneDS()
 						RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 			}
 	}
-		 p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
-		 RenderChineseCharacterBillBoardAt(env,menu_tpic[4], menu_tpic[5], menu_tpic[6],menu_tpic[7],true);
+	//	 p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
+	//	 RenderChineseCharacterBillBoardAt(env,menu_tpic[4], menu_tpic[5], menu_tpic[6],menu_tpic[7]);
+
+
+
+
+
+
+			int x=0,y=0,w=g_windowWidth,h=g_windowHeight;
+			glViewport(x,y,w,h);
+		//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
+			env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+			env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+			env.GetmodelViewMatrix()->PushMatrix();
+
+			int index_i=-1;
+			int width_delta=100;
+			int w_y=0;
+			int t_width=600*0.7;
+			int t_height=700;
+
+			if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
+			{
+				p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+
+				p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+
+				p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+
+				p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+
+				DrawNeedleGunonCompass(env);
+				DrawNeedleGunonDegree(env);
+				DrawVerGunAngle(env);
+				DrawNeedleCanononCompass(env);
+				DrawNeedleCanononDegree(env);
+				DrawVerCanonAngle(env);
+
+				char text_data[20];
+
+				int text_x=g_windowWidth/15;
+				int text_y=g_windowHeight/4;
+//-35  -24
+				int text_width=g_windowWidth/20;
+				int text_height=80;
+
+				Rect2i rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"    %.2f",canon_hor_angle);
+				DrawCordsView(env,&rect,text_data);
+
+				Rect2i rect2(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"    %.2f",canon_ver_angle);
+				DrawCordsView(env,&rect2,text_data);
+
+				Rect2i rect3(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"    %.2f",calc_hor_data);
+				DrawCordsView(env,&rect3,text_data);
+
+				Rect2i rect4(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
+				strcpy(text_data,"");
+				sprintf(text_data,"    %.2f",calc_ver_data);
+				DrawCordsView(env,&rect4,text_data);
+			}
+			env.GetmodelViewMatrix()->PopMatrix();
+
+			if(hide_label_state==SHOW_ALL_LABEL)
+			{
+
+				int x=g_windowWidth/2,y=g_windowHeight/4,w=g_windowWidth/2,h=g_windowHeight/2;
+				int label_hor_move=-g_windowWidth/15;
+				glViewport(x,y,w,h);
+				env.GetviewFrustum()->SetPerspective(27.0f,  float(w) / float(h), 1.0f, 500.0f);
+
+				env.GetprojectionMatrix()->LoadMatrix(env.GetviewFrustum()->GetProjectionMatrix());
+
+				env.GetmodelViewMatrix()->PushMatrix();
+
+				p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7+13.1, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+				p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
+//					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
+				RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+
+				int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
+				int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
+
+				for(int cx_i=0;cx_i<6;cx_i++)
+				{
+					for(int cx_j=0;cx_j<3;cx_j++)
+					{
+						if(state_label_data[cx_i][cx_j]==1)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+						}
+						else if(state_label_data[cx_i][cx_j]==0)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+						}
+						else
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+						}
+//							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta-0.8*2*g_windowWidth/60-7,
+//						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
+						RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
+					g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+point_ver_delta+g_windowHeight/100, g_windowWidth/12, g_windowHeight/8);
+
+					}
+				}
+				point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
+				for(int cx_i=0;cx_i<6;cx_i++)
+				{
+					for(int cx_j=0;cx_j<3;cx_j++)
+					{
+
+						if(state_label_data[cx_i+6][cx_j]==1)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
+						}
+						else if(state_label_data[cx_i+6][cx_j]==0)
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
+						}
+						else
+						{
+							p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
+						}
+RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
+					g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1, g_windowWidth/12, g_windowHeight/8);
+					}
+				}
+				env.GetmodelViewMatrix()->PopMatrix();
+			}
+
+
+
+
 
 }
 void Render::SetupRCDS(int windowWidth, int windowHeight)

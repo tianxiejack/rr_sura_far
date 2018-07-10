@@ -10,7 +10,7 @@
 
 #define CORE_AND_POS_LIMIT  4.5
 #define INNER_RECT_AND_PANO_ONE_TIME_CAM_LIMIT 7.7
-#define	OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT 16.8
+#define	OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT 40//16.8
 typedef enum{
 	CAM_0,
 	CAM_1,
@@ -514,9 +514,9 @@ enum CCT_COUNT {
 
 		CCT_COUNT
 		};
-#define CBB_X 0
+#define CBB_X 500
 #define CBB_Y 155
-#define CBB_WIDTH 1920
+#define CBB_WIDTH 150
 #define CBB_HEIGHT	(155)
 typedef enum TelBreak
 {
