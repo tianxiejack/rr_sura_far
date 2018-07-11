@@ -1,6 +1,6 @@
 %YAML:1.0
 ---
-perCircle: 248     #320   # 模型每圈有多少个三角面
+perCircle: 480     #320   # 模型每圈有多少个三角面
 blend_offset: 0           # 融合区占多少个四边形面
 modleCircle: 80    #79   # 模型在高度方向上有多少圈面
 loop_right: 1             # 模型STL文件中四边形面的排列方向 1:顺时针 0:逆时针
