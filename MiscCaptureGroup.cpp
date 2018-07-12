@@ -4,7 +4,8 @@ BMPMiscGroup BMPMiscGroup::miscCaptureGroup(720,576,3,CAM_COUNT);
 vector<Consumer>  BMPMiscGroup::GetConsumers(int *queueid,int count)
 {
 	 Consumer cons;
-	 char *str[]={"45","90","180","pic3","pic2"};
+	 char *str[]={"45","90","180" ,"pic3","pic2"
+	 };
 	 char filename[64];
 	 for(int i=0;i<count;i++)
 	 {
@@ -20,7 +21,11 @@ BMPMiscGroup * BMPMiscGroup::GetInstance()
 {
 	static bool once =true;
 	if(once){
+#if USE_BMPCAP
 		miscCaptureGroup.init(NULL,ICON_COUNT);
+#else
+		miscCaptureGroup.init(NULL,ICON_COUNT-2);
+#endif
 		once =false;
 	}
 	return &miscCaptureGroup;

@@ -539,13 +539,9 @@ bool BMPVcap::Open()
 	if(pic)
 		cvReleaseImage(&pic);
 	pic = cvLoadImage(pFileName);
-	if(strcmp(pFileName,"45.bmp")==0)
-	{
-		printf("0\n");
-	}
 	if(pic == NULL)
 	{
-		cerr<<"failed 2 load "<<pFileName<<".bmp filled with color bar"<<endl;
+		cerr<<"failed 2 load "<<pFileName<<" filled with color bar"<<endl;
 		pic = cvCreateImage(Size(width, height), IPL_DEPTH_8U, depth);
 		if(pic != NULL){
 			int pic_bytes =0;
