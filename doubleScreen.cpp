@@ -39,7 +39,7 @@ void Render::InitBowlDS()
 							enable_hance=!enable_hance;
 						}
 			}
-			void Render::MoveSecondForesight()
+			void Render::ChangeSecondSc()
 			{
 				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 						if(SecondDisplayMode==SECOND_CHOSEN_VIEW_MODE)
@@ -54,12 +54,12 @@ void Render::InitBowlDS()
 								camera_dir=(camera_dir+1)%10;
 							}
 							chosenCam[SUB]=camera_dir+1;
-							ChangeMainChosenCamidx(chosenCam[SUB]);
+							ChangeSubChosenCamidx(chosenCam[SUB]);
 						}
 			}
-			void Render::ChangeSecondSc()
+			void Render::MoveSecondForesight()
 			{
-				GLEnv env=env1;
+				GLEnv &env=env1;
 				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 			if(SecondDisplayMode==SECOND_ALL_VIEW_MODE)
 			{
