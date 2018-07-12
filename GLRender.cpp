@@ -6074,7 +6074,7 @@ void Render::RenderChosenView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h, i
 		DrawChosenVideo(m_env,needSendData,mainorsub);
 		m_env.GetmodelViewMatrix()->PopMatrix();
 
-		p_ChineseCBillBoard->ChooseTga=ORI00_T+(chosenCam[mainorsub]+7)%CAM_COUNT;
+		p_ChineseCBillBoard->ChooseTga=ORI00_T+(chosenCam[mainorsub]+9)%CAM_COUNT;
 		RenderChineseCharacterBillBoardAt(m_env,-g_windowWidth*0.15,g_windowHeight*0.85, g_windowWidth*0.3, g_windowHeight*0.4);
 
 }

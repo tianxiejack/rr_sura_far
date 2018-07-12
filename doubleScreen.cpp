@@ -41,9 +41,9 @@ void Render::InitBowlDS()
 			}
 			void Render::ChangeSecondSc()
 			{
-				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 						if(SecondDisplayMode==SECOND_CHOSEN_VIEW_MODE)
 						{
+							int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 							int camera_dir=chosenCam[SUB]-1;
 							if((net_dirction==MOVE_TYPE_MOVELEFT)||(net_dirction==MOVE_TYPE_MOVEUP))
 							{
@@ -60,9 +60,9 @@ void Render::InitBowlDS()
 			void Render::MoveSecondForesight()
 			{
 				GLEnv &env=env1;
-				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 			if(SecondDisplayMode==SECOND_ALL_VIEW_MODE)
 			{
+				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
 								if(net_dirction==MOVE_TYPE_MOVELEFT)
 								{
 									ProcessOitKeysDS(env,'1',0,0);
