@@ -7488,6 +7488,7 @@ if(setpriorityOnce)
 						camera_dir=(camera_dir+1)%10;
 					}
 					chosenCam[MAIN]=camera_dir+1;
+					ChangeMainChosenCamidx(chosenCam[MAIN]);
 				}
 				else
 				{
