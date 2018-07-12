@@ -6444,8 +6444,8 @@ void Render::SetdisplayMode( )
 void Render::Debuging()
 {
 	 GLEnv &env=env1;
-
-switch( getDebugModeOrder(TRANSFER_TO_APP_ETHOR))
+	 DEBUG_ORDER dbo=getDebugModeOrder(TRANSFER_TO_APP_ETHOR);
+switch(dbo)
 {
 case DEBUG_ORDER_PERISCOPIC_MODE:
 	displayMode=ALL_VIEW_MODE;

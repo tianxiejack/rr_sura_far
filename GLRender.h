@@ -596,6 +596,12 @@ private:
 	 void WritePanoScaleArrayData(char * filename,float * arraydata_left,float * arraydata_right,float * arraydata_level);
 
 	void initLabelBatch();
+
+	void ChangeSecondMode();
+	void ChangeSecondMv();
+	void ChangeSecondEnh();
+	void MoveSecondForesight();
+	void ChangeSecondSc();
 public:
 
 	 GLShaderManager		shaderManager2;			// Shader Manager

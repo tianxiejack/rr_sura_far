@@ -5,6 +5,9 @@
 #include"Thread_Priority.h"
 #include "thread_idle.h"
 #include"MvDetect.hpp"
+#include"Xin_IPC_Yuan_Recv_Message.h"
+extern bool IsMvDetect;
+extern bool enable_hance;
 extern thread_idle tIdle;
 extern Render render;
 extern MvDetect mv_detect;
@@ -14,12 +17,94 @@ extern GLEnv env2,env1;
 extern ForeSightPos foresightPos[MS_COUNT];
 extern char chosenCam[2];
 extern float  menu_tpic[8];
-void InitBowlDS()
+void Render::InitBowlDS()
 {
 
 }
 
+			void Render::ChangeSecondMv()
+			{
+				int net_open_mvdetect=getKey_TargetDetectionState(TRANSFER_TO_APP_DRIVER);
+				if(net_open_mvdetect==1)
+				{
+					IsMvDetect=!IsMvDetect;
+				}
+			}
 
+			void Render::ChangeSecondEnh()
+			{
+				int net_open_enhance=getKey_ImageEnhancementState(TRANSFER_TO_APP_DRIVER);
+						if(net_open_enhance==1)
+						{
+							enable_hance=!enable_hance;
+						}
+			}
+			void Render::MoveSecondForesight()
+			{
+				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
+						if(SecondDisplayMode==SECOND_CHOSEN_VIEW_MODE)
+						{
+							int camera_dir=chosenCam[SUB]-1;
+							if((net_dirction==MOVE_TYPE_MOVELEFT)||(net_dirction==MOVE_TYPE_MOVEUP))
+							{
+								camera_dir=(camera_dir+9)%10;
+							}
+							else if((net_dirction==MOVE_TYPE_MOVERIGHT)||(net_dirction==MOVE_TYPE_MOVEDOWN))
+							{
+								camera_dir=(camera_dir+1)%10;
+							}
+							chosenCam[SUB]=camera_dir+1;
+							ChangeMainChosenCamidx(chosenCam[SUB]);
+						}
+			}
+			void Render::ChangeSecondSc()
+			{
+				GLEnv env=env1;
+				int net_dirction=getKey_MoveDirection(TRANSFER_TO_APP_DRIVER);
+			if(SecondDisplayMode==SECOND_ALL_VIEW_MODE)
+			{
+								if(net_dirction==MOVE_TYPE_MOVELEFT)
+								{
+									ProcessOitKeysDS(env,'1',0,0);
+								}
+								if(net_dirction==MOVE_TYPE_MOVERIGHT)
+								{
+									ProcessOitKeysDS(env,'2',0,0);
+								}
+								if(net_dirction==MOVE_TYPE_MOVEUP)
+								{
+									ProcessOitKeysDS(env,'3',0,0);
+								}
+								if(net_dirction==MOVE_TYPE_MOVEDOWN)
+								{
+									ProcessOitKeysDS(env,'4',0,0);
+								}
+
+			}
+			}
+void Render::ChangeSecondMode()
+{
+	Mode_Type mt=getKey_SwitchMode(TRANSFER_TO_APP_DRIVER);
+	switch(mt)
+	{
+	case 	Mode_Type_START:
+		break;
+	case 		Mode_Type_SINGLE_POPUP_WINDOWS:
+		if(SecondDisplayMode==SECOND_CHOSEN_VIEW_MODE)
+		{
+			SecondDisplayMode=SECOND_ALL_VIEW_MODE;
+		}
+		else if(SecondDisplayMode==SECOND_ALL_VIEW_MODE)
+		{
+			SecondDisplayMode=SECOND_CHOSEN_VIEW_MODE;
+		}
+		break;
+	case Mode_Type_DEBUG:
+		break;
+	case 		Mode_Type_RESERVE:
+		break;
+	}
+}
 void Render::RenderSceneDS()
 {
 #if MVDECT
@@ -40,7 +125,11 @@ void Render::RenderSceneDS()
 	}
 	int t[10]={0};
 	static timeval startT[20]={0};
-
+	ChangeSecondMode();
+	ChangeSecondMv();
+	ChangeSecondEnh();
+	MoveSecondForesight();
+	ChangeSecondSc();
 	//GLEnv &env=env2;
 	GLEnv &env=env1;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
