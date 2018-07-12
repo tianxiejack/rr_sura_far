@@ -6441,7 +6441,167 @@ void Render::SetdisplayMode( )
 #endif
 }
 
+void Render::Debuging()
+{
+	 GLEnv &env=env1;
 
+switch( getDebugModeOrder(TRANSFER_TO_APP_ETHOR))
+{
+case DEBUG_ORDER_PERISCOPIC_MODE:
+	displayMode=ALL_VIEW_MODE;
+	break;
+case	DEBUG_ORDER_CROSS_MOVEUP:
+if(	displayMode==ALL_VIEW_MODE)
+{
+	ProcessOitKeys(env,'#',0,0);
+}
+	break;
+case	DEBUG_ORDER_CROSS_MOVEDOWN:
+	if(	displayMode==ALL_VIEW_MODE)
+	{
+		ProcessOitKeys(env,'$',0,0);
+	}
+	break;
+case	DEBUG_ORDER_CROSS_MOVELEFT:
+	if(	displayMode==ALL_VIEW_MODE)
+	{
+		ProcessOitKeys(env,'!',0,0);
+	}
+	break;
+case	DEBUG_ORDER_CROSS_MOVERIGHT:
+	if(	displayMode==ALL_VIEW_MODE)
+	{
+		ProcessOitKeys(env,'@',0,0);
+	}
+	break;
+case	DEBUG_ORDER_TARGETDETECTION_ON:
+	ProcessOitKeys(env,'O',0,0);
+	break;
+case	DEBUG_ORDER_TARGETDETECTION_OFF:
+	ProcessOitKeys(env,'o',0,0);
+	break;
+case	DEBUG_ORDER_TRIMMING_ON:
+	specialkeyPressed(env,12,0,0);
+	break;
+case	DEBUG_ORDER_CHOOSECAMERA_LEFT:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,SPECIAL_KEY_LEFT,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CHOOSECAMERA_RIGHT:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,SPECIAL_KEY_RIGHT,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CHECKEDCAMERA_MOVEUP:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,SPECIAL_KEY_UP,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CHECKEDCAMERA_MOVEDOWN:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,SPECIAL_KEY_DOWN,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CHECKEDCAMERA_MOVELEFT:
+	if(TRIM_MODE==displayMode)
+	{
+	ProcessOitKeys(env,'a',0,0);
+	}
+	break;
+case	DEBUG_ORDER_CHECKEDCAMERA_MOVERIGHT:
+	if(TRIM_MODE==displayMode)
+	{
+	ProcessOitKeys(env,'d',0,0);
+	}
+	break;
+case DEBUG_ORDER_SAVE_TRIMMING_RESULT:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,1,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CLEAN_CHECKEDCAMERA_RESULT:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,4,0,0);
+	}
+	break;
+case	DEBUG_ORDER_CLEAN_ALLCAMERA_RESULT:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,6,0,0);
+	}
+	break;
+case	DEBUG_ORDER_TRIMMING_OFF:
+	if(TRIM_MODE==displayMode)
+	{
+	specialkeyPressed(env,11,0,0);
+	}
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_MODE:
+	displayMode=CHOSEN_VIEW_MODE;
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_0:
+	displayMode=CHOSEN_VIEW_MODE;
+	chosenCam[MAIN]=1;
+	ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_1:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=2;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case DEBUG_ORDER_SINGLECAMERA_2:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=3;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_3:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=4;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_4:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=5;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_5:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=6;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_6:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=7;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_7:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=8;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_8:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=9;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+case	DEBUG_ORDER_SINGLECAMERA_9:
+	displayMode=CHOSEN_VIEW_MODE;
+		chosenCam[MAIN]=10;
+		ChangeMainChosenCamidx(chosenCam[MAIN]);
+	break;
+default:
+	break;
+
+}
+
+}
 void Render::RenderScene(void)
 {
 static bool setpriorityOnce=true;
@@ -6456,7 +6616,7 @@ if(setpriorityOnce)
 	int billBoardx = 0, billBoardy = g_windowHeight*15/16;//7/8;
 	int extBillBoardx = 0, extBillBoardy = g_windowHeight*15/16;//*7/8;
 	static int last_mode=0;
-
+	Debuging();
 	if(IsMvDetect)
 	{
 		tIdle.threadRun(MVDECT_CN);
@@ -8474,14 +8634,13 @@ GLEnv & env=env1;
 		case ';':
 			stop_scan=!stop_scan;
 			break;
-		//case 'o':
+		case 'o':
+			IsMvDetect=false;
+						//mv_detect.OpenMD(MAIN);
+				break;
 		case 'O':
 #if MVDECT
-			if(IsMvDetect==false)
-				IsMvDetect=true;
-			else if(IsMvDetect==true)
-				IsMvDetect=false;
-			//mv_detect.OpenMD(MAIN);
+			IsMvDetect=true;
 #endif
 		//	mode = OitVehicle::USER_OIT;
 			break;
@@ -8493,6 +8652,7 @@ GLEnv & env=env1;
 			displayMode=ALL_VIEW_MODE;
 			break;
 		case '2':
+			break;
 		case '3':
 			 Rh+=0.1;
 			 printf("RH=%f\n",Rh);
@@ -8759,11 +8919,6 @@ GLEnv & env=env1;
 			break;
 		case 'i'://pano view mode
 			DISPLAYMODE_SWITCH_TO(PANO_VIEW_MODE);
-			break;
-		case 'o'://high definition pano view
-#if MVDECT
-	//		mv_detect.CloseMD(MAIN);
-#endif
 			break;
 		case 'p'://high definition pano add pano view
 			break;

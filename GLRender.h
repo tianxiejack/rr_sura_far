@@ -113,6 +113,8 @@ public:
     void ChangeTelMode();
     void sendBack();
     void sendTrackSpeed(int w,int h);
+
+    void Debuging();
 private:
 	#if TRACK_MODE
 	int getTrkId(int displayMode,int nextMode);
