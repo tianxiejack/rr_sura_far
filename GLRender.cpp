@@ -457,6 +457,27 @@ void Render::clearTrackParams()
 	track_pos[3]=0;
 }
 #endif
+
+void Render::NoSigInf()
+{
+	GLEnv &env=env1;
+	int nosigIdx=-1;
+	float startX[]={916,529,138,-250,-630};
+	float startY[]={865,649};
+	float w=1002;
+	float h=710/2;
+	int bmode=2;
+	for(int i=0;i<CAM_COUNT;i++)
+	{
+		nosigIdx=selfcheck.GetBrokenCam()[i];
+		if(nosigIdx==0)
+		{
+			p_ChineseCBillBoard->ChooseTga=NOSIG_T;
+			RenderChineseCharacterBillBoardAt(env,startX[i%5],startY[i/5]+50, w,h,bmode);
+		}
+	}
+}
+
 void Render::writeFirstMode(int Modenum)
 {
 	static int LastMode=-1;
@@ -7819,6 +7840,7 @@ state_label_data[5][2]=0;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta+g_windowWidth*0.035, w_y+g_windowHeight*0.016, t_width*0.8, t_height*0.8);
 				index_i++;
 
+
 //				p_ChineseCBillBoard->ChooseTga=F9_T;
 //				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 //				index_i++;
@@ -8654,19 +8676,19 @@ GLEnv & env=env1;
 		case '2':
 			break;
 		case '3':
-			 Rh+=0.1;
+			 Rh+=1.0;
 			 printf("RH=%f\n",Rh);
 			 break;
 		case '4':
-			 Rh-=0.1;
+			 Rh-=1.0;
 			 printf("RH=%f\n",Rh);
 			 break;
 		case '5':
-			Lh+=1.0;
+			Lh+=1;
 			 printf("LH=%f\n",Lh);
 			 break;
 		case '6':
-			Lh-=1.0;
+			Lh-=1;
 			 printf("Lh=%f\n",Lh);
 			 break;
 		case '7':
@@ -10776,6 +10798,7 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[ORI07_T], ORI07);
 		strcpy( ChineseC_TextureFileName[ORI08_T], ORI08);
 		strcpy( ChineseC_TextureFileName[ORI09_T], ORI09);
+		strcpy( ChineseC_TextureFileName[NOSIG_T], NOSIG);
 
 
 }

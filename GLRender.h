@@ -602,6 +602,7 @@ private:
 	void ChangeSecondEnh();
 	void MoveSecondForesight();
 	void ChangeSecondSc();
+	void NoSigInf();
 public:
 
 	 GLShaderManager		shaderManager2;			// Shader Manager

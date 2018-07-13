@@ -428,7 +428,7 @@ static const float *DEFAULT_TEXT_COLOR = vWhite;
 #define ORI07 "m_ori07.tga"
 #define ORI08 "m_ori08.tga"
 #define ORI09 "m_ori09.tga"
-
+#define NOSIG "noSig.tga"
 enum CCT_COUNT {
 		ONEX_REALTIME_T ,
 		TWOX_REALTIME_T,
@@ -512,7 +512,7 @@ enum CCT_COUNT {
 		ORI07_T,
 		ORI08_T,
 		ORI09_T,
-
+		NOSIG_T,
 		CCT_COUNT
 		};
 #define CBB_X 500
