@@ -462,7 +462,7 @@ void Render::NoSigInf()
 {
 	GLEnv &env=env1;
 	int nosigIdx=-1;
-	float startX[]={916,529,138,-250,-630};
+	float startX[]={916,529,138,-250,-630,-630,-250,138,529,916};
 	float startY[]={865,649};
 	float w=1002;
 	float h=710/2;
@@ -473,7 +473,7 @@ void Render::NoSigInf()
 		if(nosigIdx==0)
 		{
 			p_ChineseCBillBoard->ChooseTga=NOSIG_T;
-			RenderChineseCharacterBillBoardAt(env,startX[i%5],startY[i/5]+50, w,h,bmode);
+			RenderChineseCharacterBillBoardAt(env,startX[i],startY[i/5]+50, w,h,bmode);
 		}
 	}
 }
