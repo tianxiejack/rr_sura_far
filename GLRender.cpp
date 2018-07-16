@@ -8035,7 +8035,6 @@ void Render::DrawGLScene()
 }
 #endif
 
-	glutSwapBuffers();
 	glFinish();
 	GetFPS();  /* Get frame rate stats */
 
