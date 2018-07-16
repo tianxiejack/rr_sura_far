@@ -66,7 +66,7 @@
 #include "Xin_IPC_Yuan_Recv_Message.h"
 #include "ClicktoMoveForesight.h"
 
-
+float delayT=20;
 extern float Rh;
 extern float Lh;
 extern thread_idle tIdle;
@@ -7992,7 +7992,21 @@ void Render::DrawGLScene()
 	glReadBuffer(GL_FRONT);
 	glReadPixels(0,0,1920,1080,GL_BGRA_EXT,GL_UNSIGNED_BYTE,full_screen_data);
 #endif
-	RenderScene();
+	static struct timeval mt;
+	struct timeval tv2;
+	memset(&tv2,0,sizeof(timeval));
+	gettimeofday(&tv2,NULL);
+	float deltatime= (1000000.0*(tv2.tv_sec - mt.tv_sec) +(tv2.tv_usec - mt.tv_usec))/1000.0;
+	if(deltatime>delayT)
+	{
+		mt=tv2;
+		RenderScene();
+		glutSwapBuffers();
+	}
+	else
+	{
+		return;
+	}
 	/* swap the buffers to display, since double buffering is used.*/
 #if ENABLE_SCREEN_CAPTURE
 {
@@ -8882,7 +8896,9 @@ GLEnv & env=env1;
 			break;
 		//case 'y'://left back
 		case 'Y':
-			SetShowDirection(BillBoard::BBD_REAR_LEFT, SHOW_DIRECTION_DYNAMIC);
+			delayT+=1;
+			printf("delayT=%f\n",delayT);
+			//SetShowDirection(BillBoard::BBD_REAR_LEFT, SHOW_DIRECTION_DYNAMIC);
 			break;
 		//case 'z'://left forward
 		case 'Z':
@@ -8890,7 +8906,9 @@ GLEnv & env=env1;
 			break;
 		//case 't'://all + 712
 		case 'T':
-			DISPLAYMODE_SWITCH_TO(ALL_ADD_712_MODE);
+			delayT-=1;
+			printf("delayT=%f\n",delayT);
+			//DISPLAYMODE_SWITCH_TO(ALL_ADD_712_MODE);
 			break;
 		//case 'e'://view from center
 		case 'E':

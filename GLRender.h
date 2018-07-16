@@ -836,6 +836,7 @@ private:
 	int g_nonFullwindowWidth;
 	int g_nonFullwindowHeight;
 	bool isFullscreen;
+	bool DisFullscreen;
 	bool bRotTimerStart;
 	bool bControlViewCamera;
 	bool isCalibTimeOn;

@@ -724,6 +724,17 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 #if MVDECT
 			mv_detect.CloseMD(SUB);
 #endif
+				case 'F':
+							//full screen on/off
+							if(DisFullscreen){
+								DisFullscreen = false;
+								glutReshapeWindow(g_nonFullwindowWidth, g_nonFullwindowHeight);
+								glutPostRedisplay();
+							}else{
+								DisFullscreen = true;
+								glutFullScreen();
+							}
+							break;
 					break;
 
 			default:
