@@ -53,6 +53,7 @@ public:
 
 	static void specialkeyPressed (int key, int x, int y);
 	static void mouseButtonPress(int button, int state, int x, int y);
+	static void mouseButtonPressDS(int button, int state, int x, int y);
 	static void mouseMotionPress(int x, int y);
 	int start(int argc, char** argv);
 private:

@@ -64,6 +64,8 @@
 #include "thread_idle.h"
 
 #include "Xin_IPC_Yuan_Recv_Message.h"
+#include "ClicktoMoveForesight.h"
+
 
 extern float Rh;
 extern float Lh;
@@ -8041,10 +8043,17 @@ void Render::DrawGLScene()
 /* The function called whenever a mouse button event occurs */
 void Render::mouseButtonPress(int button, int state, int x, int y)
 {
-	if (common.isVerbose())
-		printf(" mouse--> %i %i %i %i\n", button, state, x, y);
-	setMouseCor(x,y);
-	setMouseButton(button);
+	//	if (common.isVerbose())
+		//	printf(" mouse--> %i %i %i %i\n", button, state, x, y);
+		setMouseCor(x,y);
+		setMouseButton(button);
+		if(state==1)
+		{
+		SetTouchPosX(x);
+		y=g_windowHeight-y;
+		SetTouchPosY(y);
+		 clicktoMoveForesight( x, y,MAIN);
+		}
 }
 
 void Render::GenerateBirdView()
@@ -9292,7 +9301,8 @@ GLEnv & env=env1;
 				{
 							p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
 					//		printf("m_cam_pos=%d\n",m_cam_pos);
-						//	foresightPos.GetAngle()[0];
+					//		foresightPos[MAIN].ShowPosX();
+							//printf("posX=%f\n",foresightPos[MAIN].GetAngle()[0]);
 					//		foresightPos.ShowPosX();
 					//		pano_pos2angle=p_ForeSightFacade->GetForeSightPosX()/PanoLen*360.0;
 					//		printf("POS_angle=%f\n",pano_pos2angle);
@@ -9382,6 +9392,8 @@ GLEnv & env=env1;
 				if(displayMode==ALL_VIEW_MODE)
 				{
 					p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
+			//		foresightPos[MAIN].ShowPosX();
+					//printf("posX=%f\n",foresightPos[MAIN].GetAngle()[0]);
 			//		foresightPos.GetAngle()[0];
 		//			printf("m_cam_pos=%d\n",m_cam_pos);
 				//	foresightPos.ShowPosX();
@@ -9467,10 +9479,12 @@ GLEnv & env=env1;
 													||displayMode==PREVIEW_MODE)
 							{
 											p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/5.7);
+											foresightPos[MAIN].ShowPosY();
 							}
 				else if (displayMode==ALL_VIEW_MODE)
 				{
 					p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
+					foresightPos[MAIN].ShowPosY();
 				}
 
 							else if(displayMode==TELESCOPE_FRONT_MODE
@@ -9523,6 +9537,7 @@ GLEnv & env=env1;
 				else if (displayMode==ALL_VIEW_MODE)
 				{
 					p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
+					foresightPos[MAIN].ShowPosY();
 				}
 				else if(displayMode==TELESCOPE_FRONT_MODE
 										||displayMode==TELESCOPE_RIGHT_MODE

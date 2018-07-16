@@ -83,6 +83,7 @@ public:
 	void ProcessOitKeys(GLEnv &m_env,unsigned char key, int x, int y);
 	void ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y);
 	void mouseButtonPress(int button, int state, int x, int y);
+	void mouseButtonPressDS(int button, int state, int x, int y);
 	void mouseMotionPress(int x, int y);
 	inline GLShaderManager* getShaderManager(){return &shaderManager;}
 //	inline GLGeometryTransform* getTransformPipeline(){return &transformPipeline;}
@@ -705,6 +706,13 @@ public:
 	void SetTouchPosX(int data){touch_pos_x=data;};
 	int GetTouchPosY(){return touch_pos_y;};
 	void SetTouchPosY(int data){touch_pos_y=data;};
+	float GetPanoLen(){
+		return PanoLen;
+	};
+	float GetPanoHeight()
+	{
+		return PanoHeight;
+	};
 private:
 	GLBatch Petal[CAM_COUNT];
 	GLBatch *Petal_OverLap[CAM_COUNT]; // overlap area bwtween petal[i] and [(i+1)%CAM_COUNT]

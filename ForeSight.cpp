@@ -201,6 +201,59 @@ void ForeSight_decorator::Draw( GLEnv &m_env)
 		  return false;
 	}
 
+	void ForeSightPos::SetPos(float Xangle,float Yangle,int mainOrsub)
+	{
+		foresightPos[mainOrsub].SetSpeedX(0);
+		foresightPos[mainOrsub].SetSpeedY(0);
+		if(Yangle>=288 && Yangle<=347)
+		{
+			if(Xangle>=180.0)
+			{
+				foresightPosX=pano_length/4.0/180.0*(Xangle-180.0);
+			}
+			else
+			{
+				if(Xangle==0)
+				{
+					Xangle=1;
+				}
+				foresightPosX=pano_length*3.0/4.0+(Xangle)/180.0*pano_length/4.0;
+			}
+		}
+		else if(Yangle>=216 && Yangle<=275)//Down
+		{
+			if(Xangle>=180.0)
+			{
+				foresightPosX=pano_length/2.0-pano_length/4.0*(Xangle-180.0)/180.0;
+			}
+			else
+			{
+				if(Xangle==0)
+				{
+					Xangle=1;
+				}
+				foresightPosX=pano_length*3.0/4.0-(Xangle)/180.0*pano_length/4.0;
+			}
+		}
+
+		if(Yangle>=288 &&Yangle<=347)
+		{
+			foresightPosY=0.45*(Yangle-288)/(60.0)-0.3;
+		}
+
+		else if (Yangle>=216 &&Yangle<=275 )
+		{
+			foresightPosY=0.45*(Yangle-216)/(60.0)-0.3;
+		}
+
+		render.GetpWholeFacade(mainOrsub)->MoveLeft(-render.GetPanoLen()*100.0,mainOrsub);
+		if((Yangle>=288 &&Yangle<328) ||(Yangle>=216 &&Yangle<256))
+			render.GetpWholeFacade(mainOrsub)->MoveDown(-render.GetPanoHeight()/5.7,mainOrsub);
+		else if((Yangle>=328 &&Yangle<=347)||(Yangle>=256 &&Yangle<276) )
+			render.GetpWholeFacade(mainOrsub)->MoveUp(render.GetPanoHeight()/5.7,mainOrsub);
+	}
+
+
 	bool ForeSightPos::Reset(int nowmode)
 	{
 		static int lastMode =-1;
@@ -307,23 +360,6 @@ void ForeSight_decorator::Draw( GLEnv &m_env)
 		//			printf("trackPosY=%f\n",trackPosY);
 					return trackPosY;
 				}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 	void ForeSightPos::MoveUp(float Ylimit)
 	{

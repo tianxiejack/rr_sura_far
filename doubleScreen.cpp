@@ -6,6 +6,7 @@
 #include "thread_idle.h"
 #include"MvDetect.hpp"
 #include"Xin_IPC_Yuan_Recv_Message.h"
+#include"ClicktoMoveForesight.h"
 extern bool IsMvDetect;
 extern bool enable_hance;
 extern thread_idle tIdle;
@@ -81,6 +82,22 @@ void Render::InitBowlDS()
 								}
 
 			}
+			}
+
+
+			void Render::mouseButtonPressDS(int button, int state, int x, int y)
+			{
+				//	if (common.isVerbose())
+					//	printf(" mouse--> %i %i %i %i\n", button, state, x, y);
+				//	setMouseCor(x,y);
+				//	setMouseButton(button);
+					if(state==1)
+					{
+		//			SetTouchPosX(x);
+					y=g_windowHeight-y;
+		//			SetTouchPosY(y);
+					 clicktoMoveForesight( x, y,SUB);
+					}
 			}
 void Render::ChangeSecondMode()
 {
@@ -818,7 +835,7 @@ void RenderMain::keyPressedDS(unsigned char key, int x, int y)
 			glutCreateWindow (arg1);
 
 
-		glutSetCursor(GLUT_CURSOR_NONE);
+		//glutSetCursor(GLUT_CURSOR_NONE);
 	//	glewInit();
 
 			glutDisplayFunc(DrawGLSceneDS); /* Register the function to do all our OpenGL drawing. */
@@ -826,7 +843,7 @@ void RenderMain::keyPressedDS(unsigned char key, int x, int y)
 			glutReshapeFunc(ReSizeGLSceneDS); /* Register the function called when our window is resized. */
 			glutKeyboardFunc(keyPressedDS); /* Register the function called when the keyboard is pressed. */
 	//		glutSpecialFunc(specialkeyPressed); /* Register the special key function */
-//			glutMouseFunc(mouseButtonPress); /* Register the function called when the mouse buttons are pressed */
+			glutMouseFunc(mouseButtonPressDS); /* Register the function called when the mouse buttons are pressed */
 //			glutMotionFunc(mouseMotionPress); /*Register the mouse motion function */
 	}
 

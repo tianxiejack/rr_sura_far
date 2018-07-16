@@ -160,6 +160,7 @@ class ForeSightPos
 	public:
 		ForeSightPos();  //全局只有一个位置，外框1外框2可通过中心点的位置计算
 		~ForeSightPos(){};
+		void SetPos(float Xangle,float Yangle,int mainOrsub);
 		void SetPanoLen_Height(float len,float height){pano_length=len,pano_height=height;};
 		void MoveUp(float Ylimit);
 		void MoveDown(float Ylimit);
