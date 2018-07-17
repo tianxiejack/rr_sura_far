@@ -65,8 +65,9 @@
 
 #include "Xin_IPC_Yuan_Recv_Message.h"
 #include "ClicktoMoveForesight.h"
-
-float delayT=20;
+#define  SHOWTIME 200
+int showInfcount=SHOWTIME;
+float delayT=44;
 extern float Rh;
 extern float Lh;
 extern thread_idle tIdle;
@@ -90,7 +91,7 @@ bool saveSinglePic[CAM_COUNT]={false};
 bool isTracking=false;
 
 extern bool 	IsMvDetect;
-bool IsgstCap=true;
+bool IsgstCap=false;
 
 
 PanoCamOnForeSight  panocamonforesight[2];
@@ -7598,7 +7599,9 @@ if(setpriorityOnce)
 #endif// RENDER2FRONT
 	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
 			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3]);
-
+#if 1
+			//showInfcount--;
+			if(showInfcount>0)
 			{
 
 				int x=0,y=0,w=g_windowWidth,h=g_windowHeight;
@@ -7974,6 +7977,7 @@ if(displayMode==ALL_VIEW_MODE)
 	}
 
 			}
+#endif
 }
 
 void Render::setOverlapPeta(int chId, float alphaId)
@@ -8066,6 +8070,7 @@ void Render::mouseButtonPress(int button, int state, int x, int y)
 		y=g_windowHeight-y;
 		SetTouchPosY(y);
 		 clicktoMoveForesight( x, y,MAIN);
+		 showInfcount=SHOWTIME;
 		}
 }
 
