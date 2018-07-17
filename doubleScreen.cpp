@@ -153,6 +153,7 @@ void Render::RenderSceneDS()
 	switch(SecondDisplayMode)
 	{
 	case SECOND_ALL_VIEW_MODE:
+		RecvNetPosXYDS();
 #if 1
 #if MVDECT
 		if(mv_detect.CanUseMD(SUB))

@@ -6464,6 +6464,54 @@ void Render::SetdisplayMode( )
 		}
 #endif
 }
+int Render::TransPosX(int srcX)
+{
+	float DstX=-1;
+	float startX=0;
+	float w=1920;
+	if(srcX>=0)
+	{			//左下角为0点
+		DstX=((float)srcX-startX)/w*1920.0;
+	}
+	return (int)DstX;
+}
+int Render::TransPosY(int srcY)
+{
+	float DstY=-1;
+	float startY=0;
+	float h=1080;					//左下角为0点
+	if(srcY>=0)
+	{
+		DstY=((float)srcY-startY)/h*1080.0;
+	}
+	return (int)DstY;
+}
+void	Render::RecvNetPosXY()
+{
+	coor_p cp=getEphor_CoorPoint(TRANSFER_TO_APP_ETHOR);
+	int y=TransPosY(cp.point_y);
+	y=g_windowHeight-cp.point_y;
+	int x=TransPosX(cp.point_x);
+
+	if(x!=-1)
+	{
+		 clicktoMoveForesight( x, y,MAIN);
+		 showInfcount=SHOWTIME;
+	}
+}
+
+void	Render::RecvNetPosXYDS()
+{
+	coor_p cp=getEphor_CoorPoint(TRANSFER_TO_APP_DRIVER);
+	int y=TransPosY(cp.point_y);
+		y=g_windowHeight-cp.point_y;
+		int x=TransPosX(cp.point_x);
+		if(x!=-1)
+		{
+			 clicktoMoveForesight( x, y,SUB);
+			 showInfcount=SHOWTIME;
+		}
+}
 
 void Render::Debuging()
 {
@@ -6883,7 +6931,8 @@ if(setpriorityOnce)
 		break;
 	case ALL_VIEW_MODE:
 	{
-#if		MVDECT
+		RecvNetPosXY();
+		#if		MVDECT
 		if(mv_detect.CanUseMD(MAIN))
 		{
 		//	mv_detect.SetoutRect();
@@ -7600,7 +7649,7 @@ if(setpriorityOnce)
 	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
 			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3]);
 #if 1
-			//showInfcount--;
+		//	showInfcount--;
 			if(showInfcount>0)
 			{
 

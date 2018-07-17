@@ -116,6 +116,10 @@ public:
     void sendTrackSpeed(int w,int h);
 
     void Debuging();
+    int TransPosX(int srcX);
+    int TransPosY(int srcY);
+    void	RecvNetPosXY();
+    void	RecvNetPosXYDS();
 private:
 	#if TRACK_MODE
 	int getTrkId(int displayMode,int nextMode);
