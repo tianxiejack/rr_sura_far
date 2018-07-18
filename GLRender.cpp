@@ -6495,8 +6495,13 @@ void	Render::RecvNetPosXY()
 
 	if(x!=-1)
 	{
-		 clicktoMoveForesight( x, y,MAIN);
-		 showInfcount=SHOWTIME;
+		if(displayMode==ALL_VIEW_MODE)
+		{
+			clicktoMoveForesight( x, y,MAIN);
+			 showInfcount=SHOWTIME;
+		}
+		else
+			displayMode=ALL_VIEW_MODE;
 	}
 }
 
@@ -6745,7 +6750,7 @@ if(setpriorityOnce)
 		env.Getp_FBOmgr()->SetDrawBehaviour(&render);
 		env.Getp_FboPboFacade()->DrawAndGet();
 	}
-
+	RecvNetPosXY();
 #endif
 	#if 1
 #if USE_UART
@@ -6931,7 +6936,6 @@ if(setpriorityOnce)
 		break;
 	case ALL_VIEW_MODE:
 	{
-		RecvNetPosXY();
 		#if		MVDECT
 		if(mv_detect.CanUseMD(MAIN))
 		{
@@ -8113,14 +8117,14 @@ void Render::mouseButtonPress(int button, int state, int x, int y)
 		//	printf(" mouse--> %i %i %i %i\n", button, state, x, y);
 		setMouseCor(x,y);
 		setMouseButton(button);
-		if(state==1)
+/*		if(state==1)
 		{
 		SetTouchPosX(x);
 		y=g_windowHeight-y;
 		SetTouchPosY(y);
 		 clicktoMoveForesight( x, y,MAIN);
 		 showInfcount=SHOWTIME;
-		}
+		}*/
 }
 
 void Render::GenerateBirdView()

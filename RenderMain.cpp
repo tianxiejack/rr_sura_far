@@ -92,7 +92,7 @@ void RenderMain::initGlut(int argc, char **argv,int startx,int starty)
 		glutSetOption(GLUT_RENDERING_CONTEXT,GLUT_USE_CURRENT_CONTEXT);
 		glutCreateWindow (arg1);
 	}
-	//glutSetCursor(GLUT_CURSOR_NONE);
+	glutSetCursor(GLUT_CURSOR_NONE);
 	/* Register the event callback functions since we are using GLUT */
 
 

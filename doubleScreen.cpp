@@ -87,17 +87,11 @@ void Render::InitBowlDS()
 
 			void Render::mouseButtonPressDS(int button, int state, int x, int y)
 			{
-				//	if (common.isVerbose())
-					//	printf(" mouse--> %i %i %i %i\n", button, state, x, y);
-				//	setMouseCor(x,y);
-				//	setMouseButton(button);
-					if(state==1)
+		/*			if(state==1)
 					{
-		//			SetTouchPosX(x);
 					y=g_windowHeight-y;
-		//			SetTouchPosY(y);
 					 clicktoMoveForesight( x, y,SUB);
-					}
+					}*/
 			}
 void Render::ChangeSecondMode()
 {
@@ -153,7 +147,7 @@ void Render::RenderSceneDS()
 	switch(SecondDisplayMode)
 	{
 	case SECOND_ALL_VIEW_MODE:
-		RecvNetPosXYDS();
+	//	RecvNetPosXYDS();
 #if 1
 #if MVDECT
 		if(mv_detect.CanUseMD(SUB))
@@ -847,7 +841,7 @@ void RenderMain::keyPressedDS(unsigned char key, int x, int y)
 			glutCreateWindow (arg1);
 
 
-		//glutSetCursor(GLUT_CURSOR_NONE);
+		glutSetCursor(GLUT_CURSOR_NONE);
 	//	glewInit();
 
 			glutDisplayFunc(DrawGLSceneDS); /* Register the function to do all our OpenGL drawing. */
