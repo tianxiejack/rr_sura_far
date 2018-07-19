@@ -60,19 +60,26 @@
 #include"Cap_Spi_Message.h"
 #endif
 #include"Thread_Priority.h"
-#include"MvDetect.hpp"
+//#include "mvdectInterfaceV2.h"
 #include "thread_idle.h"
 
 #include "Xin_IPC_Yuan_Recv_Message.h"
 #include "ClicktoMoveForesight.h"
+#include "mvdetectInterface.h"
 #define  SHOWTIME 200
+
+extern int parm_inputArea;
+extern int parm_threshold ;
+extern int parm_accuracy;
 int showInfcount=SHOWTIME;
 float delayT=44;
 extern float Rh;
 extern float Lh;
 extern thread_idle tIdle;
 extern unsigned char * target_data[CAM_COUNT];
-
+#if MVDECT
+extern MvDetect mv_detect;
+#endif
 int BMODE_1 =1;
 int BMODE_6=6;
 int BMODE_8=8;
@@ -80,7 +87,7 @@ int BMODE_8=8;
 char chosenCam[2]={3,3};
 
 #if MVDECT
- extern MvDetect mv_detect;
+ //extern MvDetect mv_detect;
 #endif
 int m_cam_pos=-1;
 
@@ -877,27 +884,19 @@ static void capturePanoCam(GLubyte *ptr, int index,GLEnv &env)
 
 static void mainTarget0(GLubyte *ptr, int index,GLEnv &env)
 {
-#if MVDECT
-	mv_detect.selectFrame(ptr,target_data[index],MAIN_TARGET_0,index);
-#endif
+
 }
 static void mainTarget1(GLubyte *ptr, int index,GLEnv &env)
 {
-#if MVDECT
-	mv_detect.selectFrame(ptr,target_data[index],MAIN_TARGET_1,index);
-#endif
+
 }
 static void subTarget0(GLubyte *ptr, int index,GLEnv &env)
 {
-#if MVDECT
-	mv_detect.selectFrame(ptr,target_data[index],SUB_TARGET_0,index);
-#endif
+
 }
 static void subTarget1(GLubyte *ptr, int index,GLEnv &env)
 {
-#if MVDECT
-	mv_detect.selectFrame(ptr,target_data[index],SUB_TARGET_1,index);
-#endif
+
 }
 
 static void captureChosenCam(GLubyte *ptr, int index,GLEnv &env)
@@ -1009,7 +1008,6 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 #endif
 
 #if MVDECT
- mv_detect.ReadConfig();
 #endif
 
 	if(!shaderManager.InitializeStockShaders()){
@@ -6699,36 +6697,6 @@ if(setpriorityOnce)
 		tIdle.threadRun(MVDECT_CN);
 		tIdle.threadRun(MVDECT_ADD_CN);
 	}
-	static int mv_open_once=true;
-	static int mv_close_once=true;
-	if(IsMvDetect)
-	{
-#if MVDECT
-		if(mv_open_once)
-		{
-			setFirst();
-		//	printf("setFirst+++++++++\n");
-			mv_open_once=false;
-			mv_close_once=true;
-		}
-#endif
-		//tIdle.threadRun(MVDECT_CN);
-		//tIdle.threadRun(MVDECT_ADD_CN);
-	}
-	else
-	{
-#if MVDECT
-		if(mv_close_once)
-		{
-			deleteZombie();
-		//	printf("deleteZombie--------------\n");
-			mv_open_once=true;
-			mv_close_once=false;
-		}
-#endif
-		//tIdle.threadIdle(MVDECT_CN);
-		//tIdle.threadIdle(MVDECT_ADD_CN);
-	}
 
 #ifdef GL_TIME_STAMP
 	GLuint queries[4];
@@ -6936,12 +6904,6 @@ if(setpriorityOnce)
 		break;
 	case ALL_VIEW_MODE:
 	{
-		#if		MVDECT
-		if(mv_detect.CanUseMD(MAIN))
-		{
-		//	mv_detect.SetoutRect();
-		}
-#endif
 		tIdle.threadIdle(MAIN_CN);
 		env.Getp_FboPboFacade()->Render2Front(MAIN,g_windowWidth,g_windowHeight);
 //if(g_windowHeight==768)
@@ -6994,14 +6956,6 @@ if(setpriorityOnce)
 			p_ForeSightFacade2[MAIN]->Reset(TELESCOPE_FRONT_MODE);
 		    RenderRulerView(env,-g_windowWidth*3.0/1920.0,g_windowHeight*980.0/1080.0,g_windowWidth,g_windowHeight*140.0/1080.0,RULER_45);
 			RenderPanoTelView(env,0,g_windowHeight*478.0/1080,g_windowWidth, g_windowHeight*592.0/1080.0,FRONT);
-#if			MVDECT
-			if(mv_detect.CanUseMD(MAIN))
-			{
-			//		mv_detect.SetoutRect();
-		//		TargectTelView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,0,0);
-		//		TargectTelView(env,g_windowWidth*560/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,1,1);
-			}
-#endif
 			//	RenderTwotimesView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*1000.0/1920.0, g_windowHeight*400.0/1080.0);
 	//		RenderFourtimesTelView(env,g_windowWidth*1120.0/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*500.0/1920.0, g_windowHeight*400.0/1080.0);
 	//		RenderCompassView(env,g_windowWidth*1615.0/1920.0,g_windowHeight*-15/1080.0,g_windowWidth*290.0/1920.0,g_windowWidth*290.0/1920.0);
@@ -7012,14 +6966,6 @@ if(setpriorityOnce)
 			p_ForeSightFacade2[MAIN]->Reset(TELESCOPE_RIGHT_MODE);
 			   RenderRulerView(env,-g_windowWidth*3.0/1920.0,g_windowHeight*980.0/1080.0,g_windowWidth,g_windowHeight*140.0/1080.0,RULER_45);
 				RenderPanoTelView(env,0,g_windowHeight*478.0/1080,g_windowWidth, g_windowHeight*592.0/1080.0,RIGHT);
-#if MVDECT
-				if(mv_detect.CanUseMD(MAIN))
-						{
-			//			mv_detect.SetoutRect();
-			//				TargectTelView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,0,0);
-			//				TargectTelView(env,g_windowWidth*560/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,1,1);
-						}
-#endif
 				//		RenderTwotimesView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*1000.0/1920.0, g_windowHeight*400.0/1080.0);
 		//		RenderFourtimesTelView(env,g_windowWidth*1120.0/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*500.0/1920.0, g_windowHeight*400.0/1080.0);
 		//		RenderCompassView(env,g_windowWidth*1615.0/1920.0,g_windowHeight*-15/1080.0,g_windowWidth*290.0/1920.0,g_windowWidth*290.0/1920.0);
@@ -7030,14 +6976,6 @@ if(setpriorityOnce)
 			p_ForeSightFacade2[MAIN]->Reset(TELESCOPE_BACK_MODE);
 			   RenderRulerView(env,-g_windowWidth*3.0/1920.0,g_windowHeight*980.0/1080.0,g_windowWidth,g_windowHeight*140.0/1080.0,RULER_45);
 			   RenderPanoTelView(env,0,g_windowHeight*478.0/1080,g_windowWidth, g_windowHeight*592.0/1080.0,BACK);
-#if MVDECT
-			   if(mv_detect.CanUseMD(MAIN))
-						{
-			//			mv_detect.SetoutRect();
-			//				TargectTelView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,0,0);
-			//				TargectTelView(env,g_windowWidth*560/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,1,1);
-						}
-#endif
 			   //		RenderTwotimesView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*1000.0/1920.0, g_windowHeight*400.0/1080.0);
 		//		RenderFourtimesTelView(env,g_windowWidth*1120.0/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*500.0/1920.0, g_windowHeight*400.0/1080.0);
 		//		RenderCompassView(env,g_windowWidth*1615.0/1920.0,g_windowHeight*-15/1080.0,g_windowWidth*290.0/1920.0,g_windowWidth*290.0/1920.0);
@@ -7048,14 +6986,6 @@ if(setpriorityOnce)
 			p_ForeSightFacade2[MAIN]->Reset(TELESCOPE_LEFT_MODE);
 			  RenderRulerView(env,-g_windowWidth*3.0/1920.0,g_windowHeight*980.0/1080.0,g_windowWidth,g_windowHeight*140.0/1080.0,RULER_45);
 			RenderPanoTelView(env,0,g_windowHeight*478.0/1080,g_windowWidth, g_windowHeight*592.0/1080.0,LEFT);
-#if MVDECT
-				if(mv_detect.CanUseMD(MAIN))
-						{
-			//		mv_detect.SetoutRect();
-			//				TargectTelView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,0,0);
-				//			TargectTelView(env,g_windowWidth*560/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*480.0/1920.0, g_windowHeight*400.0/1080.0,1,1);
-						}
-#endif
 				//		RenderTwotimesView(env,g_windowWidth*60/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*1000.0/1920.0, g_windowHeight*400.0/1080.0);
 				//		RenderFourtimesTelView(env,g_windowWidth*1120.0/1920.0,g_windowHeight*39.0/1080.0,g_windowWidth*500.0/1920.0, g_windowHeight*400.0/1080.0);
 		//		RenderCompassView(env,g_windowWidth*1615.0/1920.0,g_windowHeight*-15/1080.0,g_windowWidth*290.0/1920.0,g_windowWidth*290.0/1920.0);
@@ -7701,7 +7631,14 @@ if(setpriorityOnce)
 				if(net_open_mvdetect==1)
 				{
 					IsMvDetect=!IsMvDetect;
+					if(!IsMvDetect)
+					{
+						#if MVDECT
+									mv_detect.ClearAllVector();
+						#endif
+					}
 					SetPSYButtonF2(!IsMvDetect);
+
 				}
 
 				int net_open_enhance=getKey_ImageEnhancementState(TRANSFER_TO_APP_ETHOR);
@@ -8738,6 +8675,9 @@ GLEnv & env=env1;
 			break;
 		case 'o':
 			IsMvDetect=false;
+#if MVDECT
+			mv_detect.ClearAllVector();
+#endif
 						//mv_detect.OpenMD(MAIN);
 				break;
 		case 'O':
@@ -8751,25 +8691,37 @@ GLEnv & env=env1;
 			mode = OitVehicle::USER_BLEND;
 			break;
 		case '1':
-			displayMode=ALL_VIEW_MODE;
+			 parm_inputArea+=1;
+			 printf("parm_inputArea=%d\n",parm_inputArea);
+		//	displayMode=ALL_VIEW_MODE;
 			break;
 		case '2':
+			 parm_inputArea-=1;
+					 printf("parm_inputArea=%d\n",parm_inputArea);
 			break;
 		case '3':
-			 Rh+=1.0;
-			 printf("RH=%f\n",Rh);
+			parm_threshold+=1;
+					 printf("parm_threshold=%d\n",parm_threshold);
+		//	 Rh+=1.0;
+	//		 printf("RH=%f\n",Rh);
 			 break;
 		case '4':
-			 Rh-=1.0;
-			 printf("RH=%f\n",Rh);
+			parm_threshold-=1;
+					 printf("parm_threshold=%d\n",parm_threshold);
+		//	 Rh-=1.0;
+		//	 printf("RH=%f\n",Rh);
 			 break;
 		case '5':
-			Lh+=1;
-			 printf("LH=%f\n",Lh);
+			parm_accuracy+=1;
+			 printf("parm_accuracy=%d\n",parm_accuracy);
+	//		Lh+=1;
+	//		 printf("LH=%f\n",Lh);
 			 break;
 		case '6':
-			Lh-=1;
-			 printf("Lh=%f\n",Lh);
+			parm_accuracy-=1;
+			printf("parm_accuracy=%d\n",parm_accuracy);
+		//	Lh-=1;
+		//	 printf("Lh=%f\n",Lh);
 			 break;
 		case '7':
 			blendMode = key-'0';

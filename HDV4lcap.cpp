@@ -28,7 +28,7 @@
 #include <malloc.h>
 #include <omp.h>
 #include"Thread_Priority.h"
-#include"MvDetect.hpp"
+#include"mvdetectInterface.h"
 #include "thread_idle.h"
 extern thread_idle tIdle;
 extern Alg_Obj * queue_main_sub;
@@ -64,9 +64,9 @@ unsigned char * MVDECT_data_main[CAM_COUNT];
 unsigned char * GRAY_data_main[CAM_COUNT];
 
 unsigned char * vga_data=NULL;
-
+CMvDectInterface   *pMvIF=NULL;
 #if MVDECT
- MvDetect mv_detect;
+ MvDetect mv_detect(pMvIF);
 #endif
 HDv4l_cam::HDv4l_cam(int devId,int width,int height):io(IO_METHOD_USERPTR),imgwidth(width),
 imgheight(height),buffers(NULL),memType(MEMORY_NORMAL),cur_CHANnum(0),
@@ -663,15 +663,12 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						else
 						{
 							chid[MAIN]=nowGrayidx+1;
-							//nowGrayidx=mv_count;
 							transformed_src_main=&MVDECT_data_main[nowGrayidx-1];
 						}
 						break;
 					case FPGA_SIX_CN:
 						chid[MAIN]=MAIN_FPGA_SIX;
-		//				chid[SUB]=SUB_FPGA_SIX;
 						transformed_src_main=&FPGA6_bgr_data_main;
-		//				transformed_src_sub=&FPGA6_bgr_data_sub;
 						break;
 					default:
 						break;
@@ -683,7 +680,6 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						{
 						{
 							#if MVDECT
-							//if(mv_detect.MDisStart())
 							if(IsMvDetect)
 							{
 								mv_detect.m_mvDetect(nowGrayidx,(unsigned char *)buffers[buf.index].start, SDI_WIDTH, SDI_HEIGHT);
@@ -718,9 +714,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 									CC_enh_mvd=3;
 									UYVY2UYV(*transformed_src_main,(unsigned char *)buffers[buf.index].start,nowpicW,nowpicH);
 								}
-								//todo //４副　６副
 #if MVDECT
-							//	if(mv_detect.MDisStart())
 								if(IsMvDetect)
 								{
 									mv_detect.SetoutRect();
@@ -735,7 +729,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 								}
 #endif
 							}
-								//memcpy(*transformed_src_main,buffers[buf.index].start,SDI_WIDTH*SDI_HEIGHT*2);
+
 						}
 						if(Data2Queue(*transformed_src_main,nowpicW,nowpicH,chid[MAIN]))
 						{
@@ -755,7 +749,7 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						}
 						else//如果不等于驾驶员十选一＆不等于检测的gray数据，则直接将main里的已经转换好的数据进行拷贝
 						{
-					//		memcpy(*transformed_src_sub,*transformed_src_main,nowpicW*nowpicH*4);
+
 						}
 						if(Data2Queue(*transformed_src_sub,nowpicW,nowpicH,chid[SUB]))
 						{
@@ -1116,7 +1110,6 @@ void HDAsyncVCap4::SetDefaultImg(char *p)
 
 void HDAsyncVCap4::Run()
 {
-
 	do{
 		usleep(100*1000);
 	}while(THREAD_READY == thread_state);

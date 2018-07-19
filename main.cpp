@@ -18,7 +18,7 @@
 #if MVDETECTOR_MODE
 #include "mvDetector.hpp"
 #endif
-#include"MvDetect.hpp"
+#include"mvdetectInterface.h"
 
 
 #include "BMPCaptureGroup.h"
@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 	//InitIPCModule();
 #endif
 #if MVDECT
-	mv_detect.init(1920,1080);
+	mv_detect.init();
 #endif
 	Parayml param;
 	if(!param.readParams("./Param.yml"))

@@ -4,7 +4,7 @@
 #include "GLEnv.h"
 #include"Thread_Priority.h"
 #include "thread_idle.h"
-#include"MvDetect.hpp"
+#include"mvdetectInterface.h"
 #include"Xin_IPC_Yuan_Recv_Message.h"
 #include"ClicktoMoveForesight.h"
 extern bool IsMvDetect;
@@ -29,6 +29,12 @@ void Render::InitBowlDS()
 				if(net_open_mvdetect==1)
 				{
 					IsMvDetect=!IsMvDetect;
+					if(!IsMvDetect)
+					{
+						#if MVDECT
+									mv_detect.ClearAllVector();
+						#endif
+					}
 				}
 			}
 
@@ -118,16 +124,6 @@ void Render::ChangeSecondMode()
 }
 void Render::RenderSceneDS()
 {
-#if MVDECT
-	if(mv_detect.CanUseMD(SUB) ||mv_detect.CanUseMD(MAIN))
-	{
-		tIdle.threadRun(MVDECT_CN);
-	}
-	else
-	{
-		tIdle.threadIdle(MVDECT_CN);
-	}
-#endif
 	static bool setpriorityOnce=true;
 	if(setpriorityOnce)
 	{
@@ -149,12 +145,6 @@ void Render::RenderSceneDS()
 	case SECOND_ALL_VIEW_MODE:
 	//	RecvNetPosXYDS();
 #if 1
-#if MVDECT
-		if(mv_detect.CanUseMD(SUB))
-		{
-	//		mv_detect.SetoutRect();
-		}
-#endif
 		tIdle.threadIdle(SUB_CN);
 		env.Getp_FboPboFacade()->Render2Front(SUB,g_subwindowWidth,g_subwindowHeight);
 		if(0)//g_windowHeight==768)
@@ -211,14 +201,6 @@ void Render::RenderSceneDS()
 		p_ForeSightFacade2[SUB]->Reset(TELESCOPE_FRONT_MODE,SUB);
 			    RenderRulerView(env,-g_subwindowWidth*3.0/1920.0,g_subwindowHeight*980.0/1080.0,g_subwindowWidth,g_subwindowHeight*140.0/1080.0,RULER_45);
 				RenderPanoTelView(env,0,g_subwindowHeight*478.0/1080,g_subwindowWidth, g_subwindowHeight*592.0/1080.0,FRONT,SUB);
-#if			MVDECT
-				if(mv_detect.CanUseMD(SUB))
-				{
-			//		mv_detect.SetoutRect();
-				//	TargectTelView(env,g_subwindowWidth*60/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,0,0,0,SUB);
-			//		TargectTelView(env,g_subwindowWidth*560/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,1,1,1,SUB);
-				}
-#endif
 				RenderPositionView(env,g_subwindowWidth*0,g_subwindowHeight*0,g_subwindowWidth, g_subwindowHeight);
 
 	break;
@@ -227,14 +209,6 @@ void Render::RenderSceneDS()
 			p_ForeSightFacade2[SUB]->Reset(TELESCOPE_RIGHT_MODE,SUB);
 			   RenderRulerView(env,-g_subwindowWidth*3.0/1920.0,g_subwindowHeight*980.0/1080.0,g_subwindowWidth,g_subwindowHeight*140.0/1080.0,RULER_45);
 				RenderPanoTelView(env,0,g_subwindowHeight*478.0/1080,g_subwindowWidth, g_subwindowHeight*592.0/1080.0,RIGHT,SUB);
-#if			MVDECT
-				if(mv_detect.CanUseMD(SUB))
-						{
-				//			mv_detect.SetoutRect();
-				//			TargectTelView(env,g_subwindowWidth*60/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,0,0);
-				//			TargectTelView(env,g_subwindowWidth*560/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,1,1);
-						}
-#endif
 				RenderPositionView(env,g_subwindowWidth*0,g_subwindowHeight*0,g_subwindowWidth, g_subwindowHeight);
 	break;
 	case	SECOND_TELESCOPE_BACK_MODE:
@@ -242,14 +216,6 @@ void Render::RenderSceneDS()
 		p_ForeSightFacade2[SUB]->Reset(TELESCOPE_BACK_MODE,SUB);
 		   RenderRulerView(env,-g_subwindowWidth*3.0/1920.0,g_subwindowHeight*980.0/1080.0,g_subwindowWidth,g_subwindowHeight*140.0/1080.0,RULER_45);
 		   RenderPanoTelView(env,0,g_subwindowHeight*478.0/1080,g_subwindowWidth, g_subwindowHeight*592.0/1080.0,BACK,SUB);
-#if			MVDECT
-		   if(mv_detect.CanUseMD(SUB))
-					{
-			//			mv_detect.SetoutRect();
-			//			TargectTelView(env,g_subwindowWidth*60/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,0,0);
-			//			TargectTelView(env,g_subwindowWidth*560/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,1,1);
-					}
-#endif
 			RenderPositionView(env,g_subwindowWidth*0,g_subwindowHeight*0,g_subwindowWidth, g_subwindowHeight);
 
 
@@ -259,14 +225,6 @@ void Render::RenderSceneDS()
 		p_ForeSightFacade2[SUB]->Reset(TELESCOPE_LEFT_MODE,SUB);
 		  RenderRulerView(env,-g_subwindowWidth*3.0/1920.0,g_subwindowHeight*980.0/1080.0,g_subwindowWidth,g_subwindowHeight*140.0/1080.0,RULER_45);
 			RenderPanoTelView(env,0,g_subwindowHeight*478.0/1080,g_subwindowWidth, g_subwindowHeight*592.0/1080.0,LEFT,SUB);
-#if			MVDECT
-			if(mv_detect.CanUseMD(SUB))
-					{
-			//		mv_detect.SetoutRect();
-			//			TargectTelView(env,g_subwindowWidth*60/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,0,0);
-			//			TargectTelView(env,g_subwindowWidth*560/1920.0,g_subwindowHeight*39.0/1080.0,g_subwindowWidth*480.0/1920.0, g_subwindowHeight*400.0/1080.0,1,1);
-					}
-#endif
 					RenderPositionView(env,g_subwindowWidth*0,g_subwindowHeight*0,g_subwindowWidth, g_subwindowHeight);
 	break;
 	default :
@@ -711,14 +669,9 @@ void Render::ProcessOitKeysDS(GLEnv &m_env,unsigned char key, int x, int y)
 			//		else if(SecondDisplayMode==SECOND_TELESCOPE_LEFT_MODE)
 									break;
 				case 'O':
-#if MVDECT
-			mv_detect.OpenMD(SUB);
-#endif
 					break;
 				case 'o':
-#if MVDECT
-			mv_detect.CloseMD(SUB);
-#endif
+					break;
 				case 'F':
 							//full screen on/off
 							if(DisFullscreen){
