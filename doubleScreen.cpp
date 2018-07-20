@@ -32,8 +32,14 @@ void Render::InitBowlDS()
 					if(!IsMvDetect)
 					{
 						#if MVDECT
-									mv_detect.ClearAllVector();
+									mv_detect.ClearAllVector(true);
 						#endif
+					}
+					else
+					{
+#if MVDECT
+			mv_detect.ClearAllVector(false);
+#endif
 					}
 				}
 			}

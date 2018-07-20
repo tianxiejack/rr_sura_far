@@ -67,10 +67,11 @@
 #include "ClicktoMoveForesight.h"
 #include "mvdetectInterface.h"
 #define  SHOWTIME 200
-
+extern int MV_CHOSE_IDX;
 extern int parm_inputArea;
 extern int parm_threshold ;
 extern int parm_accuracy;
+extern int parm_inputMaxArea;
 int showInfcount=SHOWTIME;
 float delayT=44;
 extern float Rh;
@@ -1122,6 +1123,9 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 
 		InitPanoScaleArrayData();
 		InitPanel(env);
+#if MVDECT
+		mv_detect.ReSetLineY();
+#endif
 		InitFollowCross();
 		InitRuler(env);
 		InitCalibrate();
@@ -2121,7 +2125,15 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 		{
 			App = true;
 			pBatch = 	m_env.GetPanel_Petal(direction%CAM_COUNT);
-			getPointsValue(direction,x,Point);
+			getPointsValue(direction,x,Point); //todo Getfloor_Line
+#if MVDECT
+			static bool SetLineOnce[10]={true,true,true,true,true,true,true,true,true,true};
+			if(SetLineOnce[direction])
+			{
+				mv_detect.SetLineY(direction,Point[0].y);
+				SetLineOnce[direction]=false;
+			}
+#endif
 			{
 				for(int k=0;k<3;k++)
 				{
@@ -7634,8 +7646,14 @@ if(setpriorityOnce)
 					if(!IsMvDetect)
 					{
 						#if MVDECT
-									mv_detect.ClearAllVector();
+									mv_detect.ClearAllVector(false);
 						#endif
+					}
+					else
+					{
+#if MVDECT
+						mv_detect.ClearAllVector(true);
+#endif
 					}
 					SetPSYButtonF2(!IsMvDetect);
 
@@ -8676,19 +8694,24 @@ GLEnv & env=env1;
 		case 'o':
 			IsMvDetect=false;
 #if MVDECT
-			mv_detect.ClearAllVector();
+			mv_detect.ClearAllVector(false);
 #endif
 						//mv_detect.OpenMD(MAIN);
 				break;
 		case 'O':
 #if MVDECT
 			IsMvDetect=true;
+#if MVDECT
+			mv_detect.ClearAllVector(true);
+#endif
 #endif
 		//	mode = OitVehicle::USER_OIT;
 			break;
 		//case 'b':
 		case 'B':
-			mode = OitVehicle::USER_BLEND;
+		//	mode = OitVehicle::USER_BLEND;
+			MV_CHOSE_IDX=(MV_CHOSE_IDX+1)%CAM_COUNT;
+			printf("MV_CHOSE_IDX=%d\n",MV_CHOSE_IDX);
 			break;
 		case '1':
 			 parm_inputArea+=1;
@@ -8724,7 +8747,9 @@ GLEnv & env=env1;
 		//	 printf("Lh=%f\n",Lh);
 			 break;
 		case '7':
-			blendMode = key-'0';
+			parm_inputMaxArea+=1;
+			printf("parm_inputMaxArea=%d\n",parm_inputMaxArea);
+		/*	blendMode = key-'0';
 						if((INIT_VIEW_MODE==displayMode)&&(EnterSinglePictureSaveMode==true))
 						{
 							enterNumberofCam=enterNumberofCam*10+blendMode;
@@ -8736,14 +8761,16 @@ GLEnv & env=env1;
 								    p_BillBoard->setBlendMode(blendMode);
 								    FixedBillBoard::setBlendMode(blendMode);
 								}
-						}
+						}*/
 						break;
 		case '8':
-					blendMode = key-'0';
+			parm_inputMaxArea-=1;
+			printf("parm_inputMaxArea=%d\n",parm_inputMaxArea);
+				/*	blendMode = key-'0';
 					if((INIT_VIEW_MODE==displayMode)&&(EnterSinglePictureSaveMode==true))
 					{
 						enterNumberofCam=enterNumberofCam*10+blendMode;
-					}
+					}*/
 					break;
 		//case 's' :
 		case 'S':

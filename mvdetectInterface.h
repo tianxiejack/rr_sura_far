@@ -31,7 +31,7 @@ public:
 	virtual	int	init(LPNOTIFYFUNC	notifyFunc, void *context){return 1;};
 	virtual	int destroy(){return 1;};
 
-	virtual	void	setFrame(cv::Mat	src ,int srcwidth , int srcheight ,int chId,int accuracy=4,/*0~4  4*/int inputArea=8/*6*/,int threshold = 30){};//输入视频帧
+	virtual	void	setFrame(cv::Mat	src ,int srcwidth , int srcheight ,int chId,int accuracy=4,/*0~4  4*/int inputArea=8/*6*/,int inputMaxArea=200,int threshold = 30){};//输入视频帧
 	virtual	void	setWarningRoi(std::vector<cv::Point2i>	warnRoi,	int chId	= 0){};//设置缩放前的警戒区域
 	virtual	void	setWarnMode(WARN_MODE	warnMode,	int chId	= 0){};//设置警戒模式
 	virtual	void	getMoveTarget(std::vector<TRK_RECT_INFO>	&resTarget,	int chId	= 0){};//移动目标
@@ -59,12 +59,12 @@ public:
 	MvDetect(CMvDectInterface *pmvIf);
 	~MvDetect();
 	void DrawRectOnpic(unsigned char *src,int capidx,int CC_enh_mvd);
-	void uyvy2gray(unsigned char* src,unsigned char* dst,int width=MAX_SCREEN_WIDTH,int height=MAX_SCREEN_HEIGHT);
+	void uyvy2gray(unsigned char* src,unsigned char* dst,int idx,int width=MAX_SCREEN_WIDTH,int height=MAX_SCREEN_HEIGHT);
 	void init(int w=MAX_SCREEN_WIDTH,int h=MAX_SCREEN_HEIGHT);
 	void m_mvDetect(int idx,unsigned char* inframe,int w=MAX_SCREEN_WIDTH,int h=MAX_SCREEN_HEIGHT);
 	void SetoutRect();//将检测到的每个通道里6个rect放入对应的6个容器里
 	static  void NotifyFunc(void *context, int chId);
-	void ClearAllVector();
+	void ClearAllVector(bool IsOpen);
 	pOSA_SemHndl GetpSemMV(int idx){return pSemMV[idx];};
 	std::vector<mvRect> *Getm_WholeRect(int mainOrsub)
 	{
@@ -77,6 +77,10 @@ public:
 		{
 			return &tempRect_Srcptr[idx];
 		};
+	void SetLineY(int idx,int startY){lineY[idx]=startY;};
+	void SetLinedalta(int idx,int delta){linedelta[idx]=delta;};
+	void ReSetLineY();
+	float GetRoiStartY_OffsetCoefficient(int idx);
 private:
 	CMvDectInterface *m_pMovDetector;
 	bool enableMD[2];
@@ -86,6 +90,9 @@ private:
 	std::vector<mvRect>	outRect[CAM_COUNT];
 	std::vector<mvRect> m_WholeRect[2];
     pOSA_SemHndl pSemMV[CAM_COUNT];
+    int lineY[CAM_COUNT];
+    int linedelta[CAM_COUNT];
+    float half_RoiAreah;
 };
 
 
