@@ -208,6 +208,77 @@ CVideoProcess* trackMode=CVideoProcess::getInstance();
 mvDetector* pSingleMvDetector=mvDetector::getInstance();
 #endif
 
+
+int ExchangeChannel(int direction)
+{
+	if(direction==0)
+	{
+		direction=4;
+	}
+	else if(direction==1)
+	{
+		direction=3;
+	}
+	else if(direction==2)
+	{
+		direction=2;
+	}
+	else if(direction==3)
+	{
+		direction=1;
+	}
+	else if(direction==4)
+	{
+		direction=5;
+	}
+	else if(direction==5)
+	{
+		direction=0;
+	}
+	return direction;
+}
+
+int NeighbourChannel(int direction)
+{
+	int dir=0;
+	switch(direction)
+	{
+	case 0:
+		dir=6;
+		break;
+	case 1:
+		dir=5;
+		break;
+	case 9:
+		dir=4;
+		break;
+	case 5:
+		dir=0;
+		break;
+	case 2:
+		dir=1;
+		break;
+	case 3:
+		dir=2;
+		break;
+	case 4:
+		dir=3;
+		break;
+	case 6:
+		dir=7;
+		break;
+	case 7:
+		dir=8;
+		break;
+	case 8:
+		dir=9;
+		break;
+	default:
+		break;
+	}
+	return dir;
+}
+
 void readcanshu()
 {
 
@@ -2096,26 +2167,54 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 		//	generateAlphaList(Alpha, 1.0/BLEND_OFFSET,1.0*x/PER_CIRCLE, count);
 			getOverLapPointsValue(direction, x, Point1, Point2);
 			{
+				direction=ExchangeChannel(direction);
 				for(int k=0;k<3;k++)
 				{
 
 			//point1图０左边，point2图１右边
 
-
 			Point1[k].x = Point1[k].x/1920.0*640.0;
 			Point1[k].y = Point1[k].y/1080.0*540.0+(direction%CAM_COUNT)*540.0;
 
-			Point2[k].x = Point2[k].x/1920.0*640.0;
-			Point2[k].y = Point2[k].y/1080.0*540.0+((direction+1)%CAM_COUNT)*540.0;
-
+			 if (direction==0)
+			{
+				Point2[k].x = Point2[k].x/1920.0*640.0;
+				Point2[k].y = Point2[k].y/1080.0*540.0+(6%CAM_COUNT)*540.0;
+			}
+				else  if (direction==1)
+			 	{
+			 		Point2[k].x = Point2[k].x/1920.0*640.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+(5%CAM_COUNT)*540.0;
+			 	}
+			 	else if(direction==9)
+			 	{
+			 		Point2[k].x = Point2[k].x/1920.0*640.0;
+			 		Point2[k].y = Point2[k].y/1080.0*540.0+((4)%CAM_COUNT)*540.0;
+			 	}
+			 	else if(direction==5)
+			 	{
+			 		Point2[k].x = Point2[k].x/1920.0*640.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+((0)%CAM_COUNT)*540.0;
+			 	}
+			 	else if(direction<=4&&direction>=2)
+				{
+					Point2[k].x = Point2[k].x/1920.0*640.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+((direction+CAM_COUNT-1)%CAM_COUNT)*540.0;
+				}
+				else	if(direction>=6&&direction<=8)
+				{
+					Point2[k].x = Point2[k].x/1920.0*640.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+((direction+1)%CAM_COUNT)*540.0;
+				}
 
 					Point1[k].x=Point1[k].x+move_hor[(direction)%CAM_COUNT];
 					Point1[k].y=(Point1[k].y-base_y_scale)*(channel_left_scale[direction])+base_y_scale+PanoFloatData[direction];
 					Point1[k]=RotatePoint( Point1[k],rotate_center[direction],rotate_angle[direction],max_panel_length,CAM_COUNT);
 
-					Point2[k].x=Point2[k].x+move_hor[(direction+1)%CAM_COUNT];
-					Point2[k].y=(Point2[k].y-base_y_scale)*(channel_right_scale[(direction+1)%CAM_COUNT])+base_y_scale+PanoFloatData[(direction+1)%CAM_COUNT];
-					Point2[k]=RotatePoint( Point2[k],rotate_center[direction+1],rotate_angle[direction+1],max_panel_length,CAM_COUNT);
+					int new_dir=NeighbourChannel(direction);
+					Point2[k].x=Point2[k].x+move_hor[(new_dir)%CAM_COUNT];
+					Point2[k].y=(Point2[k].y-base_y_scale)*(channel_right_scale[(new_dir)%CAM_COUNT])+base_y_scale+PanoFloatData[(new_dir)%CAM_COUNT];
+					Point2[k]=RotatePoint( Point2[k],rotate_center[new_dir],rotate_angle[new_dir],max_panel_length,CAM_COUNT);
 
 				}
 			}
@@ -2135,15 +2234,17 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 			}
 #endif
 			{
+				direction=ExchangeChannel(direction);
 				for(int k=0;k<3;k++)
 				{
-
 					Point[k].x = Point[k].x/1920.0*640.0;
 					Point[k].y= Point[k].y/1080.0*540.0+(direction%CAM_COUNT)*540.0;
+
 
 					Point[k].x=Point[k].x+move_hor[direction];
 					Point[k].y=(Point[k].y-base_y_scale)*(channel_right_scale[direction]+(channel_left_scale[direction]-channel_right_scale[direction])*scale_count/thechannel_max_count)+base_y_scale+PanoFloatData[direction];
 					Point[k]=RotatePoint( Point[k],rotate_center[direction],rotate_angle[direction],max_panel_length,CAM_COUNT);
+
 				}
 			}
 		}else
@@ -9068,7 +9169,8 @@ GLEnv & env=env1;
             	{
     				if((TRIM_MODE==displayMode))
     				{
- 						move_hor[testPanoNumber]=move_hor[testPanoNumber]+DELTA_OF_PANO_HOR;
+ 						int new_dir=ExchangeChannel(testPanoNumber);
+    					move_hor[new_dir]=move_hor[new_dir]+DELTA_OF_PANO_HOR;
 						InitPanel(m_env,0,true);
     				}
             	}
@@ -9093,7 +9195,8 @@ GLEnv & env=env1;
             	{
     				if((TRIM_MODE==displayMode))
     				{
- 						move_hor[testPanoNumber]=move_hor[testPanoNumber]-DELTA_OF_PANO_HOR;
+ 						int new_dir=ExchangeChannel(testPanoNumber);
+    					move_hor[new_dir]=move_hor[new_dir]-DELTA_OF_PANO_HOR;
 						InitPanel(m_env,0,true);
     				}
             	}
@@ -9118,10 +9221,11 @@ GLEnv & env=env1;
 	            	{
 	    				if((TRIM_MODE==displayMode))
 	    				{
-	 						rotate_angle[testPanoNumber]+=DELTA_OF_ROTATE_ANGLE;
-	 						if(rotate_angle[testPanoNumber]>360.0)
+	 						int new_dir=ExchangeChannel(testPanoNumber);
+	    					rotate_angle[new_dir]+=DELTA_OF_ROTATE_ANGLE;
+	 						if(rotate_angle[new_dir]>360.0)
 	 						{
-	 							rotate_angle[testPanoNumber]-=360.0;
+	 							rotate_angle[new_dir]-=360.0;
 	 						}
 							InitPanel(m_env,0,true);
 	    				}
@@ -9132,10 +9236,11 @@ GLEnv & env=env1;
 	            	{
 	    				if((TRIM_MODE==displayMode))
 	    				{
-	 						rotate_angle[testPanoNumber]-=DELTA_OF_ROTATE_ANGLE;
-	 						if(rotate_angle[testPanoNumber]<0.0)
+	 						int new_dir=ExchangeChannel(testPanoNumber);
+	    					rotate_angle[new_dir]-=DELTA_OF_ROTATE_ANGLE;
+	 						if(rotate_angle[new_dir]<0.0)
 	 						{
-	 							rotate_angle[testPanoNumber]+=360.0;
+	 							rotate_angle[new_dir]+=360.0;
 	 						}
 							InitPanel(m_env,0,true);
 							
@@ -10138,12 +10243,14 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 				}
 				else if(SPECIAL_KEY_UP == key)
 				{
-					PanoFloatData[testPanoNumber]=PanoFloatData[testPanoNumber]+DELTA_OF_PANOFLOAT;
+					int new_dir=ExchangeChannel(testPanoNumber);
+					PanoFloatData[new_dir]=PanoFloatData[new_dir]+DELTA_OF_PANOFLOAT;
 					InitPanel(m_env,0,true);
 				}
 				else if(SPECIAL_KEY_DOWN == key)
 				{
-					PanoFloatData[testPanoNumber]=PanoFloatData[testPanoNumber]-DELTA_OF_PANOFLOAT;
+					int new_dir=ExchangeChannel(testPanoNumber);
+					PanoFloatData[new_dir]=PanoFloatData[new_dir]-DELTA_OF_PANOFLOAT;
 					InitPanel(m_env,0,true);
 				}
 			}
