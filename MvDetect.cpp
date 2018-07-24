@@ -141,16 +141,11 @@ void MvDetect::uyvy2gray(unsigned char* src,unsigned char* dst,int idx,int width
 }
 void MvDetect::m_mvDetect(int idx,unsigned char* inframe,int w,int h)
 {
-	if(idx==1)
-	{
 		idx-=1;
 		uyvy2gray(inframe,grayFrame[idx],idx);
 		Mat gm(h*half_RoiAreah*2,w,CV_8UC1,grayFrame[idx]);
 		if(m_pMovDetector != NULL)
 			m_pMovDetector->setFrame(gm,gm.cols,gm.rows,idx,parm_accuracy,parm_inputArea,parm_inputMaxArea,parm_threshold);
-
-	//		m_pMovDetector->setFrame(gm,gm.cols,gm.rows,8,parm_accuracy,parm_inputArea,parm_threshold);
-	}
 }
 #endif
 
