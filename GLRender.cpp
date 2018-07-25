@@ -7968,13 +7968,13 @@ if(displayMode==ALL_VIEW_MODE)
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*0.41, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*413.0/1080.0+22, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*0.41, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					DrawNeedleGunonCompass(env);
 					DrawNeedleGunonDegree(env);
@@ -8055,7 +8055,7 @@ if(displayMode==ALL_VIEW_MODE)
 //							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta-0.8*2*g_windowWidth/60-7,
 //						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
 							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+point_ver_delta+g_windowHeight/100, g_windowWidth/12, g_windowHeight/8);
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60-5+point_ver_delta+g_windowHeight/100, g_windowWidth/12, g_windowHeight/8);
 
 						}
 					}
