@@ -204,7 +204,7 @@ void MvDetect::SetoutRect()
 void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 {
 	//DrawAllRectOri(capidx);
-
+	float sf=-1;
 	std::vector<mvRect> tempRecv[CAM_COUNT];
 	if(capidx==MAIN_FPGA_SIX)
 	{
@@ -218,6 +218,7 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 		}
 		for(int i=0;i<6;i++)                        //0  1  2
 		{															//3  4  5
+			sf=GetRoiStartY_OffsetCoefficient(i);
 			tempRecv[i].assign(outRect[i].begin(),outRect[i].end());
 			if(tempRecv[i].size()!=0)//容器dix不为空
 			{
@@ -227,7 +228,8 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 					int starty=tempRecv[i][rectIdx].outRect.targetRect.y/2+540*i;
 					int w=tempRecv[i][rectIdx].outRect.targetRect.width/3;
 					int h=tempRecv[i][rectIdx].outRect.targetRect.height/2;//取出容器中rect的值
-			//		starty+=540*0.2;
+					starty+=1080*sf;
+					//		starty+=540*0.2;
 					int endx=startx+w;
 					int endy=starty+h;
 					if(cc==3)
@@ -254,6 +256,7 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 			}
 			for(int i=6;i<10;i++)						//6   7
 			{															//8	 9
+				sf=GetRoiStartY_OffsetCoefficient(i);
 				tempRecv[i].assign(outRect[i].begin(),outRect[i].end());
 				if(tempRecv[i].size()!=0)//容器dix不为空
 				{
@@ -263,7 +266,8 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 						int starty=tempRecv[i][rectIdx].outRect.targetRect.y/2+540*(i-6);
 						int w=tempRecv[i][rectIdx].outRect.targetRect.width/3;
 						int h=tempRecv[i][rectIdx].outRect.targetRect.height/2;//取出容器中rect的值
-	//					starty+=540*0.2;
+						starty+=1080*sf;
+						//					starty+=540*0.2;
 						int endx=startx+w;
 						int endy=starty+h;
 						if(cc==3)
