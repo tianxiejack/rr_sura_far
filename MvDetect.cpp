@@ -110,16 +110,11 @@ void MvDetect::ClearAllVector(bool IsOpen)
 {
 	if(IsOpen)
 	{
-		for(int i=0;i<CAM_COUNT;i++)
-		{
-			tempRect_Srcptr[i].clear();
-			outRect[i].clear();
-		}
-		m_WholeRect[0].clear();
-		m_WholeRect[1].clear();
 	}
 	else
+	{
 		m_pMovDetector->mvPause();
+	}
 }
 void MvDetect::init(int w,int h)
 {
