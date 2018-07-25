@@ -77,7 +77,7 @@ public:
 		{
 			return &tempRect_Srcptr[idx];
 		};
-	void SetLineY(int idx,int startY){lineY[idx]=startY;};
+	void SetLineY(int idx,int startY){/*lineY[idx]=startY;*/};
 	void SetLinedalta(int idx,int delta){linedelta[idx]=delta;};
 	void ReSetLineY();
 	float GetRoiStartY_OffsetCoefficient(int idx);

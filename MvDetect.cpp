@@ -57,7 +57,7 @@ float MvDetect::GetRoiStartY_OffsetCoefficient(int idx)
 }
 
 MvDetect::MvDetect(CMvDectInterface *pmvIf):
-		m_pMovDetector(pmvIf),half_RoiAreah(0.3)
+		m_pMovDetector(pmvIf),half_RoiAreah(0.5)
 {
 	int ret=-1;
 	for(int i=0;i<CAM_COUNT;i++)
