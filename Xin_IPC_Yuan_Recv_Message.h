@@ -34,28 +34,36 @@ typedef enum {
 typedef struct {
 	char cameraFrontState;
 	char cameraFrontTest;
+	char cameraFront_FAULT_Colour;
 	char cameraLeft1State;
 	char cameraLeft1Test;
+	char cameraLeft1_FAULT_Colour;
 	char cameraRight1State;
 	char cameraRight1Test;
+	char cameraRight1_FAULT_Colour;
 	char cameraLeft2State;
 	char cameraLeft2Test;
+	char cameraLeft2_FAULT_Colour;
 	char cameraRight2State;
 	char cameraRight2Test;
+	char cameraRight2_FAULT_Colour;
 	char cameraLeft3State;
 	char cameraLeft3Test;
+	char cameraLeft3_FAULT_Colour;
 	char cameraRight3State;
 	char cameraRight3Test;
+	char cameraRight3_FAULT_Colour;
 	char cameraBackState;
 	char cameraBackTest;
+	char cameraBack_FAULT_Colour;
 	char Cap_BoxState;
 	char Cap_BoxTest;
+	char Cap_FAULT_Colour;
 	char passengerState;
 	char passengerTest;
+	char passenger_FAULT_Colour;
 	char nearBoardState;
 	char nearBoardTest;
-	char Cap_FAULT_Colour;
-	char passenger_FAULT_Colour;
 	char nearBoard_FAULT_Colour;
 } Cap_Msg; //预留的采集信息
 

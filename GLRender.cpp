@@ -7819,57 +7819,54 @@ if(setpriorityOnce)
 
 				state_label_data[0][0]=getCaptureMessage().cameraFrontTest;
 				state_label_data[0][1]=getCaptureMessage().cameraFrontState;
-
+				state_label_data[0][2]=getCaptureMessage().cameraFront_FAULT_Colour;
 				
 				state_label_data[1][0]=getCaptureMessage().cameraLeft1Test;
 				state_label_data[1][1]=getCaptureMessage().cameraLeft1State;
+				state_label_data[1][2]=getCaptureMessage().cameraLeft1_FAULT_Colour;
 
 				state_label_data[2][0]=getCaptureMessage().cameraLeft2Test;
 				state_label_data[2][1]=getCaptureMessage().cameraLeft2State;
+				state_label_data[2][2]=getCaptureMessage().cameraLeft2_FAULT_Colour;
 
 				state_label_data[3][0]=getCaptureMessage().cameraLeft3Test;
 				state_label_data[3][1]=getCaptureMessage().cameraLeft3State;
+				state_label_data[3][2]=getCaptureMessage().cameraLeft3_FAULT_Colour;
 
 				state_label_data[4][0]=getCaptureMessage().passengerTest;
 				state_label_data[4][1]=getCaptureMessage().passengerState;
+				state_label_data[4][2]=getCaptureMessage().passenger_FAULT_Colour;
 
 				state_label_data[5][0]=0;
 				state_label_data[5][1]=0;
-
+				state_label_data[5][2]=0;
 
 
 				
 				state_label_data[6][0]=getCaptureMessage().cameraBackTest;
 				state_label_data[6][1]=getCaptureMessage().cameraBackState;
-
+				state_label_data[6][2]=getCaptureMessage().cameraBack_FAULT_Colour;
 
 				state_label_data[7][0]=getCaptureMessage().cameraRight1Test;
 				state_label_data[7][1]=getCaptureMessage().cameraRight1State;
-
+				state_label_data[7][2]=getCaptureMessage().cameraRight1_FAULT_Colour;
 
 				state_label_data[8][0]=getCaptureMessage().cameraRight2Test;
 				state_label_data[8][1]=getCaptureMessage().cameraRight2State;
-
+				state_label_data[8][2]=getCaptureMessage().cameraRight2_FAULT_Colour;
 
 				state_label_data[9][0]=getCaptureMessage().cameraRight3Test;
 				state_label_data[9][1]=getCaptureMessage().cameraRight3State;
-
+				state_label_data[9][2]=getCaptureMessage().cameraRight3_FAULT_Colour;
 
 				state_label_data[10][0]=getCaptureMessage().Cap_BoxTest;
 				state_label_data[10][1]=getCaptureMessage().Cap_BoxState;
-
+				state_label_data[10][2]=getCaptureMessage().Cap_FAULT_Colour;
 
 				state_label_data[11][0]=getCaptureMessage().nearBoardTest;
 				state_label_data[11][1]=getCaptureMessage().nearBoardState;
+				state_label_data[11][2]=getCaptureMessage().nearBoard_FAULT_Colour;
 
-
-
-				for(int x_i=0;x_i<12;x_i++)
-				{
-					state_label_data[x_i][2]=getCaptureMessage().Cap_FAULT_Colour;
-				}
-
-state_label_data[5][2]=0;
 				int index_i=-1;
 				int width_delta=100;
 				int w_y=0;

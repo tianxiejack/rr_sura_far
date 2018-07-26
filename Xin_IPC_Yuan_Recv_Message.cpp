@@ -22,7 +22,8 @@
 int ipc_port[IPC_NUM];
 key_t ipc_key[IPC_NUM];
 int ipc_qid[IPC_NUM];
-struct timeval cap_lasttime, pas_lasttime, near_lasttime, cur_time;
+struct timeval cap_lasttime1, cap_lasttime2, cap_lasttime3, pas_lasttime,
+		near_lasttime, cur_time;
 
 typedef enum {
 	IPC_MSG_TYPE_ORIGIN,
@@ -86,12 +87,12 @@ MOVE_TYPE Key_MoveDirection[2] = { MOVETYPE_START, MOVETYPE_START };
 ANGLE_GROUP AngleFar_PeriscopicLens = { 0, 0 };
 ANGLE_GROUP AngleFar_GunAngle = { 0, 0 };
 ANGLE_GROUP AngleFar_CanonAngle = { 0, 0 };
-Cap_Msg CaptureMessage = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		1, 1, 1, 1, 1, 1, 1 };
+Cap_Msg CaptureMessage = { 1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,
+		1, 1, 1,   1, 1, 1,   1,1,1,  1,1,1,  1,1,1 };
 DEBUG_ORDER DebugModeOrder[2] = { DEBUG_ORDER_ORIGIN, DEBUG_ORDER_ORIGIN };
 int OverlayInformation[2] = { 0, 0 };
 #define  IPC_ftok_path "/home/"
-pthread_mutex_t Mutex[2] = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t Mutex[3] = PTHREAD_MUTEX_INITIALIZER;
 
 void *Recv_ipc_Ephor(void *arg);
 void *Recv_ipc_Driver(void *arg);
@@ -143,33 +144,69 @@ void IPC_Init_Driver() {
 }
 
 void *Over_Time(void *arg) {
-	double cap_time, pas_time, near_time;
-	sleep(1);
-	gettimeofday(&cur_time, NULL);
-	cap_time = (cur_time.tv_sec - cap_lasttime.tv_sec)
-			+ (cur_time.tv_usec - cap_lasttime.tv_usec) / 1000000.0;
-	pas_time = (cur_time.tv_sec - pas_lasttime.tv_sec)
-			+ (cur_time.tv_usec - pas_lasttime.tv_usec) / 1000000.0;
-	near_time = (cur_time.tv_sec - near_lasttime.tv_sec)
-			+ (cur_time.tv_usec - near_lasttime.tv_usec) / 1000000.0;
-	if (cap_time > 60.0) {
-		CaptureMessage.Cap_FAULT_Colour = POINT_RED;
-		CaptureMessage.Cap_BoxState = POINT_RED;
-	} else {
-		CaptureMessage.Cap_FAULT_Colour = POINT_GREEN;
-	}
-	if (pas_time > 60.0) {
-		CaptureMessage.passenger_FAULT_Colour = POINT_RED;
-		CaptureMessage.passengerState = POINT_RED;
-	} else {
-		CaptureMessage.passenger_FAULT_Colour = POINT_GREEN;
-	}
+	double cap_time1, cap_time2, cap_time3, pas_time, near_time;
+	while (1) {
+		sleep(1);
+		gettimeofday(&cur_time, NULL);
+		cap_time1 = (cur_time.tv_sec - cap_lasttime1.tv_sec)
+				+ (cur_time.tv_usec - cap_lasttime1.tv_usec) / 1000000.0;
+		cap_time2 = (cur_time.tv_sec - cap_lasttime2.tv_sec)
+				+ (cur_time.tv_usec - cap_lasttime2.tv_usec) / 1000000.0;
+		cap_time3 = (cur_time.tv_sec - cap_lasttime3.tv_sec)
+				+ (cur_time.tv_usec - cap_lasttime3.tv_usec) / 1000000.0;
+		pas_time = (cur_time.tv_sec - pas_lasttime.tv_sec)
+				+ (cur_time.tv_usec - pas_lasttime.tv_usec) / 1000000.0;
+		near_time = (cur_time.tv_sec - near_lasttime.tv_sec)
+				+ (cur_time.tv_usec - near_lasttime.tv_usec) / 1000000.0;
+		pthread_mutex_lock(&Mutex[2]);
+		if (cap_time1 > 60.0) {
+			CaptureMessage.cameraFront_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraLeft1_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraRight1_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraLeft2_FAULT_Colour = POINT_RED;
+		} else {
+			CaptureMessage.cameraFront_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraLeft1_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraRight1_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraLeft2_FAULT_Colour = POINT_GREEN;
+		}
+		pthread_mutex_unlock(&Mutex[2]);
+		pthread_mutex_lock(&Mutex[2]);
+		if (cap_time2 > 60.0) {
+			CaptureMessage.cameraRight2_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraLeft3_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraRight3_FAULT_Colour = POINT_RED;
+			CaptureMessage.cameraBack_FAULT_Colour = POINT_RED;
+		} else {
+			CaptureMessage.cameraRight2_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraLeft3_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraRight3_FAULT_Colour = POINT_GREEN;
+			CaptureMessage.cameraBack_FAULT_Colour = POINT_GREEN;
+		}
+		pthread_mutex_unlock(&Mutex[2]);
+		pthread_mutex_lock(&Mutex[2]);
+		if (cap_time3 > 60.0) {
+			CaptureMessage.Cap_FAULT_Colour = POINT_RED;
+		} else {
+			CaptureMessage.Cap_FAULT_Colour = POINT_GREEN;
+		}
+		pthread_mutex_unlock(&Mutex[2]);
 
-	if (near_time > 60.0) {
-		CaptureMessage.nearBoard_FAULT_Colour = POINT_RED;
-		CaptureMessage.nearBoardState = POINT_RED;
-	} else {
-		CaptureMessage.nearBoard_FAULT_Colour = POINT_GREEN;
+		pthread_mutex_lock(&Mutex[2]);
+		if (pas_time > 60.0) {
+			CaptureMessage.passenger_FAULT_Colour = POINT_RED;
+		} else {
+			CaptureMessage.passenger_FAULT_Colour = POINT_GREEN;
+		}
+		pthread_mutex_unlock(&Mutex[2]);
+
+		pthread_mutex_lock(&Mutex[2]);
+		if (near_time > 60.0) {
+			CaptureMessage.nearBoard_FAULT_Colour = POINT_RED;
+		} else {
+			CaptureMessage.nearBoard_FAULT_Colour = POINT_GREEN;
+		}
+		pthread_mutex_unlock(&Mutex[2]);
 	}
 }
 
@@ -217,7 +254,7 @@ void *Recv_ipc_Ephor(void *arg) {
 			CaptureMessage.cameraLeft1State = (msg.payload.Stete >> 16) & 0xff;
 			CaptureMessage.cameraRight1State = (msg.payload.Stete >> 8) & 0xff;
 			CaptureMessage.cameraLeft2State = msg.payload.Stete & 0xff;
-			gettimeofday(&cap_lasttime, NULL);
+			gettimeofday(&cap_lasttime1, NULL);
 			pthread_mutex_unlock(&Mutex[0]);
 			break;
 		case IPC_MSG_TYPE_CAPTURE_STATE2:
@@ -226,30 +263,30 @@ void *Recv_ipc_Ephor(void *arg) {
 			CaptureMessage.cameraLeft3State = (msg.payload.Stete >> 16) & 0xff;
 			CaptureMessage.cameraRight3State = (msg.payload.Stete >> 8) & 0xff;
 			CaptureMessage.cameraBackState = msg.payload.Stete & 0xff;
-			gettimeofday(&cap_lasttime, NULL);
+			gettimeofday(&cap_lasttime2, NULL);
 			pthread_mutex_unlock(&Mutex[0]);
 			break;
 		case IPC_MSG_TYPE_CAPTURE_STATE3:
 			pthread_mutex_lock(&Mutex[0]);
 			CaptureMessage.Cap_BoxState = (msg.payload.Cap_State >> 16) & 0xff;
-			CaptureMessage.cameraFrontTest = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraFrontTest = (msg.payload.Cap_State >> 8)
 					& 0x1;
-			CaptureMessage.cameraLeft1Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 8)
 					& 0x2;
-			CaptureMessage.cameraRight1Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 8)
 					& 0x4;
-			CaptureMessage.cameraLeft2Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 8)
 					& 0x8;
-			CaptureMessage.cameraRight2Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 8)
 					& 0x10;
-			CaptureMessage.cameraLeft3Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 8)
 					& 0x20;
-			CaptureMessage.cameraRight3Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 8)
 					& 0x40;
-			CaptureMessage.cameraBackTest = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 8)
 					& 0x80;
 			CaptureMessage.Cap_BoxTest = msg.payload.Cap_State & 0xff;
-			gettimeofday(&cap_lasttime, NULL);
+			gettimeofday(&cap_lasttime3, NULL);
 			pthread_mutex_unlock(&Mutex[0]);
 			break;
 		case IPC_MSG_TYPE_PASSENGER_STATE:
@@ -393,6 +430,7 @@ void *Recv_ipc_Driver(void *arg) {
 			CaptureMessage.cameraLeft1State = (msg.payload.Stete >> 16) & 0xff;
 			CaptureMessage.cameraRight1State = (msg.payload.Stete >> 8) & 0xff;
 			CaptureMessage.cameraLeft2State = msg.payload.Stete & 0xff;
+			gettimeofday(&cap_lasttime1, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_CAPTURE_STATE2:
@@ -401,40 +439,44 @@ void *Recv_ipc_Driver(void *arg) {
 			CaptureMessage.cameraLeft3State = (msg.payload.Stete >> 16) & 0xff;
 			CaptureMessage.cameraRight3State = (msg.payload.Stete >> 8) & 0xff;
 			CaptureMessage.cameraBackState = msg.payload.Stete & 0xff;
+			gettimeofday(&cap_lasttime2, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_CAPTURE_STATE3:
 			pthread_mutex_lock(&Mutex[1]);
 			CaptureMessage.Cap_BoxState = (msg.payload.Cap_State >> 16) & 0xff;
-			CaptureMessage.cameraFrontTest = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraFrontTest = (msg.payload.Cap_State >> 8)
 					& 0x1;
-			CaptureMessage.cameraLeft1Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 8)
 					& 0x2;
-			CaptureMessage.cameraRight1Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 8)
 					& 0x4;
-			CaptureMessage.cameraLeft2Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 8)
 					& 0x8;
-			CaptureMessage.cameraRight2Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 8)
 					& 0x10;
-			CaptureMessage.cameraLeft3Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 8)
 					& 0x20;
-			CaptureMessage.cameraRight3Test = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 8)
 					& 0x40;
-			CaptureMessage.cameraBackTest = !(msg.payload.Cap_State >> 8)
+			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 8)
 					& 0x80;
 			CaptureMessage.Cap_BoxTest = msg.payload.Cap_State & 0xff;
+			gettimeofday(&cap_lasttime3, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_PASSENGER_STATE:
 			pthread_mutex_lock(&Mutex[1]);
 			CaptureMessage.passengerTest = (msg.payload.Cap_State >> 8) & 0xff;
 			CaptureMessage.passengerState = msg.payload.Cap_State & 0xff;
+			gettimeofday(&pas_lasttime, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_NEARBOARD_STATE:
 			pthread_mutex_lock(&Mutex[1]);
 			CaptureMessage.nearBoardTest = (msg.payload.Cap_State >> 8) & 0xff;
 			CaptureMessage.nearBoardState = msg.payload.Cap_State & 0xff;
+			gettimeofday(&near_lasttime, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
 			break;
 		case IPC_MSG_TYPE_PERISCOPIC_ANGLE:
