@@ -153,22 +153,9 @@ void Render::RenderSceneDS()
 #if 1
 		tIdle.threadIdle(SUB_CN);
 		env.Getp_FboPboFacade()->Render2Front(SUB,g_subwindowWidth,g_subwindowHeight);
-		if(0)//g_windowHeight==768)
 		{
-				RenderRightForeSightView(env,0,g_subwindowHeight*538.0/768.0,g_subwindowWidth, g_subwindowHeight*116.0/768.0,SUB);
-				RenderLeftForeSightView(env,0,g_subwindowHeight*655.0/768.0,g_subwindowWidth, g_subwindowHeight*115.0/768.0,SUB);
-				glScissor(0,0,944,538);
-							//glScissor(g_subwindowWidth*448.0/1920.0,g_subwindowHeight*156.0/1080.0,g_subwindowWidth*1024,g_subwindowHeight*537);
-				glEnable(GL_SCISSOR_TEST);
-				glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-				glDisable(GL_SCISSOR_TEST);
-				RenderOnetimeView(env,0,0,g_subwindowWidth*944.0/1024.0, g_subwindowHeight*537.0/768.0,SUB);
-
-		}
-		else
-		{
-				RenderRightForeSightView(env,0,g_subwindowHeight*643.0/1080.0-18,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
-				RenderLeftForeSightView(env,0,g_subwindowHeight*864.0/1080.0-17+2.5,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
+				RenderRightForeSightView(env,0,g_subwindowHeight*660.0/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
+				RenderLeftForeSightView(env,0,g_subwindowHeight*884.5/1080.0,g_subwindowWidth, g_subwindowHeight*216.0/1080.0,SUB);
 			glScissor(0,0,g_subwindowWidth,648*g_subwindowHeight/1920.0);
 									//glScissor(g_subwindowWidth*448.0/1920.0,g_subwindowHeight*156.0/1080.0,g_subwindowWidth*1024,g_subwindowHeight*537);
 			glEnable(GL_SCISSOR_TEST);

@@ -7019,17 +7019,8 @@ if(setpriorityOnce)
 	{
 		tIdle.threadIdle(MAIN_CN);
 		env.Getp_FboPboFacade()->Render2Front(MAIN,g_windowWidth,g_windowHeight);
-//if(g_windowHeight==768)
-{
-	//	RenderRightForeSightView(env,0,g_windowHeight*538.0/768.0,g_windowWidth, g_windowHeight*116.0/768.0,MAIN);
-	//	RenderLeftForeSightView(env,0,g_windowHeight*655.0/768.0,g_windowWidth, g_windowHeight*115.0/768.0,MAIN);
-}
-//else
-{
-	RenderRightForeSightView(env,0,1080*643.0/1080.0-18,1920, 1080*216.0/1080.0,MAIN);
-	RenderLeftForeSightView(env,0,1080*864.0/1080.0-17+2.5,1920, 1080*216.0/1080.0,MAIN);
-}
-
+	RenderRightForeSightView(env,0,1080*(660.0)/1080.0,1920, 1080*216.0/1080.0,MAIN);
+	RenderLeftForeSightView(env,0,1080*(884.5)/1080.0,1920, 1080*216.0/1080.0,MAIN);
 			break;
 	}
 	case TRIM_MODE:
@@ -7962,16 +7953,16 @@ if(displayMode==ALL_VIEW_MODE)
 				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
 				{
 					p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55, g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*0.41, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3-8.0+22.9, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7, g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*0.41, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					DrawNeedleGunonCompass(env);
 					DrawNeedleGunonDegree(env);
@@ -7988,22 +7979,22 @@ if(displayMode==ALL_VIEW_MODE)
 					int text_width=g_windowWidth/20;
 					int text_height=80;
 
-					Rect2i rect(7.3*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
+					Rect2i rect(7.3*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_hor_angle);
 					DrawCordsView(env,&rect,text_data);
 
-					Rect2i rect2(7.3*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
+					Rect2i rect2(7.3*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_ver_angle);
 					DrawCordsView(env,&rect2,text_data);
 
-					Rect2i rect3(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9,text_width,text_height);
+					Rect2i rect3(8.8*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_hor_data);
 					DrawCordsView(env,&rect3,text_data);
 
-					Rect2i rect4(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9,text_width,text_height);
+					Rect2i rect4(8.8*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
@@ -8025,10 +8016,10 @@ if(displayMode==ALL_VIEW_MODE)
 					env.GetmodelViewMatrix()->PushMatrix();
 
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7+13.1, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, g_windowHeight/7+13.1+30, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
 //					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/5, g_windowHeight/7, g_windowWidth/2, g_windowHeight*1.2/2);
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move, 0+30, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
 
 					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
 					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
@@ -8052,7 +8043,7 @@ if(displayMode==ALL_VIEW_MODE)
 //							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta-0.8*2*g_windowWidth/60-7,
 //						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
 							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60-5+point_ver_delta+g_windowHeight/100, g_windowWidth/12, g_windowHeight/8);
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60-5+point_ver_delta+g_windowHeight/100+30, g_windowWidth/12, g_windowHeight/8);
 
 						}
 					}
@@ -8075,7 +8066,7 @@ if(displayMode==ALL_VIEW_MODE)
 								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
 							}
 	RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1, g_windowWidth/12, g_windowHeight/8);
+						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1+30, g_windowWidth/12, g_windowHeight/8);
 						}
 					}
 					env.GetmodelViewMatrix()->PopMatrix();
@@ -8821,28 +8812,28 @@ GLEnv & env=env1;
 					 printf("parm_inputArea=%d\n",parm_inputArea);
 			break;
 		case '3':
-			parm_threshold+=1;
-					 printf("parm_threshold=%d\n",parm_threshold);
-		//	 Rh+=1.0;
-	//		 printf("RH=%f\n",Rh);
+	//		parm_threshold+=1;
+	//				 printf("parm_threshold=%d\n",parm_threshold);
+			 Rh+=0.1;
+			 printf("Rh=%f\n",Rh);
 			 break;
 		case '4':
-			parm_threshold-=1;
-					 printf("parm_threshold=%d\n",parm_threshold);
-		//	 Rh-=1.0;
-		//	 printf("RH=%f\n",Rh);
+	//		parm_threshold-=1;
+	//				 printf("parm_threshold=%d\n",parm_threshold);
+			 Rh-=0.1;
+			 printf("RH=%f\n",Rh);
 			 break;
 		case '5':
-			parm_accuracy+=1;
-			 printf("parm_accuracy=%d\n",parm_accuracy);
-	//		Lh+=1;
-	//		 printf("LH=%f\n",Lh);
+		//	parm_accuracy+=1;
+		//	 printf("parm_accuracy=%d\n",parm_accuracy);
+			Lh+=1;
+			 printf("LH=%f\n",Lh);
 			 break;
 		case '6':
-			parm_accuracy-=1;
-			printf("parm_accuracy=%d\n",parm_accuracy);
-		//	Lh-=1;
-		//	 printf("Lh=%f\n",Lh);
+	//		parm_accuracy-=1;
+	//		printf("parm_accuracy=%d\n",parm_accuracy);
+			Lh-=1;
+			 printf("Lh=%f\n",Lh);
 			 break;
 		case '7':
 			parm_inputMaxArea+=1;
@@ -12794,7 +12785,7 @@ void Render::DrawNeedleGunonCompass(GLEnv &m_env)
 	float rec_width=1.6,rec_height=2.0;
 //	float rec_center_x=13.2-rec_width/2.0,rec_center_y=10.0-rec_height/2.0;
 	//	float needle_radius=0.9;
-	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 
@@ -12976,7 +12967,7 @@ void Render::DrawVerCanonAngle(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13093,7 +13084,7 @@ void Render::DrawNeedleCanononCompass(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13266,7 +13257,7 @@ void Render::DrawNeedleCanononDegree(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13319,7 +13310,7 @@ void Render::DrawVerGunAngle(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 	float needle_radius=1.2;
 
 	float angle=calc_ver_data*360.0/6000.0-180.0;
@@ -13434,7 +13425,7 @@ void Render::DrawNeedleGunonDegree(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0-0.35+0.56;
+	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 	float needle_inner_radius=1.0;

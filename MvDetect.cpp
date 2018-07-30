@@ -200,7 +200,7 @@ void MvDetect::SetoutRect()
 		}
 #endif
 }
-
+#if  MVDECT
 void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 {
 	//DrawAllRectOri(capidx);
@@ -284,3 +284,4 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 		}
 }
 
+#endif
