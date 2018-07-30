@@ -7979,22 +7979,22 @@ if(displayMode==ALL_VIEW_MODE)
 					int text_width=g_windowWidth/20;
 					int text_height=80;
 
-					Rect2i rect(7.3*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11,text_width,text_height);
+					Rect2i rect(7.3*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_hor_angle);
 					DrawCordsView(env,&rect,text_data);
 
-					Rect2i rect2(7.3*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11,text_width,text_height);
+					Rect2i rect2(7.3*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_ver_angle);
 					DrawCordsView(env,&rect2,text_data);
 
-					Rect2i rect3(8.8*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11,text_width,text_height);
+					Rect2i rect3(8.8*g_windowWidth/10+text_x-11,text_y+text_height*2.5/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_hor_data);
 					DrawCordsView(env,&rect3,text_data);
 
-					Rect2i rect4(8.8*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11,text_width,text_height);
+					Rect2i rect4(8.8*g_windowWidth/10+text_x-11,text_y+text_height*1/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
@@ -8814,25 +8814,25 @@ GLEnv & env=env1;
 		case '3':
 	//		parm_threshold+=1;
 	//				 printf("parm_threshold=%d\n",parm_threshold);
-			 Rh+=0.1;
+			 Rh+=1;
 			 printf("Rh=%f\n",Rh);
 			 break;
 		case '4':
 	//		parm_threshold-=1;
 	//				 printf("parm_threshold=%d\n",parm_threshold);
-			 Rh-=0.1;
+			 Rh-=1;
 			 printf("RH=%f\n",Rh);
 			 break;
 		case '5':
 		//	parm_accuracy+=1;
 		//	 printf("parm_accuracy=%d\n",parm_accuracy);
-			Lh+=1;
+			Lh+=0.1;
 			 printf("LH=%f\n",Lh);
 			 break;
 		case '6':
 	//		parm_accuracy-=1;
 	//		printf("parm_accuracy=%d\n",parm_accuracy);
-			Lh-=1;
+			Lh-=0.1;
 			 printf("Lh=%f\n",Lh);
 			 break;
 		case '7':
@@ -12785,7 +12785,7 @@ void Render::DrawNeedleGunonCompass(GLEnv &m_env)
 	float rec_width=1.6,rec_height=2.0;
 //	float rec_center_x=13.2-rec_width/2.0,rec_center_y=10.0-rec_height/2.0;
 	//	float needle_radius=0.9;
-	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.88,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 
@@ -12967,7 +12967,7 @@ void Render::DrawVerCanonAngle(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13084,7 +13084,7 @@ void Render::DrawNeedleCanononCompass(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13257,7 +13257,7 @@ void Render::DrawNeedleCanononDegree(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.875-4.05,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 
 //	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
@@ -13310,7 +13310,7 @@ void Render::DrawVerGunAngle(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.9,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 	float needle_radius=1.2;
 
 	float angle=calc_ver_data*360.0/6000.0-180.0;
@@ -13425,7 +13425,7 @@ void Render::DrawNeedleGunonDegree(GLEnv &m_env)
 	int a=0,b=1,c=2;
 
 	float rec_width=2.4,rec_height=3.0;
-	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75;
+	float rec_center_x=13.2-1.875,rec_center_y=10.0-2.5-8.0-0.35+0.56+0.75-0.2;
 //	float rec_center_x=13.2-1.875-5.36,rec_center_y=10.0-2.5-8.0;
 	float needle_radius=1.2;
 	float needle_inner_radius=1.0;
