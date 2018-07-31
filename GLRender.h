@@ -107,7 +107,8 @@ public:
         void readALPHA_ZOOM_SCALE(const char * filename);
         void writeALPHA_ZOOM_SCALE(char * filename,float ALPHA_ZOOM_SCALE);
 
-
+    void ReadPanoHorVerScaleData(char * filename);
+    void WritePanoHorVerScaleData(char * filename ,float * hor_data,float * ver_data);
 
     int SetWheelArcWidth(float arcWidth);
     void SetdisplayMode( );
@@ -931,6 +932,9 @@ private:
 	float channel_right_scale[CAM_COUNT];
 
 	float move_hor[CAM_COUNT];
+
+	float move_hor_scale[CAM_COUNT];
+	float move_ver_scale[CAM_COUNT];
 
 	float rotate_angle[CAM_COUNT];
 

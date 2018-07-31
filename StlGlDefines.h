@@ -704,6 +704,7 @@ enum{
 };
 #define MAX_PANO_CAMERA_COUNT 16
 #define PANO_SCALE_ARRAY_FILE "pano_scale_array_data.yml"
+#define PANO_HOR_VER_SCALE_FILE "pano_hor_ver_scale_data.yml"
 
 #define USE_COMPASS_ICON 0
 #endif /* STLGLDEFINES_H_ */
