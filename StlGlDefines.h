@@ -7,6 +7,17 @@
 
 #ifndef STLGLDEFINES_H_
 #define STLGLDEFINES_H_
+#define ADD_FUCNTION_BY_JIMMY   1
+#define DELETE_BY_JIMMY   0
+
+
+#if ADD_FUCNTION_BY_JIMMY
+typedef unsigned char uint8;
+typedef char int8;
+#define  GREEN_STATE 0x00
+#define RED_STATE 0x01
+#define GRAY_STATE 0x02
+#endif
 
 #define CORE_AND_POS_LIMIT  4.5
 #define INNER_RECT_AND_PANO_ONE_TIME_CAM_LIMIT 7.7
@@ -333,6 +344,9 @@ static const float vGrey[]      = { 0.5f, 0.5f, 0.5f, 1.0f };
 static const float vRed[]       = {109/255.0,10/255.0,12/255.0,1.0f};//{ 0.7f, 0.0f, 0.0f, 1.0f };
 static const float vBRed[]       = {1.0,0.0,0.0,1.0f};//{ 0.7f, 0.0f, 0.0f, 1.0f };
 static const float *DEFAULT_TEXT_COLOR = vWhite;
+#if ADD_FUCNTION_BY_JIMMY
+static const float vReal_Red[]       = {1.0,0.0,0.0,1.0f };   //{ 0.7f, 0.0f, 0.0f, 1.0f };
+#endif
 
 #define VERSION_STRING		       "v0.18"
 #define DEFAULT_FRONT_TGA         "lable_00.tga"

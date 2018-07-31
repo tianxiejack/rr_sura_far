@@ -26,6 +26,17 @@ public:
 	GLBatch *Getp_shadowBatch();
 	PBOReceiver *Getp_PBORcr();
 	PBOSender *Getp_PBOMgr();
+	
+#if ADD_FUCNTION_BY_JIMMY
+			GLBatch *Getp_CircleFanBatch();
+			GLBatch *Getp_CircleLineBatch();
+			GLBatch *Getp_DividedLineBatch();
+			GLBatch *Getp_DirectTriangle_Batch();
+			GLBatch *Getp_surroundVertical_Batch();
+			GLBatch *Getp_SurroundVertical_MoveLine_Batch();
+			GLBatch *Getp_TurretVertical_MoveLine_Batch();
+			
+#endif
 	PBOSender *Getp_PBOExtMgr();
 	PBOSender *Getp_PBOVGAMgr();
 	PBOSender *Getp_PBOTargetMgr();
@@ -58,6 +69,17 @@ private:
 	GLBatch degreescale45Batch; //the degree scale (45-0-45)
 	GLBatch degreescale90Batch; //the degree scale (90-0-90)
 	GLBatch degreescale180Batch; //the degree scale (180-0-180)
+
+	
+#if ADD_FUCNTION_BY_JIMMY
+			GLBatch Circle_Fan_Batch;	
+			GLBatch directTriangle_Batch;
+			GLBatch surroundVertical_Batch;
+			GLBatch surroundVertical_MoveLine_Batch;
+			GLBatch turretVertical_MoveLine_Batch;
+			GLBatch Circle_Batch;
+			GLBatch Divided_Line;
+#endif	
 	PBOReceiver PBORcr;
 	PBOSender PBOMgr;
 	PBOSender PBOExtMgr;

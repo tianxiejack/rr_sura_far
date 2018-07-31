@@ -66,6 +66,40 @@ GLBatch *GLEnv::Getp_shadowBatch()
 {
 	return &shadowBatch;
 }
+
+#if ADD_FUCNTION_BY_JIMMY
+GLBatch *GLEnv::Getp_CircleFanBatch()
+{
+	return &Circle_Fan_Batch;
+}
+GLBatch *GLEnv::Getp_CircleLineBatch()
+{
+	return &Circle_Batch;
+}
+GLBatch *GLEnv::Getp_DividedLineBatch()
+{
+	return &Divided_Line;
+}
+GLBatch *GLEnv::Getp_DirectTriangle_Batch()
+{
+	return &directTriangle_Batch;
+}
+GLBatch *GLEnv::Getp_surroundVertical_Batch()
+{
+	return &surroundVertical_Batch;
+}
+GLBatch *GLEnv::Getp_SurroundVertical_MoveLine_Batch()
+{
+	return &surroundVertical_MoveLine_Batch;
+}
+GLBatch *GLEnv::Getp_TurretVertical_MoveLine_Batch()
+{
+	return &turretVertical_MoveLine_Batch;
+}
+
+#endif
+
+
 PBOReceiver *GLEnv::Getp_PBORcr()
 {
 	return 	&PBORcr;

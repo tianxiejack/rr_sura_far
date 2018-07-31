@@ -66,6 +66,12 @@
 #include "Xin_IPC_Yuan_Recv_Message.h"
 #include "ClicktoMoveForesight.h"
 #include "mvdetectInterface.h"
+
+#if ADD_FUCNTION_BY_JIMMY
+float turret_Moveline_Y = 0.0f; 
+float surround_Moveline_Y = 0.0f; 
+#endif
+
 #define  SHOWTIME 200
 extern int MV_CHOSE_IDX;
 extern int parm_inputArea;
@@ -875,6 +881,12 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 	{
 		move_hor_scale[i]=1.0;
 	}
+	
+#if ADD_FUCNTION_BY_JIMMY
+			for(int idx =0; idx < 36; idx ++){
+				light_state[idx] = 0x00;
+			}
+#endif
 }
 
 Render::~Render()
@@ -1225,6 +1237,14 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 		InitDynamicTrack(env);
 		InitCornerMarkerGroup(env);
 		initAlphaMask();
+#if ADD_FUCNTION_BY_JIMMY
+		InitCircleFanBatch(env);
+		InitDirectionTriangleBatch(env);
+		InitCircleBatch(env);
+		InitVerticalMoveLineBatchForSurroundSight(env);
+		InitVerticalMoveLineBatchForTurret(env);
+		InitSurroundingSighttVerticalBatch(env);
+#endif
 
 
 		initLabelBatch();
@@ -3156,6 +3176,482 @@ void Render::InitForesightGroupTrack(GLEnv &m_env)
 		 					 		 				 	 	 	 	 	 	 	 	 	 	 	new PseudoForeSight_cam());
 		 			  assert(p_ForeSightFacade_Track);
 }
+
+#if ADD_FUCNTION_BY_JIMMY
+
+void Render::DrawSurroundSightVerticalMoveLineView( GLEnv &m_env,const float *color_data )
+{
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(4.0f);
+	m_env.Getp_SurroundVertical_MoveLine_Batch()->Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::RenderVerticalMoveLineViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);			
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawSurroundSightVerticalMoveLineView(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::InitVerticalMoveLineBatchForTurret(GLEnv &m_env)
+{
+	float data[2][3];
+	static bool once_begin = true;
+	if(once_begin == true ){
+		m_env.Getp_SurroundVertical_MoveLine_Batch()->Begin(GL_LINES, 2);
+	}
+	
+	data[0][0]= 1.5;
+	data[0][1]= turret_Moveline_Y;
+	data[0][2]= 0.0;
+
+	data[1][0]= -1.5;
+	data[1][1]= turret_Moveline_Y;
+	data[1][2]= 0.0;
+	
+	m_env.Getp_SurroundVertical_MoveLine_Batch()->CopyVertexData3f(data);
+	m_env.Getp_SurroundVertical_MoveLine_Batch()->End();
+}
+
+
+void Render::RenderVerticalValueViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);			
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawSurroundSightVerticalView(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::RenderDirectTriangleViewForTurret(GLEnv &m_env,GLfloat direct_angle ,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);		
+	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 0.0f, 0.0f, 1.0f);
+	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 1.0f, 0.0f, 0.0f);
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	
+	m_env.GetmodelViewMatrix()->Rotate( direct_angle+90.0f , 0.0f, 0.0f, 1.0f);
+	
+	m_env.GetmodelViewMatrix()->Translate(4.5f, 0.0f, 0.0f);
+	DrawDirectionTriangleView(m_env, color_data);
+
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+
+void Render::RenderCircleLineViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);	
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawCircleLines(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+
+void Render::InitVerticalMoveLineBatchForSurroundSight(GLEnv &m_env)
+{
+	float data[2][3];
+	static bool once_begin = true;
+	if(once_begin == true ){
+		m_env.Getp_TurretVertical_MoveLine_Batch()->Begin(GL_LINES, 2);
+	}	
+	data[0][0]= 1.5;
+	data[0][1]= surround_Moveline_Y;
+	data[0][2]= 0.0;
+
+	data[1][0]= -1.5;
+	data[1][1]= surround_Moveline_Y;
+	data[1][2]= 0.0;
+	
+	m_env.Getp_TurretVertical_MoveLine_Batch()->CopyVertexData3f(data);
+	m_env.Getp_TurretVertical_MoveLine_Batch()->End();
+}
+void Render::DrawTurretVerticalMoveLineView( GLEnv &m_env,const float *color_data )
+{
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(4.0f);
+	m_env.Getp_TurretVertical_MoveLine_Batch()->Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::RenderVerticalMoveLineViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(49.8, 1.0, -40.0);	   //(38.7, -1.8, -40.0);  	 		
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawTurretVerticalMoveLineView(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::InitSurroundingSighttVerticalBatch( GLEnv &m_env)
+{
+	float data[26][3];
+	data[0][0] = 2.0f;
+	data[0][1] = 5.4f;
+	data[0][2] = 0.0f;
+	data[1][0] = -2.0f;
+	data[1][1] = 5.4f;
+	data[1][2] = 0.0f;
+
+	data[2][0] = 1.0f;
+	data[2][1] = 4.5f;
+	data[2][2] = 0.0f;	
+	data[3][0] = -1.0f;
+	data[3][1] = 4.5f;
+	data[3][2] = 0.0f;
+	
+	data[4][0] = 2.0f;
+	data[4][1] = 3.6f;
+	data[4][2] = 0.0f;	
+	data[5][0] = -2.0f;
+	data[5][1] = 3.6f;
+	data[5][2] = 0.0f;
+	
+	data[6][0] = 1.0f;
+	data[6][1] = 2.7f;
+	data[6][2] = 0.0f;	
+	data[7][0] = -1.0f;
+	data[7][1] = 2.7f;
+	data[7][2] = 0.0f;
+	
+	data[8][0] = 2.0f;
+	data[8][1] = 1.8f;
+	data[8][2] = 0.0f;	
+	data[9][0] = -2.0f;
+	data[9][1] = 1.8f;
+	data[9][2] = 0.0f;
+	
+	data[10][0] = 1.0f;
+	data[10][1] = 0.9f;
+	data[10][2] = 0.0f;	
+	data[11][0] = -1.0f;
+	data[11][1] = 0.9f;
+	data[11][2] = 0.0f;
+	
+	data[12][0] = 3.6f;
+	data[12][1] = 0.0f;
+	data[12][2] = 0.0f;	
+	data[13][0] = -3.6f;
+	data[13][1] = 0.0f;
+	data[13][2] = 0.0f;
+
+	data[14][0] = 2.0f;
+	data[14][1] = -5.4f;
+	data[14][2] = 0.0f;
+	data[15][0] = -2.0f;
+	data[15][1] = -5.4f;
+	data[15][2] = 0.0f;
+
+	data[16][0] = 1.0f;
+	data[16][1] = -4.5f;
+	data[16][2] = 0.0f;	
+	data[17][0] = -1.0f;
+	data[17][1] = -4.5f;
+	data[17][2] = 0.0f;
+	
+	data[18][0] = 2.0f;
+	data[18][1] = -3.6f;
+	data[18][2] = 0.0f;	
+	data[19][0] = -2.0f;
+	data[19][1] = -3.6f;
+	data[19][2] = 0.0f;
+	
+	data[20][0] = 1.0f;
+	data[20][1] = -2.7f;
+	data[20][2] = 0.0f;	
+	data[21][0] = -1.0f;
+	data[21][1] = -2.7f;
+	data[21][2] = 0.0f;
+	
+	data[22][0] = 2.0f;
+	data[22][1] = -1.8f;
+	data[22][2] = 0.0f;	
+	data[23][0] = -2.0f;
+	data[23][1] = -1.8f;
+	data[23][2] = 0.0f;
+	
+	data[24][0] = 1.0f;
+	data[24][1] = -0.9f;
+	data[24][2] = 0.0f;	
+	data[25][0] = -1.0f;
+	data[25][1] = -0.9f;
+	data[25][2] = 0.0f;
+	m_env.Getp_surroundVertical_Batch()->Begin(GL_LINES, 26);
+	m_env.Getp_surroundVertical_Batch()->CopyVertexData3f( data );
+	m_env.Getp_surroundVertical_Batch()->End();	
+}
+
+void Render::DrawSurroundSightVerticalView( GLEnv &m_env,const float *color_data )
+{
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);	
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(2.0f);	
+	m_env.Getp_surroundVertical_Batch()->Draw();	
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
+
+void Render::RenderVerticalValueViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(49.8, 1.0, -40.0);	
+
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawSurroundSightVerticalView(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::InitDirectionTriangleBatch( GLEnv &m_env )
+{
+	float data[3][3] ;
+	data[0][0] = 1.5f ;
+	data[0][1] = 0.0f ;
+	data[0][2] = 0.0f ;	
+	
+	data[1][0] = 0.0f ;
+	data[1][1] = 0.4f ;
+	data[1][2] = 0.0f ;
+	
+	data[2][0] = 0.0f ;
+	data[2][1] = -0.4f;
+	data[2][2] = 0.0f ;
+	
+	m_env.Getp_DirectTriangle_Batch()->Begin(GL_TRIANGLES, 3);
+	m_env.Getp_DirectTriangle_Batch()->CopyVertexData3f( data );
+	m_env.Getp_DirectTriangle_Batch()->End();
+}
+
+void Render::DrawDirectionTriangleView( GLEnv &m_env,const float *color_data)
+{	
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);	
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(4.0f);	
+	m_env.Getp_DirectTriangle_Batch()->Draw();	
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
+
+void Render::RenderDirectTriangleViewForSurroundSight(GLEnv &m_env,GLfloat direct_angle ,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(49.8, 1.0, -40.0);
+	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 0.0f, 0.0f, 1.0f);
+	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 1.0f, 0.0f, 0.0f);
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->Rotate( direct_angle+90.0f , 0.0f, 0.0f, 1.0f);	
+	m_env.GetmodelViewMatrix()->Translate(4.5f, 0.0f, 0.0f);
+	DrawDirectionTriangleView(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::InitCircleBatch( GLEnv &m_env )
+{
+		GLuint texture = 0;
+		static int cnt2 =0;
+		static bool onece = true;	
+		float cx = 0.0f, cy = 0.0f, cz = 0.0f;
+		float radius = 6.0f;
+		float circleVer3f[361][3];
+		float dividedVer3f[8][3];
+		for(int m=0; m<361;m++)
+		{
+			circleVer3f[m][0] = cos(double(m) * 3.1415926/180.0) * radius  + cx;
+			circleVer3f[m][1] = sin(double(m) * 3.1415926/180.0) * radius  + cy;
+			circleVer3f[m][2] = cz;
+		}
+		dividedVer3f[0][0] = 5.0;
+		dividedVer3f[0][1] = 0.0;
+		dividedVer3f[0][2] = 0.0;
+	
+		dividedVer3f[1][0] = circleVer3f[0][0]; 
+		dividedVer3f[1][1] = circleVer3f[0][1];
+		dividedVer3f[1][2] = circleVer3f[0][2];
+		
+		dividedVer3f[2][0] = 0.0;
+		dividedVer3f[2][1] = 5.0;
+		dividedVer3f[2][2] = 0.0;
+		
+		dividedVer3f[3][0] = circleVer3f[90][0]; 
+		dividedVer3f[3][1] = circleVer3f[90][1];
+		dividedVer3f[3][2] = circleVer3f[90][2];
+	
+		dividedVer3f[4][0] = -5.0;
+		dividedVer3f[4][1] = 0.0;
+		dividedVer3f[4][2] = 0.0;
+	
+		dividedVer3f[5][0] = circleVer3f[180][0]; 
+		dividedVer3f[5][1] = circleVer3f[180][1];
+		dividedVer3f[5][2] = circleVer3f[180][2];
+	
+		dividedVer3f[6][0] = 0.0;
+		dividedVer3f[6][1] = -5.0;
+		dividedVer3f[6][2] = 0.0;
+	
+		dividedVer3f[7][0] = circleVer3f[270][0]; 
+		dividedVer3f[7][1] = circleVer3f[270][1];
+		dividedVer3f[7][2] = circleVer3f[270][2];
+	
+		m_env.Getp_CircleLineBatch()->Begin(GL_LINE_LOOP,361);
+		m_env.Getp_CircleLineBatch()->CopyVertexData3f(circleVer3f);
+		m_env.Getp_CircleLineBatch()->End();
+	
+		m_env.Getp_DividedLineBatch()->Begin(GL_LINES,   8);
+		m_env.Getp_DividedLineBatch()->CopyVertexData3f(dividedVer3f);
+		m_env.Getp_DividedLineBatch()->End();
+		
+}
+
+void Render::DrawCircleLines(GLEnv &m_env,const float *color_data )
+{
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);	
+	//modelViewMatrix.Translate(0.0f, pVehicle->GetScale() *4.281500  ,0.0f);
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(2.0f);	
+	m_env.Getp_CircleLineBatch()->Draw();	
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(2.0f);	
+	m_env.Getp_DividedLineBatch()->Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
+void Render::RenderCircleLineViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(49.8, 1.0, -40.0);
+	m_env.GetmodelViewMatrix()->PushMatrix();	
+	DrawCircleLines(m_env, color_data);
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::RenderForTestTriangleView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  unsigned char state)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(90.0f, float(w) / float(h), 1.0f, 1000.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	//glClearColor(0.3,0.6,0.5,0.0);
+	m_env.GetmodelViewMatrix()->Translate(10.0, -5.0, -20.0);			
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	if(state == GREEN_STATE){
+		DrawCircleFans(m_env,vGreen);
+	}
+	else if(state == GRAY_STATE){
+		DrawCircleFans(m_env,vGrey);
+	}else{
+		DrawCircleFans(m_env,vReal_Red);
+	}		
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+	glFlush();	
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::DrawCircleFans(GLEnv &m_env,const float *color_data)
+{
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	glDisable(GL_BLEND);	
+	m_env.GetmodelViewMatrix()->Translate(0.0f, 0.95 *4.281500  ,0.0f);	
+	shaderManager.UseStockShader(GLT_SHADER_FLAT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), color_data);	   
+	glLineWidth(2.0f);	
+	m_env.Getp_CircleFanBatch()->Draw();
+	m_env.GetmodelViewMatrix()->PopMatrix();
+}
+
+void Render::InitCircleFanBatch( GLEnv &m_env )
+{
+	float cx = 0.0f, cy = 0.0f, cz = 0.0f;
+	float radius = 5.0f;
+	float circleVer3f[362][3];
+	circleVer3f[0][0] = cx;
+	circleVer3f[0][1] = cy;
+	circleVer3f[0][2] = cz;	
+	for(int m=1; m<362;m++)
+	{
+		circleVer3f[m][0] = cos(double(m) * 3.1415926/180.0) * radius  + cx;
+		circleVer3f[m][1] = sin(double(m) * 3.1415926/180.0) * radius  + cy;
+		circleVer3f[m][2] = cz;
+	}	
+	m_env.Getp_CircleFanBatch()->Begin(GL_TRIANGLE_FAN,362);
+	m_env.Getp_CircleFanBatch()->CopyVertexData3f(circleVer3f);
+	m_env.Getp_CircleFanBatch()->End();
+}
+
+
+#endif
+
+
 
 // Trick: put the indivial video on the shadow rect texture
 void Render::InitShadow(GLEnv &m_env)
@@ -6814,6 +7310,12 @@ default:
 }
 
 }
+#if ADD_FUCNTION_BY_JIMMY
+Cap_Msg Rcv_State_Msg ; 
+DEBUG_ORDER Rcv_UDP_Cmd = DEBUG_ORDER_ORIGIN;
+
+#endif
+
 void Render::RenderScene(void)
 {
 static bool setpriorityOnce=true;
@@ -8097,8 +8599,198 @@ if(displayMode==ALL_VIEW_MODE)
 				}
 	}
 
-			}
+#if ADD_FUCNTION_BY_JIMMY
+			
+				if(displayMode==ALL_VIEW_MODE)
+				{
+					if(hide_label_state==SHOW_ALL_LABEL)
+					{			
+						int fan_WindowWidth = g_windowWidth*1/16-18;
+						int fan_WindowHeight = g_windowHeight/22-9;
+						int delta_fanX = g_windowWidth*5/6 +95;
+						int infoName =0;		
+						Rcv_State_Msg = getCaptureMessage();
+						light_state[0]=Rcv_State_Msg.cameraBackTest;
+						light_state[1]=Rcv_State_Msg.cameraBackState;
+						light_state[2]=Rcv_State_Msg.cameraBack_FAULT_Colour;
+						light_state[3]=Rcv_State_Msg.cameraRight1Test;
+						light_state[4]=Rcv_State_Msg.cameraRight1State;
+						light_state[5]=Rcv_State_Msg.cameraRight1_FAULT_Colour;
+						light_state[6]=Rcv_State_Msg.cameraRight2Test;
+						light_state[7]=Rcv_State_Msg.cameraRight2State;
+						light_state[8]=Rcv_State_Msg.cameraRight2_FAULT_Colour;
+						light_state[9]=Rcv_State_Msg.cameraRight3Test;
+						light_state[10]=Rcv_State_Msg.cameraRight3State;
+						light_state[11]=Rcv_State_Msg.cameraRight3_FAULT_Colour;
+						light_state[12]=Rcv_State_Msg.Cap_BoxTest;
+						light_state[13]=Rcv_State_Msg.Cap_BoxState;
+						light_state[14]=Rcv_State_Msg.Cap_FAULT_Colour;
+						light_state[15]=Rcv_State_Msg.nearBoardTest;
+						light_state[16]=Rcv_State_Msg.nearBoardState;
+						light_state[17]=Rcv_State_Msg.nearBoard_FAULT_Colour;
+			//--------------------------------------------------------------------
+						light_state[18]=Rcv_State_Msg.cameraFrontTest;
+						light_state[19]=Rcv_State_Msg.cameraFrontState;
+						light_state[20]=Rcv_State_Msg.cameraFront_FAULT_Colour;
+						light_state[21]=Rcv_State_Msg.cameraLeft1Test;
+						light_state[22]=Rcv_State_Msg.cameraLeft1State;
+						light_state[23]=Rcv_State_Msg.cameraLeft1_FAULT_Colour;
+						light_state[24]=Rcv_State_Msg.cameraLeft2Test;
+						light_state[25]=Rcv_State_Msg.cameraLeft2State;
+						light_state[26]=Rcv_State_Msg.cameraLeft2_FAULT_Colour;
+						light_state[27]=Rcv_State_Msg.cameraLeft3Test;
+						light_state[28]=Rcv_State_Msg.cameraLeft3State;
+						light_state[29]=Rcv_State_Msg.cameraLeft3_FAULT_Colour;
+						light_state[30]=Rcv_State_Msg.passengerTest;
+						light_state[31]=Rcv_State_Msg.passengerState;
+						light_state[32]=Rcv_State_Msg.passenger_FAULT_Colour;
+						light_state[33]=0x00;
+						light_state[34]=0x00;
+						light_state[35]=0x00;
+				
+						for(int i = 0; i<36; i++){
+							if(i <18){
+								RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
+									g_windowHeight*1/4+27 - (i/3)*fan_WindowHeight/2, 
+									fan_WindowWidth, fan_WindowHeight,	light_state[i]);
+							}
+							else{		
+								RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
+									g_windowHeight*1/4 -18- (i/3)*fan_WindowHeight/2, 
+									fan_WindowWidth, fan_WindowHeight,	light_state[i]);
+							}
+						}
+			
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+			
+					RenderCircleLineViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					RenderDirectTriangleViewForSurroundSight(env , canon_hor_angle , 0,0, g_windowWidth, g_windowHeight,  vYellow);
+					RenderVerticalValueViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					surround_Moveline_Y = canon_ver_angle / 16.666667f ;
+					InitVerticalMoveLineBatchForSurroundSight(env);
+					RenderVerticalMoveLineViewForSurroundSight(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
+			//---------------------------------------------------------------------------------------------
+					RenderCircleLineViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,  vWhite);
+					RenderDirectTriangleViewForTurret(env , calc_hor_data , 0,0, g_windowWidth, g_windowHeight,  vYellow);
+					RenderVerticalValueViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					turret_Moveline_Y = calc_ver_data / 16.666667f;
+					InitVerticalMoveLineBatchForTurret(env);
+					RenderVerticalMoveLineViewForTurret(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
+					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+					}
+				}
 #endif
+
+
+
+
+
+
+
+			}
+
+			
+#endif
+
+
+#if ADD_FUCNTION_BY_JIMMY
+	Rcv_UDP_Cmd = getDebugModeOrder( TRANSFER_TO_APP_ETHOR	);
+	if( DEBUG_ORDER_ORIGIN	!= Rcv_UDP_Cmd ){
+		printf("[%s]:>>>>Rcv UDP Debug Cmd : %d\r\n", __FUNCTION__,Rcv_UDP_Cmd);
+		switch( Rcv_UDP_Cmd ){
+			case DEBUG_ORDER_TRIMMING_ON:   // Open Trimming 
+				displayMode = TRIM_MODE;
+				EnablePanoFloat=true;
+				break;
+			case DEBUG_ORDER_TRIMMING_OFF:  // Close Trimming 				
+				EnablePanoFloat=false;
+				shaderManager.ResetTrimColor();
+				displayMode = ALL_VIEW_MODE;
+				break;
+			case DEBUG_ORDER_CHOOSECAMERA_LEFT:		
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE){
+					shaderManager.ResetTrimColor();
+					testPanoNumber=(testPanoNumber+1)%CAM_COUNT;
+					shaderManager.SetTrimColor(testPanoNumber);
+				}
+				break;
+			case	DEBUG_ORDER_CHOOSECAMERA_RIGHT:
+				
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE){
+					shaderManager.ResetTrimColor();
+					testPanoNumber=(testPanoNumber+CAM_COUNT-1)%CAM_COUNT;
+					shaderManager.SetTrimColor(testPanoNumber);
+				}
+				break;
+			
+			case	DEBUG_ORDER_CHECKEDCAMERA_MOVEUP:
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE)
+				{
+					PanoFloatData[testPanoNumber]=PanoFloatData[testPanoNumber]+DELTA_OF_PANOFLOAT;
+					InitPanel(env,0,true);
+				}
+				break;				
+			case	DEBUG_ORDER_CHECKEDCAMERA_MOVEDOWN:
+				
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE)
+				{
+					PanoFloatData[testPanoNumber]=PanoFloatData[testPanoNumber] - DELTA_OF_PANOFLOAT;
+					InitPanel(env,0,true);
+				}
+				break;				
+			case	DEBUG_ORDER_CHECKEDCAMERA_MOVELEFT:			
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE)
+				{
+ 					move_hor[testPanoNumber]=move_hor[testPanoNumber]+DELTA_OF_PANO_HOR;
+					InitPanel(env,0,true);
+    				}			
+				break;				
+			case	DEBUG_ORDER_CHECKEDCAMERA_MOVERIGHT:				
+				if(EnablePanoFloat == true && displayMode == TRIM_MODE)
+				{
+					move_hor[testPanoNumber]=move_hor[testPanoNumber]-DELTA_OF_PANO_HOR;
+					InitPanel(env,0,true);
+    				}
+				break;				
+			case	DEBUG_ORDER_SAVE_TRIMMING_RESULT:  // Save Trimming Result !				
+				if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
+				{
+					WritePanoScaleArrayData(PANO_SCALE_ARRAY_FILE,channel_left_scale,channel_right_scale,move_hor);
+					WritePanoFloatDataFromFile(PANO_FLOAT_DATA_FILENAME,PanoFloatData);
+					WriteRotateAngleDataToFile(PANO_ROTATE_ANGLE_FILENAME,rotate_angle);
+				}
+				break;
+			case	DEBUG_ORDER_CLEAN_CHECKEDCAMERA_RESULT:				
+				if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
+				{
+					channel_left_scale[testPanoNumber]=1.0;
+					channel_right_scale[testPanoNumber]=1.0;
+					move_hor[testPanoNumber]=0.0;
+					PanoFloatData[testPanoNumber]=0.0;
+					rotate_angle[testPanoNumber]=0.0;
+					InitPanel(env,0,true);					
+				}
+				break;
+			case	DEBUG_ORDER_CLEAN_ALLCAMERA_RESULT:	
+				if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
+				{
+					for(int set_i=0;set_i<CAM_COUNT;set_i++)
+					{
+						channel_left_scale[set_i]=1.0;
+						channel_right_scale[set_i]=1.0;
+						move_hor[set_i]=0.0;
+						PanoFloatData[set_i]=0.0;
+						rotate_angle[set_i]=0.0;
+					}
+					InitPanel(env,0,true);
+				}
+				break;			
+			default:
+				break;
+		}
+	}
+#endif
+
 }
 
 void Render::setOverlapPeta(int chId, float alphaId)

@@ -427,6 +427,33 @@ private:
 
 	void InitForesightGroupTrack(GLEnv &m_env);
 
+#if ADD_FUCNTION_BY_JIMMY
+		void InitCircleFanBatch(GLEnv& m_env);
+		void InitCircleBatch( GLEnv &m_env );	
+		void DrawCircleLines(GLEnv &m_env,const float *color_data );	
+		void RenderCircleLineViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,const float *color_data);
+		void RenderForTestTriangleView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  unsigned char state);
+		void DrawCircleFans(GLEnv &m_env,const float *color_data);	
+		void  RenderDirectTriangleViewForSurroundSight(GLEnv &m_env,GLfloat direct_angle ,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+		void  DrawDirectionTriangleView( GLEnv &m_env,const float *color_data);
+		void  InitDirectionTriangleBatch( GLEnv &m_env );
+		void RenderVerticalValueViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+		void DrawSurroundSightVerticalView( GLEnv &m_env,const float *color_data );
+		void InitSurroundingSighttVerticalBatch( GLEnv &m_env);
+		
+		void InitVerticalMoveLineBatchForSurroundSight(GLEnv &m_env);
+		void RenderVerticalMoveLineViewForSurroundSight(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+		void DrawTurretVerticalMoveLineView( GLEnv &m_env,const float *color_data );
+		void RenderCircleLineViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+	
+		void RenderVerticalValueViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,	const float *color_data);
+		void RenderDirectTriangleViewForTurret(GLEnv &m_env,GLfloat direct_angle ,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+		void DrawSurroundSightVerticalMoveLineView( GLEnv &m_env,const float *color_data );
+		void RenderVerticalMoveLineViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,  const float *color_data);
+		void InitVerticalMoveLineBatchForTurret(GLEnv &m_env);
+	
+#endif
+
 	void InitFrontTracks();
 	void InitCrossLines();
 	void InitWealTrack();
@@ -966,6 +993,10 @@ private:
 	vector <vector <int> > overlappoint[CAM_COUNT];
 
 	GLFrame NeedleCameraFrame;
+	
+#if ADD_FUCNTION_BY_JIMMY
+			uint8 light_state[36];
+#endif
 };
 
 void* getDefaultShaderMgr();
