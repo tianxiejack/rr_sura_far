@@ -211,11 +211,11 @@ mvDetector* pSingleMvDetector=mvDetector::getInstance();
 
 float define_channel_left_scale[10]  ={      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0};
 float define_channel_right_scale[10] ={      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0,      1.0};
-float define_move_hor[10]            ={    200.0,   -135.0,    -97.0,    399.0,   -201.0,    721.0,    -35.0,   -187.0,   -102.0,  	-227.0};
-float define_PanoFloatData[10]       ={     40.5,   -147.5,   -177.5,   -221.0,   -422.0,   -864.5,   -851.5,  -1273.5,  -1394.0,   -954.0};
+float define_move_hor[10]            ={    135.0,     -156.0,   -138.0,    399.0,   -100.0 ,    123.0,   -46.0,   -32.0,      -86.0,  	-59.0};
+float define_PanoFloatData[10]       ={     101.5,   108.5,   -495.5,   -62.0,   -20.5,    107.5,   497.5,     82.5,      2.0,   34.5};
 float define_rotate_angle[10]        ={      0.0,      0.0,      0.0,      0.0,      0.0,      0.0,      0.0,      0.0,      0.0,      0.0};
-float define_move_hor_scale[10]      ={     1.83,      1.5,     1.41,     1.76,      1.6,     1.79,     1.43,      1.9,     1.79,     1.74};
-float define_move_ver_scale[10]      ={     1.12,      1.12,     1.07,     1.06,     1.16,     1.36,     1.24,     1.32,     1.32,     1.19};
+float define_move_hor_scale[10]      ={     1.09,      1.02,     1.3,     1.45,      1.02,     1.15,     1.17,    1.25,     1.19,     1.3};
+float define_move_ver_scale[10]      ={     1.0,      1.0,     1.37,     1.06,     1.02,     0.99,     0.88,     1.00,     1.00,     1.00};
 
 int ExchangeChannel(int direction)
 {
@@ -10190,10 +10190,10 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 		           	if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
 		           	{
 		           		int new_dir=ExchangeChannel(testPanoNumber);
-		           		channel_left_scale[new_dir]=define_channel_left_scale[new_dir];
+		           			channel_left_scale[new_dir]=define_channel_left_scale[new_dir];
 		           			channel_right_scale[new_dir]=define_channel_right_scale[new_dir];
 		           			move_hor[new_dir]=define_move_hor[new_dir];
-		           			PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
+		           			//PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
 		           			rotate_angle[new_dir]=define_rotate_angle[new_dir];
 		           			move_hor_scale[new_dir]=define_move_hor_scale[new_dir];
 		           			move_ver_scale[new_dir]=define_move_ver_scale[new_dir];
@@ -10216,15 +10216,17 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 	case 6:
 		           	if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
 		           	{
-					for(int set_i=0;set_i<CAM_COUNT;set_i++)
+		           		int test_dir=0;
+		           		for(int set_i=0;set_i<CAM_COUNT;set_i++)
 					{
-		           			channel_left_scale[set_i]=define_channel_left_scale[set_i];
-		           			channel_right_scale[set_i]=define_channel_right_scale[set_i];
-		           			move_hor[set_i]=define_move_hor[set_i];
-		           			PanoFloatData[set_i]=define_PanoFloatData[set_i];
-		           			rotate_angle[set_i]=define_rotate_angle[set_i];
-		           			move_hor_scale[set_i]=define_move_hor_scale[set_i];
-		           			move_ver_scale[set_i]=define_move_ver_scale[set_i];
+		           			test_dir=set_i;
+		           			channel_left_scale[test_dir]=define_channel_left_scale[set_i];
+		           			channel_right_scale[test_dir]=define_channel_right_scale[set_i];
+		           			move_hor[test_dir]=define_move_hor[set_i];
+		           			PanoFloatData[test_dir]=define_PanoFloatData[set_i];
+		           			rotate_angle[test_dir]=define_rotate_angle[set_i];
+		           			move_hor_scale[test_dir]=define_move_hor_scale[set_i];
+		           			move_ver_scale[test_dir]=define_move_ver_scale[set_i];
 					}
 					InitPanel(m_env,0,true);
 		           	}
