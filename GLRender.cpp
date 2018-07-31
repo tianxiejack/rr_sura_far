@@ -9138,8 +9138,8 @@ GLEnv & env=env1;
             	{
     				if((TRIM_MODE==displayMode))
     				{
-						int new_dir=ExchangeChannel(testPanoNumber);
- 						move_ver_scale[new_dir]=move_ver_scale[new_dir]+DELTA_OF_PANO_HOR_SCALE;
+    					int new_dir=ExchangeChannel(testPanoNumber);
+    					move_ver_scale[new_dir]=move_ver_scale[new_dir]+DELTA_OF_PANO_HOR_SCALE;
   						if(move_ver_scale[new_dir]>3.0)
   						{
   							move_ver_scale[new_dir]=3.0;
@@ -9178,8 +9178,8 @@ GLEnv & env=env1;
 			            	{
 			    				if((TRIM_MODE==displayMode))
 			    				{
-									int new_dir=ExchangeChannel(testPanoNumber);
-			 						move_ver_scale[new_dir]=move_ver_scale[new_dir]-DELTA_OF_PANO_HOR_SCALE;
+			    					int new_dir=ExchangeChannel(testPanoNumber);
+			    					move_ver_scale[new_dir]=move_ver_scale[new_dir]-DELTA_OF_PANO_HOR_SCALE;
 			 						if(move_ver_scale[new_dir]<0.01)
 			 						{
 			 							move_ver_scale[new_dir]=0.01;
@@ -9961,8 +9961,8 @@ GLEnv & env=env1;
 	            	{
 	    				if((TRIM_MODE==displayMode))
 	    				{
-							int new_dir=ExchangeChannel(testPanoNumber);
-	 						move_hor_scale[new_dir]=move_hor_scale[new_dir]-DELTA_OF_PANO_HOR_SCALE;
+	    					int new_dir=ExchangeChannel(testPanoNumber);
+	    					move_hor_scale[new_dir]=move_hor_scale[new_dir]-DELTA_OF_PANO_HOR_SCALE;
 	 						if(move_hor_scale[new_dir]<0.01)
 	 						{
 	 							move_hor_scale[new_dir]=0.01;
@@ -9976,8 +9976,8 @@ GLEnv & env=env1;
 	            	{
 	    				if((TRIM_MODE==displayMode))
 	    				{
-							int new_dir=ExchangeChannel(testPanoNumber);
-	 						move_hor_scale[new_dir]=move_hor_scale[new_dir]+DELTA_OF_PANO_HOR_SCALE;
+	    					int new_dir=ExchangeChannel(testPanoNumber);
+	    					move_hor_scale[new_dir]=move_hor_scale[new_dir]+DELTA_OF_PANO_HOR_SCALE;
 	 						if(move_hor_scale[new_dir]>3.0)
 	 						{
 	 							move_hor_scale[new_dir]=3.0;
@@ -10081,6 +10081,7 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
            		WritePanoScaleArrayData(PANO_SCALE_ARRAY_FILE,channel_left_scale,channel_right_scale,move_hor);
            		WritePanoFloatDataFromFile(PANO_FLOAT_DATA_FILENAME,PanoFloatData);
            		WriteRotateAngleDataToFile(PANO_ROTATE_ANGLE_FILENAME,rotate_angle);
+           		WritePanoHorVerScaleData(PANO_HOR_VER_SCALE_FILE,move_hor_scale,move_ver_scale);
            	}
 		else if(FREE_VIEW_MODE == displayMode){//save current position to YML file
 			mPresetCamGroup.SetCameraFrame(p_BillBoard->m_Direction,  m_freeCamera.GetFrame());
@@ -10188,13 +10189,14 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 
 		           	if((TRIM_MODE==displayMode)&&(EnablePanoFloat==true))
 		           	{
-		           			channel_left_scale[testPanoNumber]=define_channel_left_scale[testPanoNumber];
-		           			channel_right_scale[testPanoNumber]=define_channel_right_scale[testPanoNumber];
-		           			move_hor[testPanoNumber]=define_move_hor[testPanoNumber];
-		           			PanoFloatData[testPanoNumber]=define_PanoFloatData[testPanoNumber];
-		           			rotate_angle[testPanoNumber]=define_rotate_angle[testPanoNumber];
-		           			move_hor_scale[testPanoNumber]=define_move_hor_scale[testPanoNumber];
-		           			move_ver_scale[testPanoNumber]=define_move_ver_scale[testPanoNumber];
+		           		int new_dir=ExchangeChannel(testPanoNumber);
+		           		channel_left_scale[new_dir]=define_channel_left_scale[new_dir];
+		           			channel_right_scale[new_dir]=define_channel_right_scale[new_dir];
+		           			move_hor[new_dir]=define_move_hor[new_dir];
+		           			PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
+		           			rotate_angle[new_dir]=define_rotate_angle[new_dir];
+		           			move_hor_scale[new_dir]=define_move_hor_scale[new_dir];
+		           			move_ver_scale[new_dir]=define_move_ver_scale[new_dir];
 		           			InitPanel(m_env,0,true);
 
 		           		
