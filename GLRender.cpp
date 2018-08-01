@@ -10873,7 +10873,7 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 		           			channel_left_scale[new_dir]=define_channel_left_scale[new_dir];
 		           			channel_right_scale[new_dir]=define_channel_right_scale[new_dir];
 		           			move_hor[new_dir]=define_move_hor[new_dir];
-		           			//PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
+		           			PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
 		           			rotate_angle[new_dir]=define_rotate_angle[new_dir];
 		           			move_hor_scale[new_dir]=define_move_hor_scale[new_dir];
 		           			move_ver_scale[new_dir]=define_move_ver_scale[new_dir];
