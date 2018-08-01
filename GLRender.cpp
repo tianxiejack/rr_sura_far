@@ -8226,10 +8226,6 @@ if(setpriorityOnce)
 
 				env.GetmodelViewMatrix()->PushMatrix();
 
-
-
-
-
 				int net_show_mode=getKey_SwitchMode(TRANSFER_TO_APP_ETHOR);
 				static bool net_enable_move_cursor=false;
 				if(net_show_mode==Mode_Type_DEBUG)
@@ -8333,7 +8329,7 @@ if(setpriorityOnce)
 
 				canon_hor_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).hor_angle;
 				canon_ver_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).ver_angle;
-
+#if DELETE_BY_JIMMY
 				state_label_data[0][0]=getCaptureMessage().cameraFrontTest;
 				state_label_data[0][1]=getCaptureMessage().cameraFrontState;
 				state_label_data[0][2]=getCaptureMessage().cameraFront_FAULT_Colour;
@@ -8383,7 +8379,7 @@ if(setpriorityOnce)
 				state_label_data[11][0]=getCaptureMessage().nearBoardTest;
 				state_label_data[11][1]=getCaptureMessage().nearBoardState;
 				state_label_data[11][2]=getCaptureMessage().nearBoard_FAULT_Colour;
-
+#endif
 				int index_i=-1;
 				int width_delta=100;
 				int w_y=0;
@@ -8489,7 +8485,7 @@ if(displayMode==ALL_VIEW_MODE)
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6+65+1,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
-
+#if DELETE_BY_JIMMY
 					DrawNeedleGunonCompass(env);
 					DrawNeedleGunonDegree(env);
 					DrawVerGunAngle(env);				//右边
@@ -8497,9 +8493,8 @@ if(displayMode==ALL_VIEW_MODE)
 					DrawNeedleCanononCompass(env);
 					DrawNeedleCanononDegree(env);
 					DrawVerCanonAngle(env);		//炮塔 左边
-
+#endif
 					char text_data[20];
-
 					int text_x=g_windowWidth/15;
 					int text_y=g_windowHeight/4;
 //-35  -24
@@ -8549,7 +8544,7 @@ if(displayMode==ALL_VIEW_MODE)
 
 					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
 					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
-
+#if DELETE_BY_JIMMY
 					for(int cx_i=0;cx_i<6;cx_i++)
 					{
 						for(int cx_j=0;cx_j<3;cx_j++)
@@ -8595,6 +8590,7 @@ if(displayMode==ALL_VIEW_MODE)
 						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1+30+4, g_windowWidth/12, g_windowHeight/8);
 						}
 					}
+#endif
 					env.GetmodelViewMatrix()->PopMatrix();
 				}
 	}
@@ -8646,8 +8642,7 @@ if(displayMode==ALL_VIEW_MODE)
 						light_state[32]=Rcv_State_Msg.passenger_FAULT_Colour;
 						light_state[33]=0x00;
 						light_state[34]=0x00;
-						light_state[35]=0x00;
-				
+						light_state[35]=0x00;				
 						for(int i = 0; i<36; i++){
 							if(i <18){
 								RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
@@ -8681,17 +8676,10 @@ if(displayMode==ALL_VIEW_MODE)
 				}
 #endif
 
-
-
-
-
-
-
 			}
 
 			
 #endif
-
 
 #if ADD_FUCNTION_BY_JIMMY
 	Rcv_UDP_Cmd = getDebugModeOrder( TRANSFER_TO_APP_ETHOR	);
