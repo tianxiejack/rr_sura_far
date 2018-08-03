@@ -995,7 +995,8 @@ private:
 	GLFrame NeedleCameraFrame;
 	
 #if ADD_FUCNTION_BY_JIMMY
-			uint8 light_state[36];
+	uint8 light_state[36];
+	//uint8 last_light_state[36];
 #endif
 };
 

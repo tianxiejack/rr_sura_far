@@ -24,7 +24,7 @@ void clicktoMoveForesight(int x,int y,int mainOrsub)
 	float Xangle=(float)(x/1920.0*1024.0*360.0/nowW);
 	float Yangle=(float)(y/1080.0*768.0*360.0/nowH);
 #endif
-	if(Yangle>=288 && Yangle<=347)//Up
+	if(Yangle>=288+13.0 && Yangle<=347+13.0)//Up
 	{
 		foresightPos[mainOrsub].SetPos(Xangle,Yangle,mainOrsub);
 	}

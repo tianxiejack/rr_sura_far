@@ -234,6 +234,7 @@ class ForeSightPos
 		float angle[2];
 		int mil[2];
 		float speedXY[2];
+		float touch_delta_angle;
 	};
 
 /*******Facade Pattern********/

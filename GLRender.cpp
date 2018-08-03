@@ -885,6 +885,7 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 #if ADD_FUCNTION_BY_JIMMY
 			for(int idx =0; idx < 36; idx ++){
 				light_state[idx] = 0x00;
+				//last_light_state[idx] = 0x00;
 			}
 #endif
 }
@@ -3278,7 +3279,7 @@ void Render::RenderCircleLineViewForTurret(GLEnv &m_env,GLint x, GLint y, GLint 
 	m_env.GetmodelViewMatrix()->PushMatrix();		
 	m_env.GetmodelViewMatrix()->LoadIdentity();
 	glClearColor(0.3,0.6,0.5,0.0);
-	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);	
+	m_env.GetmodelViewMatrix()->Translate(64.8, 1.0, -40.0);	
 	m_env.GetmodelViewMatrix()->PushMatrix();	
 	DrawCircleLines(m_env, color_data);
 	m_env.GetmodelViewMatrix()->PopMatrix();	
@@ -7124,7 +7125,7 @@ void	Render::RecvNetPosXY()
 	y=g_windowHeight-cp.point_y;
 	int x=TransPosX(cp.point_x);
 
-	if(x!=-1)
+	if(x !=-1)
 	{
 		if(displayMode==ALL_VIEW_MODE)
 		{
@@ -7858,10 +7859,6 @@ if(setpriorityOnce)
 		p_BillBoard->m_Direction=last_direction_second;
 	}
 
-
-
-
-
 	if(displayMode==TWO_HALF_PANO_VIEW_MODE)
 	{
 		billBoardx=0;
@@ -7889,8 +7886,6 @@ if(setpriorityOnce)
 	//	Show_first_mode(readFirstMode());
 		billBoardx=0;
 		billBoardy=g_windowHeight;
-	//p_ChineseCBillBoard->ChooseTga=CHECK_SELF_T;
-	//RenderChineseCharacterBillBoardAt(billBoardx+g_windowWidth-g_windowWidth/1.1, billBoardy-g_windowHeight*1/3, g_windowHeight*1/2, g_windowHeight*1/2);
 
 
 		selfcheck.CalculateTime(1);
@@ -7962,22 +7957,11 @@ if(setpriorityOnce)
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*999.0/1920.0, g_windowHeight*174.0/1080.0, g_windowWidth*900.0/1920.0,g_windowHeight*980.0/1080.0);
 
 			p_ChineseCBillBoard->ChooseTga=LOCATION_T;
-	//		RenderChineseCharacterBillBoardAt(g_windowWidth*1100.0/1920.0, g_windowHeight*121.5/1920.0, g_windowWidth*812.5/1920.0,g_windowWidth*650.0/1920.0);
 			RenderChineseCharacterBillBoardAt(env,g_windowWidth*950.0/1920.0, g_windowHeight*50/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 
 	}
 	else if(displayMode==	ALL_VIEW_MODE)
 	{
-/*		p_ChineseCBillBoard->ChooseTga=ONEX_REALTIME_T;
-		RenderChineseCharacterBillBoardAt(env,-g_windowWidth*1050.0/1920.0, g_windowHeight*120.0/1080.0, g_windowWidth*1344.0/1920.0,g_windowHeight*1536.0/1920.0);
-			p_ChineseCBillBoard->ChooseTga=TWOX_REALTIME_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.0/1920.0,g_windowHeight*120.0/1080.0, g_windowWidth*1344.0/1920.0,g_windowHeight*1536.0/1920.0);
-
-			p_ChineseCBillBoard->ChooseTga=ANGLE_T;
-				RenderChineseCharacterBillBoardAt(env,g_windowWidth*999.0/1920.0, g_windowHeight*174.0/1080.0, g_windowWidth*900.0/1920.0,g_windowHeight*980.0/1080.0);
-		//	p_ChineseCBillBoard->ChooseTga=LOCATION_T;
-		//		RenderChineseCharacterBillBoardAt(env,g_windowWidth*950.0/1920.0, g_windowHeight*50/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
-*/
 	}
 
 	else if(displayMode==TELESCOPE_FRONT_MODE
@@ -7985,47 +7969,28 @@ if(setpriorityOnce)
 			||displayMode==TELESCOPE_BACK_MODE
 			||displayMode==TELESCOPE_LEFT_MODE)
 	{
-		/*
-	p_ChineseCBillBoard->ChooseTga=TWOX_REALTIME_T;
-	RenderChineseCharacterBillBoardAt(env,-g_windowWidth*1050.0/1920.0, g_windowHeight*120.0/1080.0, g_windowWidth*1344.0/1920.0,g_windowHeight*1536.0/1920.0);
-
-		p_ChineseCBillBoard->ChooseTga=FOURX_REALTIME_T;
-		RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.0/1920.0,g_windowHeight*120.0/1080.0, g_windowWidth*1344.0/1920.0,g_windowHeight*1536.0/1920.0);
-*/
 	p_ChineseCBillBoard->ChooseTga=ANGLE_T;
 	RenderChineseCharacterBillBoardAt(env,g_windowWidth*999.0/1920.0, g_windowHeight*174.0/1080.0, g_windowWidth*900.0/1920.0,g_windowHeight*980.0/1080.0);
 
 		 if(displayMode==TELESCOPE_FRONT_MODE)
 		{
 			p_ChineseCBillBoard->ChooseTga=RADAR_FRONT_T;
-		//	if(mv_detect.CanUseMD())
-		//		RenderChineseCharacterBillBoardAt(g_windowWidth*750.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
-		//	else
 			RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 		}
 		else if(displayMode==TELESCOPE_RIGHT_MODE)
 		{
-				p_ChineseCBillBoard->ChooseTga=RADAR_RIGHT_T;
-				//	if(mv_detect.CanUseMD())
-						//		RenderChineseCharacterBillBoardAt(g_windowWidth*750.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
-						//	else
-							RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
+			p_ChineseCBillBoard->ChooseTga=RADAR_RIGHT_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 		}
 		else if(displayMode==TELESCOPE_BACK_MODE)
 		{
 			p_ChineseCBillBoard->ChooseTga=RADAR_BACK_T;
-			//	if(mv_detect.CanUseMD())
-					//		RenderChineseCharacterBillBoardAt(g_windowWidth*750.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
-					//	else
-						RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 		}
 		else if(displayMode==TELESCOPE_LEFT_MODE)
 		{
-		p_ChineseCBillBoard->ChooseTga=RADAR_LEFT_T;
-		//	if(mv_detect.CanUseMD())
-				//		RenderChineseCharacterBillBoardAt(g_windowWidth*750.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
-				//	else
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
+			p_ChineseCBillBoard->ChooseTga=RADAR_LEFT_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*200.0/1920.0, g_windowHeight*200/1920.0, g_windowWidth*1000.0/1920.0,g_windowWidth*798.0/1920.0);
 		}
 	}
 
@@ -8104,8 +8069,6 @@ if(setpriorityOnce)
 					RenderChineseCharacterBillBoardAt(env,billBoardx+g_windowWidth-g_windowWidth/1.2, billBoardy-g_windowHeight*1.4/3, g_windowWidth*1/1.2, g_windowHeight*1/1.2);
 						break;
 				}
-
-
 
 				case SDI1_WHITE_BIG_VIEW_MODE:
 				{
@@ -8212,11 +8175,9 @@ if(setpriorityOnce)
 #endif// RENDER2FRONT
 	p_ChineseCBillBoard_bottem_pos->ChooseTga=MENU_T;
 			RenderChineseCharacterBillBoardAt(env,menu_tpic[0], menu_tpic[1], menu_tpic[2],menu_tpic[3]);
-#if 1
-		//	showInfcount--;
+#if 1		
 			if(showInfcount>0)
 			{
-
 				int x=0,y=0,w=g_windowWidth,h=g_windowHeight;
 				glViewport(x,y,w,h);
 			//	m_env.GetviewFrustum()->SetPerspective(27.0f, float(w) / float(h), 1.0f, 100.0f);
@@ -8229,11 +8190,9 @@ if(setpriorityOnce)
 				int net_show_mode=getKey_SwitchMode(TRANSFER_TO_APP_ETHOR);
 				static bool net_enable_move_cursor=false;
 				if(net_show_mode==Mode_Type_DEBUG)
-				{
-					
+				{					
 					net_enable_move_cursor=!net_enable_move_cursor;
-					SetPSYButtonF8(!net_enable_move_cursor);
-					
+					SetPSYButtonF8(!net_enable_move_cursor);					
 				}
 				else if(net_show_mode==Mode_Type_SINGLE_POPUP_WINDOWS)
 				{
@@ -8249,8 +8208,7 @@ if(setpriorityOnce)
 						displayMode=ALL_VIEW_MODE;
 						SetPSYButtonF1(true);
 						net_enable_move_cursor=false;
-						SetPSYButtonF8(!net_enable_move_cursor);
-						
+						SetPSYButtonF8(!net_enable_move_cursor);						
 					}
 				}
 				int net_open_mvdetect=getKey_TargetDetectionState(TRANSFER_TO_APP_ETHOR);
@@ -8260,17 +8218,16 @@ if(setpriorityOnce)
 					if(!IsMvDetect)
 					{
 						#if MVDECT
-									mv_detect.ClearAllVector(false);
+							mv_detect.ClearAllVector(false);
 						#endif
 					}
 					else
 					{
-#if MVDECT
-						mv_detect.ClearAllVector(true);
-#endif
+						#if MVDECT
+							mv_detect.ClearAllVector(true);
+						#endif
 					}
 					SetPSYButtonF2(!IsMvDetect);
-
 				}
 
 				int net_open_enhance=getKey_ImageEnhancementState(TRANSFER_TO_APP_ETHOR);
@@ -8299,26 +8256,27 @@ if(setpriorityOnce)
 					ChangeMainChosenCamidx(chosenCam[MAIN]);
 				}
 				else
-				{
-					{
+				{					
 						if(net_dirction==MOVE_TYPE_MOVELEFT)
 						{
+							foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
 							p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
 						}
 						if(net_dirction==MOVE_TYPE_MOVERIGHT)
 						{
+							foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
 							p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
 						}
 						if(net_dirction==MOVE_TYPE_MOVEUP)
 						{
+							foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
 							p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
 						}
 						if(net_dirction==MOVE_TYPE_MOVEDOWN)
 						{
+							foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
 							p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
-						}
-
-					}
+						}					
 				}
 
 				calc_hor_data=getAngleFar_PeriscopicLens(TRANSFER_TO_APP_ETHOR).hor_angle;
@@ -8329,57 +8287,6 @@ if(setpriorityOnce)
 
 				canon_hor_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).hor_angle;
 				canon_ver_angle=getAngleFar_CanonAngle(TRANSFER_TO_APP_ETHOR).ver_angle;
-#if DELETE_BY_JIMMY
-				state_label_data[0][0]=getCaptureMessage().cameraFrontTest;
-				state_label_data[0][1]=getCaptureMessage().cameraFrontState;
-				state_label_data[0][2]=getCaptureMessage().cameraFront_FAULT_Colour;
-				
-				state_label_data[1][0]=getCaptureMessage().cameraLeft1Test;
-				state_label_data[1][1]=getCaptureMessage().cameraLeft1State;
-				state_label_data[1][2]=getCaptureMessage().cameraLeft1_FAULT_Colour;
-
-				state_label_data[2][0]=getCaptureMessage().cameraLeft2Test;
-				state_label_data[2][1]=getCaptureMessage().cameraLeft2State;
-				state_label_data[2][2]=getCaptureMessage().cameraLeft2_FAULT_Colour;
-
-				state_label_data[3][0]=getCaptureMessage().cameraLeft3Test;
-				state_label_data[3][1]=getCaptureMessage().cameraLeft3State;
-				state_label_data[3][2]=getCaptureMessage().cameraLeft3_FAULT_Colour;
-
-				state_label_data[4][0]=getCaptureMessage().passengerTest;
-				state_label_data[4][1]=getCaptureMessage().passengerState;
-				state_label_data[4][2]=getCaptureMessage().passenger_FAULT_Colour;
-
-				state_label_data[5][0]=0;
-				state_label_data[5][1]=0;
-				state_label_data[5][2]=0;
-
-
-				
-				state_label_data[6][0]=getCaptureMessage().cameraBackTest;
-				state_label_data[6][1]=getCaptureMessage().cameraBackState;
-				state_label_data[6][2]=getCaptureMessage().cameraBack_FAULT_Colour;
-
-				state_label_data[7][0]=getCaptureMessage().cameraRight1Test;
-				state_label_data[7][1]=getCaptureMessage().cameraRight1State;
-				state_label_data[7][2]=getCaptureMessage().cameraRight1_FAULT_Colour;
-
-				state_label_data[8][0]=getCaptureMessage().cameraRight2Test;
-				state_label_data[8][1]=getCaptureMessage().cameraRight2State;
-				state_label_data[8][2]=getCaptureMessage().cameraRight2_FAULT_Colour;
-
-				state_label_data[9][0]=getCaptureMessage().cameraRight3Test;
-				state_label_data[9][1]=getCaptureMessage().cameraRight3State;
-				state_label_data[9][2]=getCaptureMessage().cameraRight3_FAULT_Colour;
-
-				state_label_data[10][0]=getCaptureMessage().Cap_BoxTest;
-				state_label_data[10][1]=getCaptureMessage().Cap_BoxState;
-				state_label_data[10][2]=getCaptureMessage().Cap_FAULT_Colour;
-
-				state_label_data[11][0]=getCaptureMessage().nearBoardTest;
-				state_label_data[11][1]=getCaptureMessage().nearBoardState;
-				state_label_data[11][2]=getCaptureMessage().nearBoard_FAULT_Colour;
-#endif
 				int index_i=-1;
 				int width_delta=100;
 				int w_y=0;
@@ -8394,14 +8301,7 @@ if(setpriorityOnce)
 					p_ChineseCBillBoard->ChooseTga=F1_OFF_T;
 				}
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=CANON_HOR_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=CALC_HOR_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
-
-
 				index_i++;
-
 				if(GetPSYButtonF2())
 				{
 					p_ChineseCBillBoard->ChooseTga=F2_ON_T;
@@ -8412,7 +8312,6 @@ if(setpriorityOnce)
 				}
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
-
 				if(GetPSYButtonF3())
 				{
 					p_ChineseCBillBoard->ChooseTga=F3_ON_T;
@@ -8422,55 +8321,24 @@ if(setpriorityOnce)
 					p_ChineseCBillBoard->ChooseTga=F3_OFF_T;
 				}
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=CANON_VER_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=CALC_VER_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+100, t_width, t_height);
-
 				index_i++;
-
 				p_ChineseCBillBoard->ChooseTga=F4_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
-
 				p_ChineseCBillBoard->ChooseTga=F5_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=GUN_HOR_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-
 				index_i++;
-
 				p_ChineseCBillBoard->ChooseTga=F6_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
 				index_i++;
-
 				p_ChineseCBillBoard->ChooseTga=F7_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
-//				p_ChineseCBillBoard->ChooseTga=GUN_VER_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*index_i-width_delta, w_y+50, t_width, t_height);
-
 				index_i++;
-/*
-				if(GetPSYButtonF8())
-				{
-					p_ChineseCBillBoard->ChooseTga=F8_ON_T;
-				}
-				else
-				{
-					p_ChineseCBillBoard->ChooseTga=F8_OFF_T;
-				}
-				*/
 				p_ChineseCBillBoard->ChooseTga=INFO_SHOW_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta+g_windowWidth*0.035, w_y+g_windowHeight*0.016, t_width*0.8, t_height*0.8);
 				index_i++;
-
-
-//				p_ChineseCBillBoard->ChooseTga=F9_T;
-//				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta, w_y, t_width, t_height);
-//				index_i++;
-
-if(displayMode==ALL_VIEW_MODE)
-{
+	if(displayMode==ALL_VIEW_MODE)
+	{
 				hide_label_state=getOverlayInformation(TRANSFER_TO_APP_ETHOR);
 				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
 				{
@@ -8485,43 +8353,43 @@ if(displayMode==ALL_VIEW_MODE)
 
 					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6+65+1,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
-#if DELETE_BY_JIMMY
-					DrawNeedleGunonCompass(env);
-					DrawNeedleGunonDegree(env);
-					DrawVerGunAngle(env);				//右边
-
-					DrawNeedleCanononCompass(env);
-					DrawNeedleCanononDegree(env);
-					DrawVerCanonAngle(env);		//炮塔 左边
-#endif
 					char text_data[20];
 					int text_x=g_windowWidth/15;
 					int text_y=g_windowHeight/4;
-//-35  -24
 					int text_width=g_windowWidth/20;
 					int text_height=80;
-
 					Rect2i rect(7.3*g_windowWidth/10+text_x-11+78,text_y+text_height*2.5/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_hor_angle);
 					DrawCordsView(env,&rect,text_data);
-
 					Rect2i rect2(7.3*g_windowWidth/10+text_x-11+78,text_y+text_height*1/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",canon_ver_angle);
 					DrawCordsView(env,&rect2,text_data);
-
 					Rect2i rect3(8.8*g_windowWidth/10+text_x,text_y+text_height*2.5/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_hor_data);
 					DrawCordsView(env,&rect3,text_data);
-
 					Rect2i rect4(8.8*g_windowWidth/10+text_x,text_y+text_height*1/4-8.0+22.9+11+22,text_width,text_height);
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
+			
+					RenderCircleLineViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					RenderDirectTriangleViewForSurroundSight(env , canon_hor_angle , 0,0, g_windowWidth, g_windowHeight,  vYellow);
+					RenderVerticalValueViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					surround_Moveline_Y = canon_ver_angle / 16.666667f ;
+					InitVerticalMoveLineBatchForSurroundSight(env);
+					RenderVerticalMoveLineViewForSurroundSight(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
+			//---------------------------------------------------------------------------------------------
+					RenderCircleLineViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,  vWhite);
+					RenderDirectTriangleViewForTurret(env , calc_hor_data , 0,0, g_windowWidth, g_windowHeight,  vYellow);
+					RenderVerticalValueViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
+					turret_Moveline_Y = calc_ver_data / 16.666667f;
+					InitVerticalMoveLineBatchForTurret(env);
+					RenderVerticalMoveLineViewForTurret(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
 				}
-}
+	}
 				env.GetmodelViewMatrix()->PopMatrix();
 	if(displayMode==ALL_VIEW_MODE)
 	{
@@ -8544,63 +8412,9 @@ if(displayMode==ALL_VIEW_MODE)
 
 					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
 					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
-#if DELETE_BY_JIMMY
-					for(int cx_i=0;cx_i<6;cx_i++)
-					{
-						for(int cx_j=0;cx_j<3;cx_j++)
-						{
-							if(state_label_data[cx_i][cx_j]==1)
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
-							}
-							else if(state_label_data[cx_i][cx_j]==0)
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
-							}
-							else
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
-							}
-//							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta-0.8*2*g_windowWidth/60-7,
-//						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5, g_windowWidth/12, g_windowHeight/8);
-							RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta+128,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60-5+point_ver_delta+g_windowHeight/100+30+4, g_windowWidth/12, g_windowHeight/8);
-
-						}
-					}
-					point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
-					for(int cx_i=0;cx_i<6;cx_i++)
-					{
-						for(int cx_j=0;cx_j<3;cx_j++)
-						{
-
-							if(state_label_data[cx_i+6][cx_j]==1)
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_RED_T;
-							}
-							else if(state_label_data[cx_i+6][cx_j]==0)
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_GREEN_T;
-							}
-							else
-							{
-								p_ChineseCBillBoard->ChooseTga=POINT_GREY_T;
-							}
-	RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move-g_windowWidth/12+(cx_j)*2*g_windowWidth/53+point_hor_delta+128,
-						g_windowHeight/7+g_windowHeight/10-cx_i*1.2*g_windowHeight/60+5+13.1+30+4, g_windowWidth/12, g_windowHeight/8);
-						}
-					}
-#endif
 					env.GetmodelViewMatrix()->PopMatrix();
-				}
-	}
 
-#if ADD_FUCNTION_BY_JIMMY
-			
-				if(displayMode==ALL_VIEW_MODE)
-				{
-					if(hide_label_state==SHOW_ALL_LABEL)
-					{			
+								
 						int fan_WindowWidth = g_windowWidth*1/16-18;
 						int fan_WindowHeight = g_windowHeight/22-9;
 						int delta_fanX = g_windowWidth*5/6 +95;
@@ -8642,44 +8456,36 @@ if(displayMode==ALL_VIEW_MODE)
 						light_state[32]=Rcv_State_Msg.passenger_FAULT_Colour;
 						light_state[33]=0x00;
 						light_state[34]=0x00;
-						light_state[35]=0x00;				
-						for(int i = 0; i<36; i++){
-							if(i <18){
-								RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
-									g_windowHeight*1/4+27 - (i/3)*fan_WindowHeight/2, 
-									fan_WindowWidth, fan_WindowHeight,	light_state[i]);
-							}
-							else{		
-								RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
-									g_windowHeight*1/4 -18- (i/3)*fan_WindowHeight/2, 
-									fan_WindowWidth, fan_WindowHeight,	light_state[i]);
-							}
+						light_state[35]=0x00;
+			
+					for(int i = 0; i<36; i++){
+						if(i <18){
+							RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
+								g_windowHeight*1/4+27 - (i/3)*fan_WindowHeight/2, 
+								fan_WindowWidth, fan_WindowHeight,	light_state[i]);
 						}
-			
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			
-					RenderCircleLineViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
-					RenderDirectTriangleViewForSurroundSight(env , canon_hor_angle , 0,0, g_windowWidth, g_windowHeight,  vYellow);
-					RenderVerticalValueViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
-					surround_Moveline_Y = canon_ver_angle / 16.666667f ;
-					InitVerticalMoveLineBatchForSurroundSight(env);
-					RenderVerticalMoveLineViewForSurroundSight(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
-			//---------------------------------------------------------------------------------------------
-					RenderCircleLineViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,  vWhite);
-					RenderDirectTriangleViewForTurret(env , calc_hor_data , 0,0, g_windowWidth, g_windowHeight,  vYellow);
-					RenderVerticalValueViewForTurret( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
-					turret_Moveline_Y = calc_ver_data / 16.666667f;
-					InitVerticalMoveLineBatchForTurret(env);
-					RenderVerticalMoveLineViewForTurret(env ,0,0, g_windowWidth, g_windowHeight,  vYellow);
-					//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-					}
+						else{		
+							RenderForTestTriangleView(env,delta_fanX+(i%3)*fan_WindowWidth*2/3,
+								g_windowHeight*1/4 -18- (i/3)*fan_WindowHeight/2, 
+								fan_WindowWidth, fan_WindowHeight,	light_state[i]);
+						}
+						/*
+						if(last_light_state[i] != light_state[i]){
+							last_light_state[i] = light_state[i];
+							printf("Rcv Change Light State: SN<%d>: --- %02x  ---\r\n", i, last_light_state[i]);
+
+						}
+						*/
+					}		
+				
 				}
-#endif
+		}
 
-			}
+	}
 
 			
 #endif
+
 
 #if ADD_FUCNTION_BY_JIMMY
 	Rcv_UDP_Cmd = getDebugModeOrder( TRANSFER_TO_APP_ETHOR	);
@@ -10873,7 +10679,7 @@ void Render::specialkeyPressed (GLEnv &m_env,int key, int x, int y)
 		           			channel_left_scale[new_dir]=define_channel_left_scale[new_dir];
 		           			channel_right_scale[new_dir]=define_channel_right_scale[new_dir];
 		           			move_hor[new_dir]=define_move_hor[new_dir];
-		           			PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
+		           			//PanoFloatData[new_dir]=define_PanoFloatData[new_dir];
 		           			rotate_angle[new_dir]=define_rotate_angle[new_dir];
 		           			move_hor_scale[new_dir]=define_move_hor_scale[new_dir];
 		           			move_ver_scale[new_dir]=define_move_ver_scale[new_dir];

@@ -271,20 +271,20 @@ void *Recv_ipc_Ephor(void *arg) {
 			CaptureMessage.Cap_BoxState = (msg.payload.Cap_State >> 16) & 0xff;
 			CaptureMessage.cameraFrontTest = (msg.payload.Cap_State >> 8)
 					& 0x1;
-			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 8)
-					& 0x2;
-			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 8)
-					& 0x4;
-			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 8)
-					& 0x8;
-			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 8)
-					& 0x10;
-			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 8)
-					& 0x20;
-			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 8)
-					& 0x40;
-			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 8)
-					& 0x80;
+			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 9)
+					& 0x1;
+			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 10)
+					& 0x1;
+			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 11)
+					& 0x1;
+			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 12)
+					& 0x1;
+			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 13)
+					& 0x1;
+			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 14)
+					& 0x1;
+			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 15)
+					& 0x1;
 			CaptureMessage.Cap_BoxTest = msg.payload.Cap_State & 0xff;
 			gettimeofday(&cap_lasttime3, NULL);
 			pthread_mutex_unlock(&Mutex[0]);
@@ -447,20 +447,20 @@ void *Recv_ipc_Driver(void *arg) {
 			CaptureMessage.Cap_BoxState = (msg.payload.Cap_State >> 16) & 0xff;
 			CaptureMessage.cameraFrontTest = (msg.payload.Cap_State >> 8)
 					& 0x1;
-			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 8)
-					& 0x2;
-			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 8)
-					& 0x4;
-			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 8)
-					& 0x8;
-			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 8)
-					& 0x10;
-			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 8)
-					& 0x20;
-			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 8)
-					& 0x40;
-			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 8)
-					& 0x80;
+			CaptureMessage.cameraLeft1Test = (msg.payload.Cap_State >> 9)
+					& 0x1;
+			CaptureMessage.cameraRight1Test = (msg.payload.Cap_State >> 10)
+					& 0x1;
+			CaptureMessage.cameraLeft2Test = (msg.payload.Cap_State >> 11)
+					& 0x1;
+			CaptureMessage.cameraRight2Test = (msg.payload.Cap_State >> 12)
+					& 0x1;
+			CaptureMessage.cameraLeft3Test = (msg.payload.Cap_State >> 13)
+					& 0x1;
+			CaptureMessage.cameraRight3Test = (msg.payload.Cap_State >> 14)
+					& 0x1;
+			CaptureMessage.cameraBackTest = (msg.payload.Cap_State >> 15)
+					& 0x1;
 			CaptureMessage.Cap_BoxTest = msg.payload.Cap_State & 0xff;
 			gettimeofday(&cap_lasttime3, NULL);
 			pthread_mutex_unlock(&Mutex[1]);
