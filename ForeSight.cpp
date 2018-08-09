@@ -203,9 +203,10 @@ void ForeSight_decorator::Draw( GLEnv &m_env)
 
 	void ForeSightPos::SetPos(float Xangle,float Yangle,int mainOrsub)
 	{
+		int dd=2;
 		foresightPos[mainOrsub].SetSpeedX(0);
 		foresightPos[mainOrsub].SetSpeedY(0);
-		if(Yangle>=288+touch_delta_angle && Yangle<=347+touch_delta_angle)
+		if(Yangle>=288+touch_delta_angle-dd && Yangle<=347+touch_delta_angle)
 		{
 			if(Xangle>=180.0)
 			{
@@ -220,7 +221,7 @@ void ForeSight_decorator::Draw( GLEnv &m_env)
 				foresightPosX=pano_length*3.0/4.0+(Xangle)/180.0*pano_length/4.0;
 			}
 		}
-		else if(Yangle>=216+touch_delta_angle && Yangle<=275+touch_delta_angle)//Down
+		else if(Yangle>=216+touch_delta_angle-dd && Yangle<=275+touch_delta_angle)//Down
 		{
 			if(Xangle>=180.0)
 			{
@@ -236,18 +237,18 @@ void ForeSight_decorator::Draw( GLEnv &m_env)
 			}
 		}
 
-		if(Yangle>=288+touch_delta_angle &&Yangle<=347+touch_delta_angle)
+		if(Yangle>=288+touch_delta_angle-dd &&Yangle<=347+touch_delta_angle)
 		{
 			foresightPosY=0.45*(Yangle-288+touch_delta_angle)/(60.0)-0.3;
 		}
 
-		else if (Yangle>=216+touch_delta_angle &&Yangle<=275+touch_delta_angle )
+		else if (Yangle>=216+touch_delta_angle-dd &&Yangle<=275+touch_delta_angle )
 		{
 			foresightPosY=0.45*(Yangle-216+touch_delta_angle)/(60.0)-0.3;
 		}
 
 		render.GetpWholeFacade(mainOrsub)->MoveLeft(-render.GetPanoLen()*100.0,mainOrsub);
-		if((Yangle>=288+touch_delta_angle &&Yangle<328+touch_delta_angle) ||(Yangle>=216+touch_delta_angle &&Yangle<256+touch_delta_angle))
+		if((Yangle>=288+touch_delta_angle-dd &&Yangle<328+touch_delta_angle) ||(Yangle>=216+touch_delta_angle-dd &&Yangle<256+touch_delta_angle))
 			render.GetpWholeFacade(mainOrsub)->MoveDown(-render.GetPanoHeight()/5.7,mainOrsub);
 		else if((Yangle>=328+touch_delta_angle &&Yangle<=347+touch_delta_angle)||(Yangle>=256+touch_delta_angle &&Yangle<276+touch_delta_angle) )
 			render.GetpWholeFacade(mainOrsub)->MoveUp(render.GetPanoHeight()/5.7,mainOrsub);
