@@ -11,6 +11,10 @@ int parm_inputArea=8/*6*/;
 int parm_inputMaxArea=200;
 int parm_threshold = 30;
 int MV_CHOSE_IDX=0;
+
+int MAX_RECT_NUM =30;
+int MAX_AREA_SIZE = 80000;
+int MIN_AREA_SIZE=  1;
 Mat m4(2160,640,CV_8UC3);
 Mat m6(3240,640,CV_8UC3);
 
@@ -158,6 +162,8 @@ void MvDetect::SetoutRect()
 				{
 					len=tempRect_Srcptr[idx].size();
 				}
+				if(len<=MAX_RECT_NUM)
+				{
 				for(int j=0;j<len;j++)
 				{
 					if(tempRect_Srcptr[idx][j].targetRect.x>0)
@@ -172,6 +178,7 @@ void MvDetect::SetoutRect()
 								tempRect_Srcptr[idx][j].targetRect.width,
 								tempRect_Srcptr[idx][j].targetRect.height);*/
 					}
+				}
 				}
 				OSA_semSignal(this->GetpSemMV(idx));
 		}
@@ -224,6 +231,12 @@ void MvDetect::DrawRectOnpic(unsigned char *src,int capidx,int cc)
 			{
 				for(int rectIdx=0;rectIdx<tempRecv[i].size();rectIdx++)//从容器中一个一个取出
 				{
+					int area_size=tempRecv[i][rectIdx].outRect.targetRect.width * tempRecv[i][rectIdx].outRect.targetRect.height;
+					if(area_size>=MAX_AREA_SIZE
+							||area_size<=MIN_AREA_SIZE)
+					{
+						continue;
+					}
 					int startx=tempRecv[i][rectIdx].outRect.targetRect.x/3;
 					int starty=tempRecv[i][rectIdx].outRect.targetRect.y/2+540*i;
 					int w=tempRecv[i][rectIdx].outRect.targetRect.width/3;

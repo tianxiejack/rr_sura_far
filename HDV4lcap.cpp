@@ -655,10 +655,10 @@ int HDv4l_cam::read_frame(int now_pic_format)
 						if(nowGrayidx>=11||nowGrayidx<=0)
 						{
 						//	printf("nowGrayidx~~~~~~~~~~~~~~~~~~=%d\n",nowGrayidx);
-						chid[MAIN]=0;
+			//			chid[MAIN]=0;
 						//nowGrayidx=mv_count;
-						transformed_src_main=&MVDECT_data_main[0];
-
+			//			transformed_src_main=&MVDECT_data_main[0];
+							return 0;
 						}
 						else
 						{
