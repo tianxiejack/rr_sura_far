@@ -562,7 +562,7 @@ void Render::NoSigInf()
 	float startY[]={865,649};
 	float w=1002;
 	float h=710/2;
-	int bmode=2;
+	int bmode=6;
 	for(int i=0;i<CAM_COUNT;i++)
 	{
 		nosigIdx=selfcheck.GetBrokenCam()[i];
@@ -8345,14 +8345,14 @@ if(setpriorityOnce)
 					p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55+133+11,g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
-					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45+131+17,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					//p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+					//RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45+131+17,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 
 					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
 					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7+63+9, g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
-					p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6+65+1,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
+					//p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
+					//RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6+65+1,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
 					char text_data[20];
 					int text_x=g_windowWidth/15;
 					int text_y=g_windowHeight/4;
