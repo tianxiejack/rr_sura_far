@@ -60,6 +60,19 @@ static const int ALPHA_MASK_WIDTH = (DEFAULT_IMAGE_WIDTH/16);
 /*set up render scene*/
 static const M3DVector3f DEFAULT_ORIGIN = {0.0f, 0.0f, 50.0f};
 class Render:public InterFaceDrawBehaviour{
+	
+public:	
+	
+		void InitRenderTGA(int x=0,int y=155,int width=300,int height=155);
+		void InitTextures();
+		void DoTextureBinding();
+		void	LoadTGATextureRects();
+		
+		bool LoadTGATextureRect(const char *szFileName, GLenum minFilter, GLenum magFilter, GLenum wrapMode);
+private:
+	GLuint      renderTGATextures[1];
+	char          renderTGATextureFileName[1][64];
+	GLBatch  renderTGABatch;
 public:
 	Render();
 	~Render();
@@ -196,13 +209,13 @@ private:
 			SECOND_TOTAL_MODE_COUNT
 		}SecondDisplayMode;
 
-		 enum FBO_MODE {
+		 enum FBO_MODE  {
 			 FBO_ALL_VIEW_MODE,
 			 FBO_ALL_VIEW_559_MODE,
 			 FBO_MODE_COUNT
 		 }fboMode;
 
-		 enum HideLabelState{
+		 enum HideLabelState { 
 			 SHOW_ALL_LABEL,
 			 HIDE_TEST_LABEL,
 			 HIDE_TEST_COMPASS_LABEL,
@@ -264,16 +277,16 @@ private:
 			unsigned int m_Direction;
 			unsigned int m_lastDirection;
 		public:
-				BillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr=NULL, BBD_DIRECTION dir = BBD_FRONT);
-				~BillBoard();
-				virtual void processKeyDirection(int key);
+			BillBoard(GLMatrixStack &modelViewMat,GLMatrixStack	&projectionMat,GLShaderManager* mgr=NULL, BBD_DIRECTION dir = BBD_FRONT);
+			~BillBoard();
+			virtual void processKeyDirection(int key);
 		protected:
 			virtual void InitTextures();
 			virtual void DoTextureBinding();
 		private:
-			void LoadTGATextureRects();
-			GLuint              m_BBDTextures[BBD_COUNT];
-			char                m_BBDTextureFileName[BBD_COUNT][64];
+			void 		LoadTGATextureRects();
+			GLuint      m_BBDTextures[BBD_COUNT];
+			char          m_BBDTextureFileName[BBD_COUNT][64];
 		}*p_BillBoard;
 
 		class CompassBillBoard : public BaseBillBoard {
@@ -494,6 +507,7 @@ private:
 
 	void RenderIndividualView(GLEnv &m_env,GLint x, GLint y, GLint w, GLint h,bool needSendData);
 	void RenderBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h);
+	
 	void RenderCompassBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h);
 
 	void InitDataofAlarmarea();
@@ -635,7 +649,13 @@ private:
 	void ChangeSecondEnh();
 	void MoveSecondForesight();
 	void ChangeSecondSc();
-	void NoSigInf();
+	void NoSigInf();	
+	
+	void RenderGreenScreen(GLEnv &m_env, GLuint x, GLuint y,GLuint w,GLuint h);
+	
+	void DrawSelectBlock();
+	void InitSelectBlock();
+	void RenderSelectBlock(GLEnv &m_env, GLint x, GLint y, GLint w, GLint h);
 public:
 
 	 GLShaderManager		shaderManager2;			// Shader Manager
@@ -785,7 +805,7 @@ private:
 	GLBatch triangleBatch;
 	GLBatch AlarmAreaBatch;
 	GLBatch AlarmLineBatch;
-
+	GLBatch select_BlockBatch;
 
 	GLBatch array_round_point[36];
 
@@ -996,6 +1016,7 @@ private:
 	
 #if ADD_FUCNTION_BY_JIMMY
 	uint8 light_state[36];
+	uint8 selftest_state[10];
 	//uint8 last_light_state[36];
 #endif
 };

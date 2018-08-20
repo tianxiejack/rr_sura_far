@@ -14,8 +14,8 @@
 #if ADD_FUCNTION_BY_JIMMY
 typedef unsigned char uint8;
 typedef char int8;
-#define  GREEN_STATE 0x00
-#define RED_STATE 0x01
+#define  GREEN_STATE 0x01
+#define RED_STATE 0x00
 #define GRAY_STATE 0x02
 #endif
 
@@ -419,6 +419,8 @@ static const float vReal_Red[]       = {1.0,0.0,0.0,1.0f };   //{ 0.7f, 0.0f, 0.
 #define FAR_NEXT "next.tga"
 #define STATE_LABEL "state_label.tga"
 #define STATE_LABEL2 "state_label2.tga"
+#define NOTHING_TGA "NoThing.tga"
+
 #define POINT_RED_F "point_red.tga"
 #define POINT_GREEN_F "point_green.tga"
 #define POINT_GREY_F "point_grey.tga"
@@ -500,6 +502,7 @@ enum CCT_COUNT {
 		F9_T,
 		STATE_LABEL_T,
 		STATE_LABEL2_T,
+		TGA_NoThing,
 		POINT_RED_T,
 		POINT_GREEN_T,
 		POINT_GREY_T,

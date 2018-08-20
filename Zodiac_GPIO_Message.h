@@ -11,11 +11,11 @@
 #define GPIO_FAR_2_NUM	186
 #define GPIO_FAR_3_NUM	65
 #define GPIO_FAR_4_NUM	63
-#define GPIO_FAR_5_NUM 62
-#define GPIO_FAR_6_NUM 85
-#define GPIO_FAR_7_NUM 184
-#define GPIO_FAR_8_NUM 86
-#define GPIO_FAR_9_NUM 38
+#define GPIO_FAR_5_NUM 	62
+#define GPIO_FAR_6_NUM 	85
+#define GPIO_FAR_7_NUM 	184
+#define GPIO_FAR_8_NUM 	86
+#define GPIO_FAR_9_NUM 	38
 
 #define GPIO_NEAR_0_NUM	20
 #define GPIO_NEAR_1_NUM	20

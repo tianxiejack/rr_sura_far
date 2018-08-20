@@ -90,7 +90,7 @@ ANGLE_GROUP AngleFar_CanonAngle = { 0, 0 };
 Cap_Msg CaptureMessage = { 1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,   1, 1, 1,
 		1, 1, 1,   1, 1, 1,   1,1,1,  1,1,1,  1,1,1 };
 DEBUG_ORDER DebugModeOrder[2] = { DEBUG_ORDER_ORIGIN, DEBUG_ORDER_ORIGIN };
-int OverlayInformation[2] = { 0, 0 };
+int OverlayInformation[2] = { 2, 2 };
 #define  IPC_ftok_path "/home/"
 pthread_mutex_t Mutex[3] = PTHREAD_MUTEX_INITIALIZER;
 

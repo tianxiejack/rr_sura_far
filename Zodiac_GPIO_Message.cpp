@@ -92,6 +92,9 @@ int get_gpioNum_Value(unsigned int gpio_num)
 		close(fd);
 		strSysfs[1] = '\0';
 		nRet = atoi(strSysfs);
+		//if(gpio_num == GPIO_FAR_7_NUM ){
+		//	printf("Read GPIO_FAR_7_NUM == 184 : <%d> \r\n",gpio_num);
+		//}
 		return nRet;
 	}
 	return -1;

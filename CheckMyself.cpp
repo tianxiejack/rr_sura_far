@@ -220,7 +220,7 @@ bool SelfCheck::IsAllReady()
 {
 	for(int i=0;i<SELFCHECK_ITEM_COUNT;i++)
 	{
-		if(m_CheckResult[i]!=SELFCHECK_PASS)
+		if( m_CheckResult[i]	!=	SELFCHECK_PASS )
 			return false;
 	}
 	return true;

@@ -545,6 +545,7 @@ int Render::getTrkId(int displayMode,int nextMode)
 		}
 	}
 }
+
 void Render::clearTrackParams()
 {
 	track_pos[0]=0;
@@ -554,20 +555,86 @@ void Render::clearTrackParams()
 }
 #endif
 
+void Render::InitSelectBlock()
+{
+	GLfloat point_x = 3.85f;
+	GLfloat point_y = 3.25f;
+	GLfloat vertex_Block[] = { -point_x, -point_y, 0.0f,
+                     point_x+0.5, -point_y, 0.0f,
+                     point_x+0.5, point_y, 0.0f,
+                     -point_x, point_y, 0.0f
+                     };    
+    	select_BlockBatch.Begin(GL_TRIANGLE_FAN, 4);
+    	select_BlockBatch.CopyVertexData3f(vertex_Block);
+    	select_BlockBatch.End();
+}
+void Render::DrawSelectBlock()
+{
+	GLfloat vGreen[] = { 0.0f, 1.0f, 0.0f, 1.0f };  
+	//GLfloat vLtGrey[]    = { 0.85f, 0.85f, 0.85f, 0.9f };
+	//glEnable(GL_BLEND);
+	//glDisable(GL_DEPTH_TEST);
+  	shaderManager.UseStockShader(GLT_SHADER_IDENTITY, vGreen);
+    	select_BlockBatch.Draw();
+	//glDisable(GL_BLEND);
+	//glEnable(GL_DEPTH_TEST);
+}
+
+void Render::RenderSelectBlock(GLEnv &m_env, GLint x, GLint y, GLint w, GLint h)
+{
+	glViewport(x,y,w,h);
+	m_env.GetviewFrustum()->SetPerspective(70.0f, float(w) / float(h), 1.0f, 300.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+	
+	m_env.GetmodelViewMatrix()->PushMatrix();		
+	m_env.GetmodelViewMatrix()->LoadIdentity();
+	m_env.GetmodelViewMatrix()->Translate(0.0, 0.0, -1.0);		
+	DrawSelectBlock();	
+	glFlush();	
+	//glutSwapBuffers();
+	
+	m_env.GetmodelViewMatrix()->PopMatrix();	
+}
+
+void Render::RenderGreenScreen(GLEnv &m_env, GLuint x, GLuint y,GLuint w,GLuint h)
+{
+	glViewport( x, y,w,h);
+	
+	m_env.GetviewFrustum()->SetPerspective(40.0f, float(w) / float(h), 1.0f, 100.0f);
+	m_env.GetprojectionMatrix()->LoadMatrix(m_env.GetviewFrustum()->GetProjectionMatrix());
+	m_env.GetmodelViewMatrix()->PushMatrix();
+	m_env.GetmodelViewMatrix()->LoadIdentity( );
+	glClearColor( 0.0f, 1.0f, 0.0f, 1.0f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	m_env.GetmodelViewMatrix()->PopMatrix();
+	
+}
 void Render::NoSigInf()
 {
+
 	GLEnv &env=env1;
 	int nosigIdx=-1;
-	float startX[]={916,529,138,-250,-630,-630,-250,138,529,916};
-	float startY[]={865,649};
+	
+	float startX[]={916,529,138,-250,-630,-630,-250,138,529,916};	
+	float startY[]={905, 699};    //{865,649};
+	
+	//float hor_x[] = {0, 384, 768, 1152, 1536,  0, 384, 768, 1152, 1536};	
+	float hor_x[] = {1536, 1152, 768, 384, 0,  0, 384, 768, 1152, 1536};	
+	//float ver_y[] = {900,900, 900, 900, 900,  684, 684,684,684,684 };
+	float ver_y[] = {900,900, 900, 900, 900,  684, 684,684,684,684 };
+	
 	float w=1002;
 	float h=710/2;
 	int bmode=6;
+	//RenderSelectBlock(env,  hor_x[0], ver_y[0], 384.0f, 216.0f);
 	for(int i=0;i<CAM_COUNT;i++)
 	{
 		nosigIdx=selfcheck.GetBrokenCam()[i];
 		if(nosigIdx==0)
 		{
+			RenderSelectBlock(env,  hor_x[i], ver_y[i], 384.0f, 216.0f);
+			
 			p_ChineseCBillBoard->ChooseTga=NOSIG_T;
 			RenderChineseCharacterBillBoardAt(env,startX[i],startY[i/5]+50, w,h,bmode);
 		}
@@ -842,7 +909,7 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 		p_CornerMarkerGroup(NULL),
 		psy_button_f1(true),psy_button_f2(true),psy_button_f3(true),psy_button_f8(true),
 		canon_hor_angle(32768.0),canon_ver_angle(0.0),gun_hor_angle(0.0),gun_ver_angle(0.0),calc_hor_data(0.0),calc_ver_data(3000.0),
-		touch_pos_x(0),touch_pos_y(0),hide_label_state(SHOW_ALL_LABEL),
+		touch_pos_x(0),touch_pos_y(0),hide_label_state(HIDE_TEST_COMPASS_LABEL),
 		shaderManager2(GLShaderManager(CAM_COUNT)),
 		shaderManager(GLShaderManager(CAM_COUNT)),pPano(NULL)
 {
@@ -862,14 +929,14 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 	track_control_params[3]=60;
 
 	for(int i=0; i<CAM_COUNT; i++)
-		{
-			OverLap[i] = new GLBatch;
-			Petal_OverLap[i] = OverLap[i];
-			env1.Setp_Panel_OverLap(i,new GLBatch);
-			env2.Setp_Panel_OverLap(i,new GLBatch);
-			env1.Setp_Panel_Petal_OverLap(i,env1.Getp_Panel_OverLap(i));
-			env2.Setp_Panel_Petal_OverLap(i,env2.Getp_Panel_OverLap(i));
-		}
+	{
+		OverLap[i] = new GLBatch;
+		Petal_OverLap[i] = OverLap[i];
+		env1.Setp_Panel_OverLap(i,new GLBatch);
+		env2.Setp_Panel_OverLap(i,new GLBatch);
+		env1.Setp_Panel_Petal_OverLap(i,env1.Getp_Panel_OverLap(i));
+		env2.Setp_Panel_Petal_OverLap(i,env2.Getp_Panel_OverLap(i));
+	}
 	for(int i=0;i<12;i++)
 	{
 		for(int j=0;j<3;j++)
@@ -883,11 +950,16 @@ Render::Render():g_subwindowWidth(0),g_subwindowHeight(0),g_windowWidth(0),g_win
 	}
 	
 #if ADD_FUCNTION_BY_JIMMY
-			for(int idx =0; idx < 36; idx ++){
-				light_state[idx] = 0x00;
-				//last_light_state[idx] = 0x00;
-			}
+		for(int idx =0; idx < 36; idx ++){
+			light_state[idx] = 0x00;
+			//last_light_state[idx] = 0x00;
+		}
+		for(int p = 0; p< 10; p++ ){
+			selftest_state[p] = 0x00;
+		}
 #endif
+
+	//strcpy(renderTGATextureFileName[0], "green.tga");
 }
 
 Render::~Render()
@@ -923,7 +995,76 @@ Render::~Render()
 	}
 }
 
+void Render::InitRenderTGA(int x, int y, int width, int height)
+{
+	x=0;  //startx
+	y=155; //y must be the height of your own tga's height
+	width=300;//x must be the height of your own tga's width
+	height=155;//y must be the height of your own tga's height
+	renderTGABatch.Begin(GL_TRIANGLE_FAN, 4, 1);
 
+	// Upper left hand corner
+	renderTGABatch.MultiTexCoord2f(0, 0.0f, height);
+	renderTGABatch.Vertex3f(x, y, 0.0);
+
+	// Lower left hand corner
+	renderTGABatch.MultiTexCoord2f(0, 0.0f, 0.0f);
+	renderTGABatch.Vertex3f(x, y - height, 0.0f);
+
+	// Lower right hand corner
+	renderTGABatch.MultiTexCoord2f(0, width, 0.0f);
+	renderTGABatch.Vertex3f(x + width, y - height, 0.0f);
+
+	// Upper righ hand corner
+	renderTGABatch.MultiTexCoord2f(0, width, height);
+	renderTGABatch.Vertex3f(x + width, y, 0.0f);
+
+	renderTGABatch.End();
+	InitTextures();
+
+}
+
+void Render::InitTextures()
+{	
+   	 glGenTextures(1, renderTGATextures);
+	LoadTGATextureRects();
+
+}
+void Render::DoTextureBinding()
+{
+	glBindTexture(GL_TEXTURE_RECTANGLE, renderTGATextures[0]);
+}
+void	Render::LoadTGATextureRects()
+{	
+    	glBindTexture(GL_TEXTURE_RECTANGLE, renderTGATextures[0]);
+	LoadTGATextureRect(renderTGATextureFileName[0], GL_NEAREST, GL_NEAREST, GL_CLAMP_TO_EDGE);
+}
+
+bool Render::LoadTGATextureRect(const char *szFileName, GLenum minFilter, GLenum magFilter, GLenum wrapMode)
+{
+	GLbyte *pBits;
+	int nWidth, nHeight, nComponents;
+	GLenum eFormat;
+
+	// Read the texture bits
+	pBits = gltReadTGABits(szFileName, &nWidth, &nHeight, &nComponents, &eFormat);
+	if(pBits == NULL)
+		return false;
+
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_S, wrapMode);
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_WRAP_T, wrapMode);
+
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MIN_FILTER, minFilter);
+	glTexParameteri(GL_TEXTURE_RECTANGLE, GL_TEXTURE_MAG_FILTER, magFilter);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexImage2D(GL_TEXTURE_RECTANGLE, 0, nComponents, nWidth, nHeight, 0,
+				 eFormat, GL_UNSIGNED_BYTE, pBits);
+
+    	free(pBits);
+	std::cout<<"RenderBBD Load TGA Texture "<<szFileName<<" ok"<<std::endl;
+	return true;
+}
 
 
 
@@ -1246,8 +1387,8 @@ void Render::SetupRC(int windowWidth, int windowHeight)
 		InitVerticalMoveLineBatchForTurret(env);
 		InitSurroundingSighttVerticalBatch(env);
 #endif
-
-
+		//InitRenderTGA();
+		InitSelectBlock();
 		initLabelBatch();
 //		InitDataofAlarmarea();
 
@@ -2673,8 +2814,10 @@ void Render::DrawPanel(GLEnv &m_env,bool needSendData,int *p_petalNum,int mainOr
 #endif
 	glDisable(GL_BLEND);
 	m_env.GetmodelViewMatrix()->PushMatrix();
+
+
 	//#pragma omp parallel sections
-	{
+	
 		//bind alpha mask to texture6, render the imagei, imagei+1 and alphaMask on petal_overlap[i]
 		glActiveTexture(GL_TextureIDs[ALPHA_TEXTURE_IDX]);
 		glBindTexture(GL_TEXTURE_2D, textures[ALPHA_TEXTURE_IDX]);
@@ -2683,29 +2826,32 @@ void Render::DrawPanel(GLEnv &m_env,bool needSendData,int *p_petalNum,int mainOr
 		glActiveTexture(GL_TextureIDs[ALPHA_TEXTURE_IDX1]);
 		glBindTexture(GL_TEXTURE_2D, textures[ALPHA_TEXTURE_IDX1]);
 
-		if(p_petalNum==NULL)
+	if(p_petalNum==NULL)
+	{
+		glActiveTexture(GL_TextureIDs[0]);
+		//glActiveTexture(renderTGATextures[0]);
+		
+		for(int i = 0; i < 2; i++)
 		{
-				glActiveTexture(GL_TextureIDs[0]);
-				for(int i = 0; i < 2; i++){
-						SEND_TEXTURE_TO_PETAL(i,m_env);
-			}
-			for(int i = 0; i < CAM_COUNT; i++){
-				if(	enable_hance)
+			SEND_TEXTURE_TO_PETAL(i,m_env);
+		}
+		for(int i = 0; i < CAM_COUNT; i++)
+		{			
+							
+				if( enable_hance )
 				{
 #if ENABLE_ENHANCE_FUNCTION
 					shaderManager.UseStockShader(GLT_SHADER_ENHANCE, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
 #endif
 				}else
 					shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BRIGHT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
-			//	shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
+				//	shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
 
 				 (*m_env.GetPanel_Petal(i)).Draw();
-
-
-				if(	enable_hance)
+				if(enable_hance)
 				{
 #if ENABLE_ENHANCE_FUNCTION
-				USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
+					USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
 #endif
 				}
 				else
@@ -2713,53 +2859,53 @@ void Render::DrawPanel(GLEnv &m_env,bool needSendData,int *p_petalNum,int mainOr
 					USE_TEXTURE_ON_PETAL_OVERLAP(m_env,i);
 				}
 				m_env.Getp_Panel_Petal_OverLap(i)->Draw();
+			   
 			}
 		}
 		else
 		{
 			glActiveTexture(GL_TextureIDs[0]);
+			//glActiveTexture(renderTGATextures[0]);
 			for(int i = 0; i < 2; i++){
 				    SEND_TEXTURE_TO_PETAL(i,m_env);
-		}
-		for(int i=0;i<CAM_COUNT;i++)
-				{
-					if(p_petalNum[i]!=-1)
+			}
+			for(int i=0;i<CAM_COUNT;i++)
+			{
+				if(p_petalNum[i]!=-1)
+				{		
+					
+					if(	enable_hance)
 					{
-						if(	enable_hance)
-						{
 #if ENABLE_ENHANCE_FUNCTION
-							shaderManager.UseStockShader(GLT_SHADER_ENHANCE, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
-#endif
-						}
-						else
-						shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BRIGHT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
-				//shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
-				(*m_env.GetPanel_Petal(p_petalNum[i])).Draw();
-				{
-					if(enable_hance)
-					{
-						#if ENABLE_ENHANCE_FUNCTION
-					USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+						shaderManager.UseStockShader(GLT_SHADER_ENHANCE, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
 #endif
 					}
 					else
+					shaderManager.UseStockShader(GLT_SHADER_TEXTURE_BRIGHT, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), 0,i);
+					//shaderManager.UseStockShader(GLT_SHADER_ORI, m_env.GettransformPipeline()->GetModelViewProjectionMatrix(), (i)%CAM_COUNT);
+					(*m_env.GetPanel_Petal(p_petalNum[i])).Draw();
 					{
-					USE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+						if(enable_hance)
+						{
+							#if ENABLE_ENHANCE_FUNCTION
+							USE_ENHANCE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+#endif
+						}
+						else
+						{
+							USE_TEXTURE_ON_PETAL_OVERLAP(m_env,p_petalNum[i]);
+						}
 					}
-				}
 				m_env.Getp_Panel_Petal_OverLap(p_petalNum[i])->Draw();
-					}
+					
 				}
-		}
+				}
+		}	
+		//NoSigInf();
 		m_env.GetmodelViewMatrix()->PopMatrix();
-	}
-
-
-
 
 #ifdef GET_ALARM_AERA
 	glReadBuffer(GL_FRONT);
-
 	glReadPixels(0,0,720,576,GL_BGRA_EXT,GL_UNSIGNED_BYTE,screen_data_1920X1080);
 
 #endif
@@ -3199,7 +3345,7 @@ void Render::RenderVerticalMoveLineViewForTurret(GLEnv &m_env,GLint x, GLint y, 
 	m_env.GetmodelViewMatrix()->PushMatrix();		
 	m_env.GetmodelViewMatrix()->LoadIdentity();
 	glClearColor(0.3,0.6,0.5,0.0);
-	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);			
+	m_env.GetmodelViewMatrix()->Translate(64.8, 1.0, -40.0);			
 	m_env.GetmodelViewMatrix()->PushMatrix();	
 	DrawSurroundSightVerticalMoveLineView(m_env, color_data);
 	m_env.GetmodelViewMatrix()->PopMatrix();	
@@ -3237,7 +3383,7 @@ void Render::RenderVerticalValueViewForTurret(GLEnv &m_env,GLint x, GLint y, GLi
 	m_env.GetmodelViewMatrix()->PushMatrix();		
 	m_env.GetmodelViewMatrix()->LoadIdentity();
 	glClearColor(0.3,0.6,0.5,0.0);
-	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);			
+	m_env.GetmodelViewMatrix()->Translate(64.8, 1.0, -40.0);			
 	m_env.GetmodelViewMatrix()->PushMatrix();	
 	DrawSurroundSightVerticalView(m_env, color_data);
 	m_env.GetmodelViewMatrix()->PopMatrix();	
@@ -3254,7 +3400,7 @@ void Render::RenderDirectTriangleViewForTurret(GLEnv &m_env,GLfloat direct_angle
 	m_env.GetmodelViewMatrix()->PushMatrix();		
 	m_env.GetmodelViewMatrix()->LoadIdentity();
 	glClearColor(0.3,0.6,0.5,0.0);
-	m_env.GetmodelViewMatrix()->Translate(65.25, 1.0, -40.0);		
+	m_env.GetmodelViewMatrix()->Translate(64.8, 1.0, -40.0);		
 	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 0.0f, 0.0f, 1.0f);
 	m_env.GetmodelViewMatrix()->Rotate( 180.0f , 1.0f, 0.0f, 0.0f);
 	m_env.GetmodelViewMatrix()->PushMatrix();	
@@ -3609,9 +3755,10 @@ void Render::RenderForTestTriangleView(GLEnv &m_env,GLint x, GLint y, GLint w, G
 	if(state == GREEN_STATE){
 		DrawCircleFans(m_env,vGreen);
 	}
-	else if(state == GRAY_STATE){
-		DrawCircleFans(m_env,vGrey);
-	}else{
+	//else if(state == GRAY_STATE){
+	//	DrawCircleFans(m_env,vGrey);
+	//}
+	else{
 		DrawCircleFans(m_env,vReal_Red);
 	}		
 	m_env.GetmodelViewMatrix()->PopMatrix();	
@@ -6612,6 +6759,7 @@ void Render::RenderBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h)
 	m_env.GetmodelViewMatrix()->PopMatrix();
 }
 
+
 void Render::RenderChineseCharacterBillBoardAt(GLEnv &m_env,GLint x, GLint y,GLint w, GLint h,int bmode,bool isbottem)
 {
 	glViewport(x,y,w,h);
@@ -7351,6 +7499,7 @@ if(setpriorityOnce)
 #endif
 	// Clear the window with current clearing color
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 #if 1
 	if(env.Getp_FboPboFacade()->IsFboUsed())
@@ -7546,8 +7695,8 @@ if(setpriorityOnce)
 	{
 		tIdle.threadIdle(MAIN_CN);
 		env.Getp_FboPboFacade()->Render2Front(MAIN,g_windowWidth,g_windowHeight);
-	RenderRightForeSightView(env,0,1080*(660.0)/1080.0,1920, 1080*216.0/1080.0,MAIN);
-	RenderLeftForeSightView(env,0,1080*(884.5)/1080.0,1920, 1080*216.0/1080.0,MAIN);
+		RenderRightForeSightView(env,0,1080*(660.0)/1080.0,1920, 1080*216.0/1080.0,MAIN);
+		RenderLeftForeSightView(env,0,1080*(884.5)/1080.0,1920, 1080*216.0/1080.0,MAIN);
 			break;
 	}
 	case TRIM_MODE:
@@ -7889,7 +8038,8 @@ if(setpriorityOnce)
 
 
 		selfcheck.CalculateTime(1);
-		#if USE_UART
+#if USE_UART
+	#if 0
 		if(zodiac_msg.CheckFine()==SELFCHECK_IDLE)
 		{
 			if(selfcheck.IsOnesec())
@@ -7910,6 +8060,7 @@ if(setpriorityOnce)
 			RenderChineseCharacterBillBoardAt(g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
 			Show_first_mode(readFirstMode());
 		}
+	#endif
 #else
 		selfcheck.CalculateTime(1);
 		if(selfcheck.IsIDLE()==SELFCHECK_IDLE)
@@ -7933,17 +8084,20 @@ if(setpriorityOnce)
 		}
 		else if(selfcheck.IsIDLE()==SELFCHECK_FAIL)
 		{
-				p_ChineseCBillBoard->ChooseTga=WRONG_T;
-		RenderChineseCharacterBillBoardAt(env,g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
-		static int b=0;
-				if(b++==50)
-				{
-					displayMode=ALL_VIEW_MODE;
+			p_ChineseCBillBoard->ChooseTga=WRONG_T;
+			RenderChineseCharacterBillBoardAt(env,g_windowWidth*360.0/1920.0, billBoardy-g_windowHeight*2/3.3, g_windowWidth*1.0/2.5, g_windowHeight*1/2*1.5);
+			static int b=0;
+			
+			if(b++==50)
+			{
+				displayMode=ALL_VIEW_MODE;
 				b=0;
-				}
-
+			}
 		}
-		#endif
+		for(int g=0 ; g<10; g++){
+			selftest_state[g] =selfcheck.GetBrokenCam()[g];
+		}
+#endif
 	}
 
 	else if(displayMode==	ALL_VIEW_FRONT_BACK_ONE_DOUBLE_MODE)
@@ -8257,26 +8411,26 @@ if(setpriorityOnce)
 				}
 				else
 				{					
-						if(net_dirction==MOVE_TYPE_MOVELEFT)
-						{
-							foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
-							p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
-						}
-						if(net_dirction==MOVE_TYPE_MOVERIGHT)
-						{
-							foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
-							p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
-						}
-						if(net_dirction==MOVE_TYPE_MOVEUP)
-						{
-							foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
-							p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
-						}
-						if(net_dirction==MOVE_TYPE_MOVEDOWN)
-						{
-							foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
-							p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
-						}					
+					if(net_dirction==MOVE_TYPE_MOVELEFT)
+					{
+						foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
+						p_ForeSightFacade[MAIN]->MoveLeft(-PanoLen*100.0);
+					}
+					if(net_dirction==MOVE_TYPE_MOVERIGHT)
+					{
+						foresightPos[MAIN].SetSpeedX((render.get_PanelLoader().Getextent_pos_x()-render.get_PanelLoader().Getextent_neg_x())/1920.0*10.0);
+						p_ForeSightFacade[MAIN]->MoveRight(PanoLen*100.0);
+					}
+					if(net_dirction==MOVE_TYPE_MOVEUP)
+					{
+						foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
+						p_ForeSightFacade[MAIN]->MoveUp(PanoHeight/(OUTER_RECT_AND_PANO_TWO_TIMES_CAM_LIMIT));
+					}
+					if(net_dirction==MOVE_TYPE_MOVEDOWN)
+					{
+						foresightPos[MAIN].SetSpeedY((render.get_PanelLoader().Getextent_pos_z()-render.get_PanelLoader().Getextent_neg_z())/1920.0*20.0);
+						p_ForeSightFacade[MAIN]->MoveDown(-PanoHeight/(20));
+					}					
 				}
 
 				calc_hor_data=getAngleFar_PeriscopicLens(TRANSFER_TO_APP_ETHOR).hor_angle;
@@ -8337,19 +8491,17 @@ if(setpriorityOnce)
 				p_ChineseCBillBoard->ChooseTga=INFO_SHOW_T;
 				RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.1*0.7*index_i-width_delta+g_windowWidth*0.035, w_y+g_windowHeight*0.016, t_width*0.8, t_height*0.8);
 				index_i++;
-	if(displayMode==ALL_VIEW_MODE)
-	{
+		if(displayMode==ALL_VIEW_MODE)
+		{
 				hide_label_state=getOverlayInformation(TRANSFER_TO_APP_ETHOR);
 				if(hide_label_state!=HIDE_TEST_COMPASS_LABEL)
 				{
 					p_ChineseCBillBoard->ChooseTga=CANON_DATA_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55+133+11,g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
-
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.55+133+11-7,g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 					//p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
 					//RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.45+131+17,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
-
 					p_ChineseCBillBoard->ChooseTga=AROUND_MIRROR_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7+63+9, g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.7+63+9-7, g_windowHeight*0.3-8.0+22.9+30, g_windowWidth*0.3, g_windowHeight*1/3,BMODE_1);
 
 					//p_ChineseCBillBoard_bottem_pos->ChooseTga=GUN_CANON_COMPASS_T;
 					//RenderChineseCharacterBillBoardAt(env,g_windowWidth*0.6+65+1,g_windowHeight*0.41+30, g_windowWidth*0.3*1.5, g_windowHeight*0.4*1.5,BMODE_8,true);
@@ -8374,6 +8526,11 @@ if(setpriorityOnce)
 					strcpy(text_data,"");
 					sprintf(text_data,"    %.2f",calc_ver_data);
 					DrawCordsView(env,&rect4,text_data);
+
+					
+					p_ChineseCBillBoard->ChooseTga=TGA_NoThing;
+					RenderChineseCharacterBillBoardAt(env, g_windowWidth/2-g_windowWidth/15+128-20, g_windowHeight/7+305, 
+													g_windowWidth/2+20, g_windowHeight*1.2/2+36, BMODE_1);
 			
 					RenderCircleLineViewForSurroundSight( env ,0,0, g_windowWidth, g_windowHeight,	vWhite);
 					RenderDirectTriangleViewForSurroundSight(env , canon_hor_angle , 0,0, g_windowWidth, g_windowHeight,  vYellow);
@@ -8406,57 +8563,85 @@ if(setpriorityOnce)
 					env.GetmodelViewMatrix()->PushMatrix();
 
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL2_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move+128, g_windowHeight/7+13.1+30+4, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env, g_windowWidth/2+label_hor_move+128-20,  g_windowHeight/7+13.1+30+4, g_windowWidth/2+20, g_windowHeight*1.2/2,BMODE_1);
+
 					p_ChineseCBillBoard->ChooseTga=STATE_LABEL_T;
-					RenderChineseCharacterBillBoardAt(env,g_windowWidth/2+label_hor_move+128, 0+30+4, g_windowWidth/2, g_windowHeight*1.2/2,BMODE_1);
+					RenderChineseCharacterBillBoardAt(env, g_windowWidth/2+label_hor_move+128-20, 34, g_windowWidth/2+20, g_windowHeight*1.2/2, BMODE_1);
 
 					int point_hor_delta=g_windowWidth/4+g_windowWidth/36+8*g_windowWidth/48;
 					int point_ver_delta=-g_windowHeight/10-g_windowHeight/25-g_windowHeight/200;
 					env.GetmodelViewMatrix()->PopMatrix();
 
 								
-						int fan_WindowWidth = g_windowWidth*1/16-18;
-						int fan_WindowHeight = g_windowHeight/22-9;
-						int delta_fanX = g_windowWidth*5/6 +95;
-						int infoName =0;		
-						Rcv_State_Msg = getCaptureMessage();
-						light_state[0]=Rcv_State_Msg.cameraBackTest;
-						light_state[1]=Rcv_State_Msg.cameraBackState;
-						light_state[2]=Rcv_State_Msg.cameraBack_FAULT_Colour;
-						light_state[3]=Rcv_State_Msg.cameraRight1Test;
-						light_state[4]=Rcv_State_Msg.cameraRight1State;
-						light_state[5]=Rcv_State_Msg.cameraRight1_FAULT_Colour;
-						light_state[6]=Rcv_State_Msg.cameraRight2Test;
-						light_state[7]=Rcv_State_Msg.cameraRight2State;
-						light_state[8]=Rcv_State_Msg.cameraRight2_FAULT_Colour;
-						light_state[9]=Rcv_State_Msg.cameraRight3Test;
-						light_state[10]=Rcv_State_Msg.cameraRight3State;
-						light_state[11]=Rcv_State_Msg.cameraRight3_FAULT_Colour;
-						light_state[12]=Rcv_State_Msg.Cap_BoxTest;
-						light_state[13]=Rcv_State_Msg.Cap_BoxState;
-						light_state[14]=Rcv_State_Msg.Cap_FAULT_Colour;
-						light_state[15]=Rcv_State_Msg.nearBoardTest;
-						light_state[16]=Rcv_State_Msg.nearBoardState;
-						light_state[17]=Rcv_State_Msg.nearBoard_FAULT_Colour;
+					int fan_WindowWidth = g_windowWidth*1/16-18;
+					int fan_WindowHeight = g_windowHeight/22-9;
+					int delta_fanX = g_windowWidth*5/6 +95;
+					int infoName =0;		
+					Rcv_State_Msg = getCaptureMessage();
+					//selfcheck.GetBrokenCam()[i]
+					
+					light_state[0]=selftest_state[7];//Rcv_State_Msg.cameraBackTest;
+					light_state[1]=selfcheck.GetBrokenCam()[7];//Rcv_State_Msg.cameraBackState;
+					light_state[2]=light_state[1];//Rcv_State_Msg.cameraBack_FAULT_Colour;
+					
+					light_state[3]=selftest_state[1];//Rcv_State_Msg.cameraRight1Test;
+					light_state[4]=selfcheck.GetBrokenCam()[1];//Rcv_State_Msg.cameraRight1State;
+					light_state[5]=light_state[4];//Rcv_State_Msg.cameraRight1_FAULT_Colour;
+					
+					light_state[6]=selftest_state[0];//Rcv_State_Msg.cameraRight2Test;
+					light_state[7]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[9];//Rcv_State_Msg.cameraRight2State;
+					light_state[8]=light_state[7];//Rcv_State_Msg.cameraRight2_FAULT_Colour;
+					
+					light_state[9]=selftest_state[8];//Rcv_State_Msg.cameraRight3Test;
+					light_state[10]=selfcheck.GetBrokenCam()[8];//Rcv_State_Msg.cameraRight3State;
+					light_state[11]=light_state[10];//Rcv_State_Msg.cameraRight3_FAULT_Colour;
+					
+					light_state[12]=0x01; //Rcv_State_Msg.Cap_BoxTest;
+					for(int k =0; k<10; k++){
+						if(selftest_state[k] != 0x01){
+							light_state[12] = 0x00;
+							break;
+						}
+					}
+					//light_state[13]=Rcv_State_Msg.Cap_BoxState;
+					light_state[13] = 0x01;
+					for(int i=0; i<10; i++){
+						if( selfcheck.GetBrokenCam()[i] != 0x01){
+							light_state[13] = 0x00;
+							break;
+						}
+					}
+					light_state[14]=light_state[13];//Rcv_State_Msg.Cap_FAULT_Colour;
+
+					
+					
+					light_state[15]=Rcv_State_Msg.nearBoardTest;
+					light_state[16]=Rcv_State_Msg.nearBoardState;
+					light_state[17]=Rcv_State_Msg.nearBoard_FAULT_Colour;
+					
 			//--------------------------------------------------------------------
-						light_state[18]=Rcv_State_Msg.cameraFrontTest;
-						light_state[19]=Rcv_State_Msg.cameraFrontState;
-						light_state[20]=Rcv_State_Msg.cameraFront_FAULT_Colour;
-						light_state[21]=Rcv_State_Msg.cameraLeft1Test;
-						light_state[22]=Rcv_State_Msg.cameraLeft1State;
-						light_state[23]=Rcv_State_Msg.cameraLeft1_FAULT_Colour;
-						light_state[24]=Rcv_State_Msg.cameraLeft2Test;
-						light_state[25]=Rcv_State_Msg.cameraLeft2State;
-						light_state[26]=Rcv_State_Msg.cameraLeft2_FAULT_Colour;
-						light_state[27]=Rcv_State_Msg.cameraLeft3Test;
-						light_state[28]=Rcv_State_Msg.cameraLeft3State;
-						light_state[29]=Rcv_State_Msg.cameraLeft3_FAULT_Colour;
-						light_state[30]=Rcv_State_Msg.passengerTest;
-						light_state[31]=Rcv_State_Msg.passengerState;
-						light_state[32]=Rcv_State_Msg.passenger_FAULT_Colour;
-						light_state[33]=0x00;
-						light_state[34]=0x00;
-						light_state[35]=0x00;
+					light_state[18]=selftest_state[2];//Rcv_State_Msg.cameraFrontTest;
+					light_state[19]=selfcheck.GetBrokenCam()[2] ;//Rcv_State_Msg.cameraFrontState;
+					light_state[20]=light_state[19];//Rcv_State_Msg.cameraFront_FAULT_Colour;
+					
+					light_state[21]=selftest_state[3];//Rcv_State_Msg.cameraLeft1Test;
+					light_state[22]=selfcheck.GetBrokenCam()[3] ;//Rcv_State_Msg.cameraLeft1State;
+					light_state[23]=light_state[22];//Rcv_State_Msg.cameraLeft1_FAULT_Colour;
+					
+					light_state[24]= selftest_state[4];//Rcv_State_Msg.cameraLeft2Test;
+					light_state[25]=selfcheck.GetBrokenCam()[4] && selfcheck.GetBrokenCam()[5] ;//Rcv_State_Msg.cameraLeft2State;
+					light_state[26]=light_state[25];//Rcv_State_Msg.cameraLeft2_FAULT_Colour;
+					
+					light_state[27]=selftest_state[6];//Rcv_State_Msg.cameraLeft3Test;
+					light_state[28]=selfcheck.GetBrokenCam()[6] ;//Rcv_State_Msg.cameraLeft3State;
+					light_state[29]=light_state[28]  ;//Rcv_State_Msg.cameraLeft3_FAULT_Colour;
+					
+					light_state[30]=Rcv_State_Msg.passengerTest;
+					light_state[31]=Rcv_State_Msg.passengerState;
+					light_state[32]=Rcv_State_Msg.passenger_FAULT_Colour;
+					light_state[33]=0x01;
+					light_state[34]=0x01;
+					light_state[35]=0x01;
 			
 					for(int i = 0; i<36; i++){
 						if(i <18){
@@ -8584,6 +8769,10 @@ if(setpriorityOnce)
 		}
 	}
 #endif
+
+	
+	//RenderSelectBlock(env, g_windowWidth*4/5, g_windowHeight - 216.0f,384.0f,216.0f);
+	//NoSigInf();
 
 }
 
@@ -11390,11 +11579,10 @@ void Render::BaseBillBoard::DrawBillBoard(int w, int h,int bmode)
 	glDisable(GL_DEPTH_TEST);
 	glActiveTexture(GL_TEXTURE0);
 	DoTextureBinding();
-
 	Render::SwitchBlendMode(bmode);
 	m_pShaderManager->UseStockShader(GLT_SHADER_TEXTURE_RECT_REPLACE,mScreenSpace,0);
 	HZbatch.Draw();
-	    // Restore no blending and depth test
+	//Restore no blending and depth test
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -11506,6 +11694,8 @@ Render::ChineseCharacterBillBoard::ChineseCharacterBillBoard(GLMatrixStack &mode
 		strcpy( ChineseC_TextureFileName[F9_T], FAR_NEXT);
 		strcpy( ChineseC_TextureFileName[STATE_LABEL_T], STATE_LABEL);
 		strcpy( ChineseC_TextureFileName[STATE_LABEL2_T], STATE_LABEL2);
+
+		strcpy( ChineseC_TextureFileName[TGA_NoThing],  NOTHING_TGA);
 
 		strcpy( ChineseC_TextureFileName[POINT_RED_T], POINT_RED_F);
 		strcpy( ChineseC_TextureFileName[POINT_GREEN_T], POINT_GREEN_F);
