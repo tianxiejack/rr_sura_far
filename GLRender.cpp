@@ -633,7 +633,7 @@ void Render::NoSigInf()
 		nosigIdx=selfcheck.GetBrokenCam()[i];
 		if(nosigIdx==0)
 		{
-			RenderSelectBlock(env,  hor_x[i], ver_y[i], 384.0f, 216.0f);
+			RenderSelectBlock(env,  hor_x[i], ver_y[i], 384.0f, 186.0f);
 			
 			p_ChineseCBillBoard->ChooseTga=NOSIG_T;
 			RenderChineseCharacterBillBoardAt(env,startX[i],startY[i/5]+50, w,h,bmode);
@@ -8584,11 +8584,11 @@ if(setpriorityOnce)
 					light_state[1]=selfcheck.GetBrokenCam()[7];//Rcv_State_Msg.cameraBackState;
 					light_state[2]=light_state[1];//Rcv_State_Msg.cameraBack_FAULT_Colour;
 					
-					light_state[3]=selftest_state[1];//Rcv_State_Msg.cameraRight1Test;
-					light_state[4]=selfcheck.GetBrokenCam()[1];//Rcv_State_Msg.cameraRight1State;
+					light_state[3]=selftest_state[3];//Rcv_State_Msg.cameraRight1Test;
+					light_state[4]=selfcheck.GetBrokenCam()[3];//Rcv_State_Msg.cameraRight1State;
 					light_state[5]=light_state[4];//Rcv_State_Msg.cameraRight1_FAULT_Colour;
 					
-					light_state[6]=selftest_state[0];//Rcv_State_Msg.cameraRight2Test;
+					light_state[6]=selftest_state[0] && selftest_state[9];//Rcv_State_Msg.cameraRight2Test;
 					light_state[7]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[9];//Rcv_State_Msg.cameraRight2State;
 					light_state[8]=light_state[7];//Rcv_State_Msg.cameraRight2_FAULT_Colour;
 					
@@ -8624,12 +8624,12 @@ if(setpriorityOnce)
 					light_state[19]=selfcheck.GetBrokenCam()[2] ;//Rcv_State_Msg.cameraFrontState;
 					light_state[20]=light_state[19];//Rcv_State_Msg.cameraFront_FAULT_Colour;
 					
-					light_state[21]=selftest_state[3];//Rcv_State_Msg.cameraLeft1Test;
-					light_state[22]=selfcheck.GetBrokenCam()[3] ;//Rcv_State_Msg.cameraLeft1State;
+					light_state[21]=selftest_state[1];//Rcv_State_Msg.cameraLeft1Test;
+					light_state[22]=selfcheck.GetBrokenCam()[1] ;//Rcv_State_Msg.cameraLeft1State;
 					light_state[23]=light_state[22];//Rcv_State_Msg.cameraLeft1_FAULT_Colour;
 					
-					light_state[24]= selftest_state[4];//Rcv_State_Msg.cameraLeft2Test;
-					light_state[25]=selfcheck.GetBrokenCam()[4] && selfcheck.GetBrokenCam()[5] ;//Rcv_State_Msg.cameraLeft2State;
+					light_state[24]= selftest_state[0] && selftest_state[4];//Rcv_State_Msg.cameraLeft2Test;
+					light_state[25]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[4] ;//Rcv_State_Msg.cameraLeft2State;
 					light_state[26]=light_state[25];//Rcv_State_Msg.cameraLeft2_FAULT_Colour;
 					
 					light_state[27]=selftest_state[6];//Rcv_State_Msg.cameraLeft3Test;
