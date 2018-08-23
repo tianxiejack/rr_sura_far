@@ -243,11 +243,11 @@ int ExchangeChannel(int direction)
 	}
 	else if(direction==4)
 	{
-		direction=5;
+		direction=0;// Change 5 to 0 ;
 	}
 	else if(direction==5)
 	{
-		direction=0;
+		direction=5;// Change 0 to 5 ;
 	}
 	return direction;
 }
@@ -2362,12 +2362,12 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 			 if (direction==0)
 			{
 				Point2[k].x = Point2[k].x/1920.0*640.0;
-				Point2[k].y = Point2[k].y/1080.0*540.0+(6%CAM_COUNT)*540.0;
+				Point2[k].y = Point2[k].y/1080.0*540.0+(5/*6*/%CAM_COUNT)*540.0;
 			}
 				else  if (direction==1)
 			 	{
 			 		Point2[k].x = Point2[k].x/1920.0*640.0;
-					Point2[k].y = Point2[k].y/1080.0*540.0+(5%CAM_COUNT)*540.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+(0/*5*/%CAM_COUNT)*540.0;
 			 	}
 			 	else if(direction==9)
 			 	{
@@ -2377,7 +2377,7 @@ void Render::InitPanel(GLEnv &m_env,int idx,bool reset)
 			 	else if(direction==5)
 			 	{
 			 		Point2[k].x = Point2[k].x/1920.0*640.0;
-					Point2[k].y = Point2[k].y/1080.0*540.0+((0)%CAM_COUNT)*540.0;
+					Point2[k].y = Point2[k].y/1080.0*540.0+((6/*0*/)%CAM_COUNT)*540.0;
 			 	}
 			 	else if(direction<=4&&direction>=2)
 				{
