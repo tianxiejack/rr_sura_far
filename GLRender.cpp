@@ -8580,61 +8580,56 @@ if(setpriorityOnce)
 					Rcv_State_Msg = getCaptureMessage();
 					//selfcheck.GetBrokenCam()[i]
 					
-					light_state[0]=selftest_state[7];//Rcv_State_Msg.cameraBackTest;
-					light_state[1]=selfcheck.GetBrokenCam()[7];//Rcv_State_Msg.cameraBackState;
-					light_state[2]=light_state[1];//Rcv_State_Msg.cameraBack_FAULT_Colour;
+					light_state[0]=selftest_state[7];//cameraBackTest;
+					light_state[1]=selfcheck.GetBrokenCam()[7];//cameraBackState;
+					light_state[2]=light_state[1];//cameraBack_FAULT_Colour;
 					
-					light_state[3]=selftest_state[3];//Rcv_State_Msg.cameraRight1Test;
-					light_state[4]=selfcheck.GetBrokenCam()[3];//Rcv_State_Msg.cameraRight1State;
-					light_state[5]=light_state[4];//Rcv_State_Msg.cameraRight1_FAULT_Colour;
+					light_state[3]=selftest_state[3];//cameraRight1Test;
+					light_state[4]=selfcheck.GetBrokenCam()[3];//cameraRight1State;
+					light_state[5]=light_state[4];//cameraRight1_FAULT_Colour;
 					
-					light_state[6]=selftest_state[0] && selftest_state[9];//Rcv_State_Msg.cameraRight2Test;
-					light_state[7]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[9];//Rcv_State_Msg.cameraRight2State;
-					light_state[8]=light_state[7];//Rcv_State_Msg.cameraRight2_FAULT_Colour;
+					light_state[6]=selftest_state[4] && selftest_state[9];//cameraRight2Test;
+					light_state[7]=selfcheck.GetBrokenCam()[4] && selfcheck.GetBrokenCam()[9];//cameraRight2State;
+					light_state[8]=light_state[7];//cameraRight2_FAULT_Colour;
 					
-					light_state[9]=selftest_state[8];//Rcv_State_Msg.cameraRight3Test;
-					light_state[10]=selfcheck.GetBrokenCam()[8];//Rcv_State_Msg.cameraRight3State;
-					light_state[11]=light_state[10];//Rcv_State_Msg.cameraRight3_FAULT_Colour;
+					light_state[9]=selftest_state[8];//cameraRight3Test;
+					light_state[10]=selfcheck.GetBrokenCam()[8];//cameraRight3State;
+					light_state[11]=light_state[10];//cameraRight3_FAULT_Colour;
 					
-					light_state[12]=0x01; //Rcv_State_Msg.Cap_BoxTest;
+					light_state[12]=0x01; //Cap_BoxTest;
 					for(int k =0; k<10; k++){
 						if(selftest_state[k] != 0x01){
 							light_state[12] = 0x00;
 							break;
 						}
-					}
-					//light_state[13]=Rcv_State_Msg.Cap_BoxState;
-					light_state[13] = 0x01;
+					}					
+					light_state[13] = 0x01; //Cap_BoxState;
 					for(int i=0; i<10; i++){
 						if( selfcheck.GetBrokenCam()[i] != 0x01){
 							light_state[13] = 0x00;
 							break;
 						}
 					}
-					light_state[14]=light_state[13];//Rcv_State_Msg.Cap_FAULT_Colour;
-
-					
-					
+					light_state[14]=light_state[13];//Cap_FAULT_Colour;					
 					light_state[15]=Rcv_State_Msg.nearBoardTest;
 					light_state[16]=Rcv_State_Msg.nearBoardState;
-					light_state[17]=Rcv_State_Msg.nearBoard_FAULT_Colour;
-					
+					light_state[17]=Rcv_State_Msg.nearBoard_FAULT_Colour;					
 			//--------------------------------------------------------------------
-					light_state[18]=selftest_state[2];//Rcv_State_Msg.cameraFrontTest;
-					light_state[19]=selfcheck.GetBrokenCam()[2] ;//Rcv_State_Msg.cameraFrontState;
-					light_state[20]=light_state[19];//Rcv_State_Msg.cameraFront_FAULT_Colour;
+					light_state[18]=selftest_state[2];//cameraFrontTest;
+					light_state[19]=selfcheck.GetBrokenCam()[2] ;//cameraFrontState;
+					light_state[20]=light_state[19];//cameraFront_FAULT_Colour;
 					
-					light_state[21]=selftest_state[1];//Rcv_State_Msg.cameraLeft1Test;
-					light_state[22]=selfcheck.GetBrokenCam()[1] ;//Rcv_State_Msg.cameraLeft1State;
-					light_state[23]=light_state[22];//Rcv_State_Msg.cameraLeft1_FAULT_Colour;
+					light_state[21]=selftest_state[1];//cameraLeft1Test;
+					light_state[22]=selfcheck.GetBrokenCam()[1] ;//cameraLeft1State;
+					light_state[23]=light_state[22];//cameraLeft1_FAULT_Colour;
 					
-					light_state[24]= selftest_state[0] && selftest_state[4];//Rcv_State_Msg.cameraLeft2Test;
-					light_state[25]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[4] ;//Rcv_State_Msg.cameraLeft2State;
-					light_state[26]=light_state[25];//Rcv_State_Msg.cameraLeft2_FAULT_Colour;
+					light_state[24]= selftest_state[0] && selftest_state[5];//cameraLeft2Test;
+					light_state[25]=selfcheck.GetBrokenCam()[0] && selfcheck.GetBrokenCam()[5] ;//cameraLeft2State;
+					light_state[26]=light_state[25];//cameraLeft2_FAULT_Colour;
 					
-					light_state[27]=selftest_state[6];//Rcv_State_Msg.cameraLeft3Test;
-					light_state[28]=selfcheck.GetBrokenCam()[6] ;//Rcv_State_Msg.cameraLeft3State;
-					light_state[29]=light_state[28]  ;//Rcv_State_Msg.cameraLeft3_FAULT_Colour;
+					light_state[27]=selftest_state[6];//cameraLeft3Test;
+					light_state[28]=selfcheck.GetBrokenCam()[6] ;//cameraLeft3State;
+					light_state[29]=light_state[28]  ;//cameraLeft3_FAULT_Colour;
 					
 					light_state[30]=Rcv_State_Msg.passengerTest;
 					light_state[31]=Rcv_State_Msg.passengerState;
@@ -8654,13 +8649,7 @@ if(setpriorityOnce)
 								g_windowHeight*1/4 -18- (i/3)*fan_WindowHeight/2, 
 								fan_WindowWidth, fan_WindowHeight,	light_state[i]);
 						}
-						/*
-						if(last_light_state[i] != light_state[i]){
-							last_light_state[i] = light_state[i];
-							printf("Rcv Change Light State: SN<%d>: --- %02x  ---\r\n", i, last_light_state[i]);
-
-						}
-						*/
+						
 					}		
 				
 				}
